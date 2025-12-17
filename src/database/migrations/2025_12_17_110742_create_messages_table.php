@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// TABLA DE USUARIOS
+// TABLA MENSAJES
 
 return new class extends Migration
 {
@@ -14,13 +14,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id_user');
-            $table->string('name', 255);
-            $table->string('email', 255)->unique();
-            $table->string('password', 255);
-            $table->char('phone', 12);
-            $table->date('registration_date');
+        Schema::create('messages', function (Blueprint $table) {
+            $table->increments('id_message');
+            $table->integer('id_product');
+            $table->integer('id_transmitter');
+            $table->integer('id_receiver');
+            $table->text('content');
+            $table->date('shipping_date');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('messages');
     }
 };

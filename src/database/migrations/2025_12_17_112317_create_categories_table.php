@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// TABLA DE USUARIOS
+// TABLA CATEGORIAS
 
 return new class extends Migration
 {
@@ -14,13 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id_user');
+        Schema::create('categories', function (Blueprint $table) {
+            $table->increments('id_categorie');
+            $table->integer('id_product');
             $table->string('name', 255);
-            $table->string('email', 255)->unique();
-            $table->string('password', 255);
-            $table->char('phone', 12);
-            $table->date('registration_date');
         });
     }
 
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('categories');
     }
 };
