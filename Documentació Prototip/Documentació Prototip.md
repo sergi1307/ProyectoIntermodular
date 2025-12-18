@@ -22,8 +22,33 @@ Este document es tracta de documentar sobre el prototip de l'aplicació de `Prox
 - Pantalla de login
 - Pantalla d'usuaris
 
-La pantalla principal té com a objectiu introduir a l'aplicació, proporcionar informació de la empresa i dur cap a la pantalla de login, en ella pot veure informació sobre `ProxiMarkt` i que és, consta d'una capçalera per a introduir l'aplicació, el cos de l'aplicació, que conté informació sobre `ProxiMarkt` i per últim el peu de pàgina que conté informació per a la companyia i informació útil per als usuaris sobre com funciona l'aplicació
-*Imatge de la capçalera*
+La pantalla principal té com a objectiu introduir a l'aplicació, proporcionar informació de la empresa i dur cap a la pantalla de login, en ella pot veure informació sobre `ProxiMarkt` i que és, consta d'una capçalera per a introduir l'aplicació, el cos de l'aplicació, que conté informació sobre `ProxiMarkt` i per últim el peu de pàgina que conté informació per a la companyia i informació útil per als usuaris sobre com funciona l'aplicació.
+
+*Capçalera*
+<p align= "center">
+    <img src="./img/Cabecera_Index.png" alt="Cabecera" width="500"/>
+</p>
+
+*Secció 1*
+<p align="center">
+    <img src="./img/Section1_Index.png" alt="Secció 1" width="500"/>
+</p>
+
+*Secció 2*
+<p align="center">
+    <img src="./img/Section2_Index.png" alt="Secció 2" width="500"/>
+</p>
+
+*Secció 3*
+<p align="center">
+    <img src="./img/Section3_Index.png" alt="Secció 3" width="500"/>
+</p>
+
+*Footer*
+<p align="center">
+    <img src="./img/Footer_Index.png" alt="Footer" width="500" height="200"/>
+</p>
+
 La pàgina de login és una pantalla en la qual l'usuari es pot registrar o iniciar sessió, per a iniciar sessió conté 2 camps:
 - Correu electònic
 - Contrasenya
