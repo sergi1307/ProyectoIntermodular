@@ -187,7 +187,14 @@ I en altres llenguatges de programació seria de la següent forma:
 - name (String)
 
 ### Relacions
+#### Relacons m a m
 
+En este diagrama no existeixen relacions molts a molts (m a m), sols ens tenim relacions:
+
+- 1 a molts(1 a m)/molts a 1(m a 1)
+- 1 a 1
+
+#### Relacions (1 a m) o (m a 1)
 **USERS 1<-->m MESSAGES**
 Tenim 2 relacions d'un a molts, ja que en un missatge ha d'haver-hi 2 usuaris per a poder rebre i enviar missatges, i un usuari pot enviar molts missatges però solo els rebrà una persona.
 
@@ -203,9 +210,6 @@ Tenim una relació d'un a molts, ja que un usuari pot tindre molts punts de lliu
 **MESSAGES m<-->1 PRODUCTS**
 Tenim una relació d'un a molts, ja que d'un producte pot haver-hi molts xats amb diferents compradors, però en un xat només pot haver-hi un producte.
 
-**PRODUCTS 1<-->1 SALES**
-Tenim una relació d'un a un, ja que en una venda només s'embene un producte.
-
 **SALES m<-->1 DELIVERY POINT**
 Tenim una relació d'un a molts, ja que en un punt de lliurament es poden fer diverses vendes, però una venda només es pot fer en un punt de lliurament.
 
@@ -214,3 +218,8 @@ Tenim una relació d'un a molts, ja que una venda pot tindre diverses valoracion
 
 **PRODUCTS m<-->1 CATEGORIES**
 Tenim una relació d'un a molts, ja que una categoría pot tindre diversos productes associats, pero un producte sols pot estar dins d'una categoría.
+
+#### Relacions (1 a 1)
+
+**PRODUCTS 1<-->1 SALES**
+Tenim una relació d'un a un, ja que en una venda només s'embene un producte.
