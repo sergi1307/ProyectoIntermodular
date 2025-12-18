@@ -8,6 +8,7 @@
         * [Pantalla principal](#pantalla-principal)
         * [Pantalla de login](#pantalla-de-login)
         * [Pantalla d'usuaris](#pantalla-dusuaris)
+    + [Conclusio](#conclusió)
     
 ## Tecnologies utilitzades per al prototip
 ### Figma
@@ -64,7 +65,7 @@ La pàgina de login és una pantalla en la qual l'usuari es pot registrar o inic
 - Contrasenya
 
 <p align="center">
-    <img src="./img/Login_Screen.png" alt="Footer" width="500" height="200"/>
+    <img src="./img/Login_Screen.png" alt="Footer" width="500"/>
 </p>
 <p align="center"><em>Fig 7: Pantalla de login</em></p> 
 
@@ -74,7 +75,7 @@ I si li apretes al boto de `Registrar-se` s'obrirà una nova finestra en la qual
 - Contrasenya 
 
 <p align="center">
-    <img src="./img/Register_Screen.png" alt="Footer" width="500" height="200"/>
+    <img src="./img/Register_Screen.png" alt="Footer" width="500"/>
 </p>
 <p align="center"><em>Fig 8: Pantalla de registre</em></p> 
 
