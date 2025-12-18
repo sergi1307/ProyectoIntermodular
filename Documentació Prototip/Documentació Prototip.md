@@ -47,7 +47,7 @@ El cos de l'aplicació, que conté informació sobre `ProxiMarkt`:
 <p align="center"><em>Fig 4: Segunda secció de la pantalla principal</em></p> 
 
 <p align="center">
-    <img src="./img/Section3_Index.png" alt="Secció 3" width="500"/>
+    <img src="./img/Section3_Index.png" alt="Secció 3" width="600"/>
 </p>
 <p align="center"><em>Fig 5: Tercera secció de la pantalla principal</em></p> 
 
