@@ -12,6 +12,9 @@
             - [Ressenyes](#ressenyes)
             - [Categories](#categories)
         * [Relacions](#relacions)
+            - [Relacions (m a m)](#relacions-m-a-m)
+            - [Relacions (1 a m/m a 1)](#relacions-1-a-m-o-m-a-1)
+            - [Relacions (1 a 1)](#relacions-1-a-1)
     
 ## Explicació del diagrama E/R
 Aquest document explica el següent esquema `Entitat/Relació (E/R)`: 
@@ -187,7 +190,7 @@ I en altres llenguatges de programació seria de la següent forma:
 - name (String)
 
 ### Relacions
-#### Relacons m a m
+#### Relacions m a m
 
 En este diagrama no existeixen relacions molts a molts (m a m), sols ens tenim relacions:
 
