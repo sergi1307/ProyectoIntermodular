@@ -88,7 +88,12 @@ Per últim, en la pantalla d'usuaris ja siga com a venedor com a comprador podra
 - Quantitat
 - Categoria
 - Distància màxima
-
+  
+### comprar productes
+<p align= "center">
+    <img src="./img/Comprador_Prototip.png" alt="Figma" width="500"/>
+ </p>
+ 
 Al apretar-li a `Afegir producte` s'obrira una finestra en un formulari que conté els següents camps:
 - Nom del producte
 - Preu
@@ -98,5 +103,10 @@ Al apretar-li a `Afegir producte` s'obrira una finestra en un formulari que cont
 - Quantitat
 - Localització per a la venda
 
+### comprar productes
+<p align= "center">
+    <img src="./img/Venedor_Prototip.png" alt="Figma" width="500"/>
+ </p>
+ 
 ## Conclusió
 Com bé diu el seu nom, el prototip no serà la versió final de l'aplicació, però representa com es podria vore en un futur i/o ajudar en el desenvolupament de les vistes en aquest.
