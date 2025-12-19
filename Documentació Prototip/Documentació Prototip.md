@@ -48,7 +48,7 @@ El cos de l'aplicació, que conté informació sobre `ProxiMarkt`:
 <p align="center">
     <img src="./img/Section2_Index.png" alt="Secció 2" width="500"/>
 </p>
-<p align="center"><em>Fig 4: Segunda secció de la pantalla principal</em></p> 
+<p align="center"><em>Fig 4: Segona secció de la pantalla principal</em></p> 
 
 <p align="center">
     <img src="./img/Section3_Index.png" alt="Secció 3" width="600"/>
@@ -89,7 +89,8 @@ I quan et registres tornara a la pàgina de login i quan inicies sessió arribar
 Per últim tenim la pantalla dels usuaris, que estan dividits en 2 rols importants:
 - Comprador
 - Venedor
-Que cadasc
+
+Que cadascú complira un rol important en l'aplicació
 #### Pantalla del comprador
 
 En la pantalla d'usuaris ja siga com a venedor com a comprador podran mirar/comprar productes tant posar-los en venda, també tens l'opció de filtrar els productes per:
@@ -106,7 +107,7 @@ En la pantalla d'usuaris ja siga com a venedor com a comprador podran mirar/comp
 Per últim quan selecciones un producte s'obrira una nova finestra en la qual es mostrara:
 - Nom del producte
 - Descripció del producte
-- Valoracions del producte (Tant en estrelles com en un valor decimal fins a 5)
+- Valoracions del producte (Tant en estrelles de 1 a 5 com en un valor decimal de 0 fins a 5)
 
 <p align= "center">
     <img src="./img/Buy_Screen.png" alt="Pantalla del producte" width="500"/>
@@ -183,3 +184,7 @@ La qual també pots buscar una ordre en específica o pots filtrar les ordres pe
 
 ## Conclusió
 Com bé diu el seu nom, el prototip no serà la versió final de l'aplicació, però representa com es podria vore en un futur i/o ajudar en el desenvolupament de les vistes en aquest, i es podria afegir/eliminar contingut d'aquest prototip en l'aplicació final.
+
+Ací teniu el [Prototip de Figma](https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f) que està penjat en la web de Figma per a que tot el mon el puga vore:
+
+https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f
