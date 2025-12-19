@@ -8,6 +8,10 @@
         * [Pantalla principal](#pantalla-principal)
         * [Pantalla de login](#pantalla-de-login)
         * [Pantalla d'usuaris](#pantalla-dusuaris)
+            - [Pantalla del comprador](#pantalla-del-comprador)
+            - [Pantalla del venedor](#pantalla-del-venedor)
+                + [Control de l'inventari](#control-dinventari)
+                + [Ordres](#ordres)
     + [Conclusio](#conclusió)
     
 ## Tecnologies utilitzades per al prototip
@@ -82,31 +86,100 @@ I si li apretes al boto de `Registrar-se` s'obrirà una nova finestra en la qual
 I quan et registres tornara a la pàgina de login i quan inicies sessió arribaràs a la següent i última pàgina, la pantalla d'usuaris.
 
 ### Pantalla d'usuaris
+Per últim tenim la pantalla dels usuaris, que estan dividits en 2 rols importants:
+- Comprador
+- Venedor
+Que cadasc
+#### Pantalla del comprador
 
-Per últim, en la pantalla d'usuaris ja siga com a venedor com a comprador podran mirar/comprar productes tant posar-los a la venta, també tens l'opció de filtrar els productes per:
+En la pantalla d'usuaris ja siga com a venedor com a comprador podran mirar/comprar productes tant posar-los en venda, també tens l'opció de filtrar els productes per:
 - Preu
 - Quantitat
 - Categoria
 - Distància màxima
-  
-### comprar productes
+
 <p align= "center">
     <img src="./img/Comprador_Prototip.png" alt="Figma" width="500"/>
  </p>
- 
-Al apretar-li a `Afegir producte` s'obrira una finestra en un formulari que conté els següents camps:
+<p align="center"><em>Fig 9: Pantalla del comprador</em></p> 
+
+Per últim quan selecciones un producte s'obrira una nova finestra en la qual es mostrara:
+- Nom del producte
+- Descripció del producte
+- Valoracions del producte (Tant en estrelles com en un valor decimal fins a 5)
+
+<p align= "center">
+    <img src="./img/Buy_Screen.png" alt="Figma" width="500"/>
+ </p>
+<p align="center"><em>Fig 10: Pantalla del producte</em></p>
+
+I baix del producte tindràs 2 botons que permetran:  
+- Comprar el producte
+- Obrir el xat amb el venedor
+
+<p align= "center">
+    <img src="./img/Buy-Chat_Buttons.png" alt="Figma" width="500"/>
+ </p>
+<p align="center"><em>Fig 11: Botons per a comprar/obrir el xat</em></p>
+
+#### Pantalla del venedor 
+En la pantalla del venedor es mostraran:
+- Els diners generats
+- Les ordres totals
+- Productes actius en eixe moment
+- Clients totals
+I per la part inferior es mostraran 2 opcions per a veure:
+- Control d'inventari
+- Ordres
+##### Control d'inventari
+Primerament pots afegir un producte a l'apretar-li a `Afegir producte` s'obrira una finestra en un formulari que conté els següents camps:
 - Nom del producte
 - Preu
+- Stock disponible
 - Descripció
 - Imatge del producte
 - Categoria
 - Quantitat
 - Localització per a la venda
 
-### comprar productes
+Després es mostraran la llista de tots els productes que té disponibles el venedor junt amb l'opció de buscar productes i filtrar-los, que té el següent:
+- Nom del producte
+- Categoria
+- Preu
+- Stock disponible
+- Estat
+- Vendes
+
+També tindrà altres botons per a:
+- Veure el producte
+- Modificar el producte
+- Eliminar el producte
+
 <p align= "center">
-    <img src="./img/Venedor_Prototip.png" alt="Figma" width="500"/>
+    <img src="./img/Inventory.png" alt="Figma" width="500"/>
  </p>
- 
+<p align="center"><em>Fig 12: Menú Gestió del inventari</em></p>
+
+##### Ordres
+En les ordres es veuran les ordres que té el venedor amb els usuaris, les ordres apareixen de la següent forma:
+- ID del ordre
+- Nom del comprador
+- Nom del producte
+- Quantitat (kg, unitats)
+- Preu total
+- Estat (Pendent, Confirmat, Preparat i Completat)
+- Botó que obri el xat amb el comprador
+
+La qual també pots buscar una ordre en específica o pots filtrar les ordres pel seu estat:
+- Pendent
+- Confirmat
+- Preparat
+- Completat
+
+<p align= "center">
+    <img src="./img/Orders.png" alt="Figma" width="500"/>
+ </p>
+<p align="center"><em>Fig 13: Menú Ordres</em></p>
+
 ## Conclusió
-Com bé diu el seu nom, el prototip no serà la versió final de l'aplicació, però representa com es podria vore en un futur i/o ajudar en el desenvolupament de les vistes en aquest.
+Com bé diu el seu nom, el prototip no serà la versió final de l'aplicació, però representa com es podria vore en un futur i/o ajudar en el desenvolupament de les vistes en aquest, i es podria afegir/eliminar contingut d'aquest prototip en l'aplicació final.
