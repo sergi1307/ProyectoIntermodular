@@ -185,6 +185,6 @@ La qual també pots buscar una ordre en específica o pots filtrar les ordres pe
 ## Conclusió
 Com bé diu el seu nom, el prototip no serà la versió final de l'aplicació, però representa com es podria vore en un futur i/o ajudar en el desenvolupament de les vistes en aquest, i es podria afegir/eliminar contingut d'aquest prototip en l'aplicació final.
 
-Ací teniu el [Prototip de Figma](https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f) que està penjat en la web de Figma per a que tot el mon el puga vore:
+Ací teniu el [Prototip de Figma](https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f&fullscreen=1) que està penjat en la web de Figma per a que tot el mon el puga vore:
 
-https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f
+https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f&fullscreen=1
