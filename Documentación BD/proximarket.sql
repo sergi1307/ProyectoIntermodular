@@ -1,7 +1,7 @@
-DROP DATABASE MercaMarket;
-CREATE DATABASE IF NOT EXISTS MercaMarket;
+DROP DATABASE ProxiMarkt;
+CREATE DATABASE IF NOT EXISTS ProxiMarkt;
 
-USE MercaMarket;
+USE ProxiMarkt;
 
 CREATE TABLE USERS (
     id_user INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,7 +39,7 @@ CREATE TABLE PRODUCTS (
     type_stock ENUM('Kg', 'unidad') NOT NULL,
     state ENUM('Agotado', 'Reservado', 'Disponible') DEFAULT 'Disponible',
     publication_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (id_user) REFERENCES USERS(id_user),
+    FOREIGN KEY (id_user) REFERENCES USERS(id_user),
     FOREIGN KEY (id_categorie) REFERENCES CATEGORIES(id_categorie)
 );
 
@@ -83,3 +83,4 @@ CREATE TABLE SALES (
 -- Como una la table review depende de sale y sale necesita review necesitamos hacer un alter table
 -- Para poder hacer la relación entre saley review
 ALTER TABLE REVIEWS ADD FOREIGN KEY (id_sale) REFERENCES SALES(id_sale);
+
