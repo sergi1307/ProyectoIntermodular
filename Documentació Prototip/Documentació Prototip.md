@@ -34,7 +34,7 @@ Este document es tracta de documentar sobre el prototip de l'aplicació de `Prox
 La pantalla principal té com a objectiu introduir a l'aplicació, proporcionar informació de la empresa i dur cap a la pantalla de login, en ella pot veure informació sobre `ProxiMarkt` i que és, consta d'una capçalera per a introduir l'aplicació:
 
 <p align= "center">
-    <img src="./img/Cabecera_Index.png" alt="Cabecera" width="500"/>
+    <img src="./img/Cabecera_Index.png" alt="Capçalera" width="500"/>
 </p>
 <p align="center"><em>Fig 2: Capçalera de la pantalla principal</em></p> 
 
@@ -69,7 +69,7 @@ La pàgina de login és una pantalla en la qual l'usuari es pot registrar o inic
 - Contrasenya
 
 <p align="center">
-    <img src="./img/Login_Screen.png" alt="Footer" width="500"/>
+    <img src="./img/Login_Screen.png" alt="Login" width="500"/>
 </p>
 <p align="center"><em>Fig 7: Pantalla de login</em></p> 
 
@@ -79,7 +79,7 @@ I si li apretes al boto de `Registrar-se` s'obrirà una nova finestra en la qual
 - Contrasenya 
 
 <p align="center">
-    <img src="./img/Register_Screen.png" alt="Footer" width="500"/>
+    <img src="./img/Register_Screen.png" alt="Pantalla de registre" width="500"/>
 </p>
 <p align="center"><em>Fig 8: Pantalla de registre</em></p> 
 
@@ -99,7 +99,7 @@ En la pantalla d'usuaris ja siga com a venedor com a comprador podran mirar/comp
 - Distància màxima
 
 <p align= "center">
-    <img src="./img/Comprador_Prototip.png" alt="Figma" width="500"/>
+    <img src="./img/Comprador_Prototip.png" alt="Pantalla del comprador" width="500"/>
  </p>
 <p align="center"><em>Fig 9: Pantalla del comprador</em></p> 
 
@@ -109,7 +109,7 @@ Per últim quan selecciones un producte s'obrira una nova finestra en la qual es
 - Valoracions del producte (Tant en estrelles com en un valor decimal fins a 5)
 
 <p align= "center">
-    <img src="./img/Buy_Screen.png" alt="Figma" width="500"/>
+    <img src="./img/Buy_Screen.png" alt="Pantalla del producte" width="500"/>
  </p>
 <p align="center"><em>Fig 10: Pantalla del producte</em></p>
 
@@ -118,7 +118,7 @@ I baix del producte tindràs 2 botons que permetran:
 - Obrir el xat amb el venedor
 
 <p align= "center">
-    <img src="./img/Buy-Chat_Buttons.png" alt="Figma" width="500"/>
+    <img src="./img/Buy-Chat_Buttons.png" alt="Comprar/obrir el xat" width="500"/>
  </p>
 <p align="center"><em>Fig 11: Botons per a comprar/obrir el xat</em></p>
 
@@ -156,7 +156,7 @@ També tindrà altres botons per a:
 - Eliminar el producte
 
 <p align= "center">
-    <img src="./img/Inventory.png" alt="Figma" width="500"/>
+    <img src="./img/Inventory.png" alt="Gestió del inventari" width="500"/>
  </p>
 <p align="center"><em>Fig 12: Menú Gestió del inventari</em></p>
 
@@ -177,7 +177,7 @@ La qual també pots buscar una ordre en específica o pots filtrar les ordres pe
 - Completat
 
 <p align= "center">
-    <img src="./img/Orders.png" alt="Figma" width="500"/>
+    <img src="./img/Orders.png" alt="Ordres" width="500"/>
  </p>
 <p align="center"><em>Fig 13: Menú Ordres</em></p>
 
