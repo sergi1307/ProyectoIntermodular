@@ -1,5 +1,12 @@
 <script setup>
+    import { ref } from 'vue';
     import login from '../components/loginForm.vue';
+    import createAccount from '../components/createAccountForm.vue';
+
+    const esLogin = ref(true);
+
+    const irAlRegistro = () => esLogin.value = false;
+    const irAlLogin = () => esLogin.value = true;
 </script>
 
 <template>
@@ -28,7 +35,14 @@
                 </div>
             </div>
             <div id="derecha">
-                <login />
+                <login 
+                    v-if="esLogin"
+                    @cambiar-a-registro="irAlRegistro"
+                />
+                <createAccount 
+                    v-else
+                    @cambiar-a-login="irAlLogin"
+                />
                 <router-link to="/">Volver al inicio</router-link>
             </div>
         </div>
@@ -40,24 +54,23 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh; /* Ocupar toda la pantalla */
-        background-color: #f5f5f5; /* Fondo gris suave para la página */
+        min-height: 100vh;
+        background-color: #f5f5f5;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     #container {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        width: 900px; /* Ancho fijo o máx-width para que no se estire demasiado */
+        width: 900px;
         max-width: 90%;
         background-color: white;
-        border-radius: 15px; /* Bordes más redondeados */
+        border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        overflow: hidden; /* Para que la imagen verde respete el borde redondeado */
+        overflow: hidden;
         min-height: 600px;
     }
 
-    /* --- LADO IZQUIERDO (VERDE) --- */
     #izquierda {
         display: flex;
         flex-direction: column;
