@@ -4,7 +4,7 @@
     
     const email = ref('');
     const password = ref('');
-    const rememberMe = ref(false);
+    const recordarme = ref(false);
 
     defineEmits(['cambiar-a-registro']);
 
@@ -38,7 +38,7 @@
 
             <div id="remember_forgot">
                 <div>
-                    <input type="checkbox" v-model="rememberMe">Remember me
+                    <input type="checkbox" v-model="recordarme">Remember me
                 </div>
                 <button>Ha olvidado la contraseña?</button>
             </div> <br>

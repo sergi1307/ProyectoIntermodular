@@ -5,7 +5,6 @@
     const name = ref('');
     const email = ref('');
     const password = ref('');
-    const rememberMe = ref(false);
 
     defineEmits(['cambiar-a-login']);
 
