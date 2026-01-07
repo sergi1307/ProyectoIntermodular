@@ -1,12 +1,11 @@
-GET http://localhost:8080/api/test
-
-###
-POST http://localhost:8080/api/register HTTP/1.1
+POST http://localhost:8080/api/register
 Content-Type: application/json
+# Accept: application/json
+
 
 {
-  "name": "Test",
-  "email": "test@example.com",
+  "name": "Test2",
+  "email": "test2@example.com",
   "phone": "1234",
   "registration_date": "2026-01-02",
   "password": "password"

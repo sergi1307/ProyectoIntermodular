@@ -15,8 +15,3 @@ Route::post('/register', [AuthController::class, 'createUser'])
 Route::post('/login', [AuthController::class, 'loginUser'])
     ->name('login');
 
-Route::middleware('auth:sanctum')
-// Si funciona fa el endpoint de "/user"
-->get('/user', function (Request $request) {
-    return $request->user();
-})->name('user');
