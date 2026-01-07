@@ -17,8 +17,11 @@ RUN apt-get update && apt-get install -y \
 # Extensiones básicas de PHP
 RUN docker-php-ext-install pdo pdo_mysql xml ctype zip
 
-# Instalar extensión de MongoDB y xdebug
-RUN pecl install mongodb xdebug && docker-php-ext-enable mongodb xdebug
+# Instalar extensión de MongoDB
+RUN pecl install mongodb && docker-php-ext-enable mongodb
+
+# Iniciar Xdebug
+RUN docker-php-ext-enable xdebug
 
 # Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php \
