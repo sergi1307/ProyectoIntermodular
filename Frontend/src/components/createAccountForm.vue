@@ -1,27 +1,37 @@
 <script setup>
+    // Importem les llibreríes necessàries
     import { ref } from 'vue';
     import axios from 'axios';
     
+    // Declarem les variables reactives que rebrem del formulari
     const name = ref('');
     const email = ref('');
     const password = ref('');
+    const phone = ref('');
 
+    // Definim un emit per a que quan apretem al botó ens canvie el component de CreateAccount a loginForm
     defineEmits(['cambiar-a-login']);
 
+    // Funció per a enviar les dades al backend
     const enviarDatos = () => {
-        if (!name.value || !email.value || !password.value) {
+
+        // Si algún valor d'estos es null que done una alerta per a que els plene tots
+        if (!name.value || !email.value || !password.value || !phone.value) {
             alert("Por favor, rellena todos los campos.");
             return;
         }
 
+        // Muntem el JSON per a enviar-lo al backend en la estructura correcta
         const datos = {
             name: name.value,
             email: email.value,
+            phone: phone.value,
             password: password.value
         };
 
         console.log("Enviando datos al backend:", datos);
 
+        // Fem la petició axios al backend enviant les dades necessàries per a fer el registre
         axios.post('/users/createAccount', datos);
     }
 </script>
@@ -30,6 +40,7 @@
     <div class="form-container">
         <h2>Crear una Nueva Cuenta</h2>
         <p>Únete a nuestro mercado sostenible</p>
+        <!-- Cuan apretem al botó de submit, captura el procés HTML per a que faja la petició de Axios -->
         <form @submit.prevent="enviarDatos">
             <label for="name">Nombre Completo</label><br>
             <input type="text" placeholder="Paco" v-model="name"> <br><br>
@@ -37,11 +48,15 @@
             <label for="email">Correo Electrónico</label><br>
             <input type="email" placeholder="ejemplo@ejemplo.com" v-model="email"> <br><br>
 
+            <label for="phone">Teléfono</label><br>
+            <input type="text" placeholder="12345678" v-model="phone"> <br><br>
+
             <label for="password">Contraseña</label><br>
             <input type="password" placeholder="••••••••" v-model="password"> <br><br>
 
             <button type="submit">Crear Cuenta</button>
 
+            <!-- Si apreten a este botó canvia el component de Register a Login -->
             <p>Ya tiene una cuenta? <a href="#" @click.prevent="$emit('cambiar-a-login')">Iniciar Sesión</a></p>
         </form>
     </div>
