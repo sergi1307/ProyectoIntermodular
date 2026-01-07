@@ -26,9 +26,8 @@
     <h1>Mapa de Stock</h1>
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"> </script>
+        <script>
         var map = L.map('map').setView([40.4167, -3.70325], 6);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -40,7 +39,7 @@
 
         puntos.forEach(punto => {
             // Verificamos que las coordenadas existan y no sean nulas
-            if (punto.latitude != null && punto.length != null) {
+            if (punto.latitude != null && punto.longitude != null) {
 
                 let htmlProductos = "";
 
@@ -62,7 +61,7 @@
                     </ul>
                 `;
 
-                L.marker([punto.latitude, punto.length])
+                L.marker([punto.latitude, punto.longitude])
                     .addTo(map)
                     .bindPopup(contenido);
             }
