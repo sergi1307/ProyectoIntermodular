@@ -7,8 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
-<<<<<<< HEAD
-=======
     'App\\Http\\Controllers\\LoginController' => $baseDir . '/app/Http/Controllers/LoginController.php',
     'App\\Http\\Controllers\\User' => $baseDir . '/app/Http/Controllers/User.php',
     'App\\Models\\Category' => $baseDir . '/app/Models/Category.php',
@@ -17,7 +15,6 @@ return array(
     'App\\Models\\Product' => $baseDir . '/app/Models/Product.php',
     'App\\Models\\Review' => $baseDir . '/app/Models/Review.php',
     'App\\Models\\Sale' => $baseDir . '/app/Models/Sale.php',
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -2525,8 +2522,6 @@ return array(
     'Laravel\\Sail\\Console\\InstallCommand' => $vendorDir . '/laravel/sail/src/Console/InstallCommand.php',
     'Laravel\\Sail\\Console\\PublishCommand' => $vendorDir . '/laravel/sail/src/Console/PublishCommand.php',
     'Laravel\\Sail\\SailServiceProvider' => $vendorDir . '/laravel/sail/src/SailServiceProvider.php',
-<<<<<<< HEAD
-=======
     'Laravel\\Sanctum\\Console\\Commands\\PruneExpired' => $vendorDir . '/laravel/sanctum/src/Console/Commands/PruneExpired.php',
     'Laravel\\Sanctum\\Contracts\\HasAbilities' => $vendorDir . '/laravel/sanctum/src/Contracts/HasAbilities.php',
     'Laravel\\Sanctum\\Contracts\\HasApiTokens' => $vendorDir . '/laravel/sanctum/src/Contracts/HasApiTokens.php',
@@ -2547,7 +2542,6 @@ return array(
     'Laravel\\Sanctum\\Sanctum' => $vendorDir . '/laravel/sanctum/src/Sanctum.php',
     'Laravel\\Sanctum\\SanctumServiceProvider' => $vendorDir . '/laravel/sanctum/src/SanctumServiceProvider.php',
     'Laravel\\Sanctum\\TransientToken' => $vendorDir . '/laravel/sanctum/src/TransientToken.php',
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
     'Laravel\\SerializableClosure\\Contracts\\Serializable' => $vendorDir . '/laravel/serializable-closure/src/Contracts/Serializable.php',
     'Laravel\\SerializableClosure\\Contracts\\Signer' => $vendorDir . '/laravel/serializable-closure/src/Contracts/Signer.php',
     'Laravel\\SerializableClosure\\Exceptions\\InvalidSignatureException' => $vendorDir . '/laravel/serializable-closure/src/Exceptions/InvalidSignatureException.php',

@@ -1,13 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-<<<<<<< HEAD
-        'pretty_version' => 'v12.11.0',
-        'version' => '12.11.0.0',
-=======
         'pretty_version' => '1.0.0+no-version-set',
         'version' => '1.0.0.0',
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
         'reference' => null,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -403,13 +398,8 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-<<<<<<< HEAD
-            'pretty_version' => 'v12.11.0',
-            'version' => '12.11.0.0',
-=======
             'pretty_version' => '1.0.0+no-version-set',
             'version' => '1.0.0.0',
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
             'reference' => null,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
@@ -452,8 +442,6 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
-<<<<<<< HEAD
-=======
         'laravel/sanctum' => array(
             'pretty_version' => 'v4.2.1',
             'version' => '4.2.1.0',
@@ -463,7 +451,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
         'laravel/serializable-closure' => array(
             'pretty_version' => 'v2.0.7',
             'version' => '2.0.7.0',

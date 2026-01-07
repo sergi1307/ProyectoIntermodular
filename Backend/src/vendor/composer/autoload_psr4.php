@@ -65,10 +65,7 @@ return array(
     'League\\CommonMark\\' => array($vendorDir . '/league/commonmark/src'),
     'Laravel\\Tinker\\' => array($vendorDir . '/laravel/tinker/src'),
     'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
-<<<<<<< HEAD
-=======
     'Laravel\\Sanctum\\' => array($vendorDir . '/laravel/sanctum/src'),
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
     'Laravel\\Sail\\' => array($vendorDir . '/laravel/sail/src'),
     'Laravel\\Prompts\\' => array($vendorDir . '/laravel/prompts/src'),
     'Laravel\\Pail\\' => array($vendorDir . '/laravel/pail/src'),
