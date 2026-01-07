@@ -15,3 +15,4 @@ Route::post('/register', [AuthController::class, 'createUser'])
 Route::post('/login', [AuthController::class, 'loginUser'])
     ->name('login');
 
+
