@@ -1,0 +1,58 @@
+POST http://localhost:8080/api/register
+Content-Type: application/json
+# Accept: application/json
+
+
+{
+  "name": "Test2",
+  "email": "test2@example.com",
+  "phone": "1234",
+  "registration_date": "2026-01-02",
+  "password": "password"
+}
+
+###
+POST http://localhost:8080/api/login 
+Content-Type: application/json
+
+{
+  "email": "test2@example.com",
+  "password": "password"
+}
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "bad_password"
+}
+### Variables Globales
+
+
+
+### Caso A: Obtener un usuario existente
+GET http://localhost:8080/api/users/index
+Accept: application/json
+###
+GET http://localhost:8080/api/users/show/1
+Accept: application/json
+
+### Caso A: Actualizar un usuario correctamente
+PUT http://localhost:8080/api/users/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Juan Actualizado",
+    "email": "nuevo_email@test.com",
+    "phone": "555-1234",
+    "registration_date": "2023-01-01"
+}
+
+
+### Caso A: Eliminar un usuario existente
+DELETE http://localhost:8080/api/users/destroy/1
+Accept: application/json
+

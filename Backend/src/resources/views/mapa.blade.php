@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Tiendas</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
         body { font-family: sans-serif; padding: 20px; }
@@ -42,10 +42,8 @@
         const puntos = @json($puntos);
         // Recorro cada tienda que me devuelve la base de datos
         puntos.forEach(punto => {
-            
-            // VALIDACIÓN: Compruebo que tenga latitud y longitud antes de intentar pintar nada
-            // Uso 'longitude' porque es el estándar en mapas (y no 'length')
-            if (punto.latitude != null && punto.longitude != null) {
+            // Verificamos que las coordenadas existan y no sean nulas
+            if (punto.latitude != null && punto.length != null) {
 
                 let htmlProductos = "";
 
@@ -69,8 +67,8 @@
                     </ul>
                 `;
 
-                // Finalmente creo el marcador en las coordenadas y le pego el popup
-                L.marker([punto.latitude, punto.longitude])
+                L.marker([punto.latitude, punto.length])
+
                     .addTo(map)
                     .bindPopup(contenido);
             }
