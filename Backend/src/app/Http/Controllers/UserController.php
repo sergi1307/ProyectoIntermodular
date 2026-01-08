@@ -34,6 +34,11 @@ class UserController extends Controller
             'message' => 'Usuari creat correctament'
         ], 200);
     }
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
     public function show($id)
     {
         $user = User::find($id);
