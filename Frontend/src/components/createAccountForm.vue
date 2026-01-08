@@ -26,6 +26,7 @@
             name: name.value,
             email: email.value,
             phone: phone.value,
+            registration_date: '2026-01-08',
             password: password.value
         };
 
