@@ -1,38 +1,50 @@
-# Frontend
+# 💻 Documentació del Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+## 📋 Taula de Continguts
 
-## Recommended IDE Setup
+1. [Requisits Previs](#requisits-previs)
+2. [Instal·lació](#installació)
+3. [Execució en Desenvolupament](#execució-en-desenvolupament)
+4. [Estructura del Projecte](#estructura-del-projecte)
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Requisits Previs
 
-## Recommended Browser Setup
+* **Node.js**: Versió `LTS`.
+  * *Recomanació:* Utilitzar [NVM](https://github.com/nvm-sh/nvm) (Node Version Manager) per a gestionar la versió.
+* **Gestor de Paquets**:
+  * npm (ve amb Node)
+* **Git**: Per al control de versions.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Instal·lació
 
-## Customize configuration
+Segueix estos passos per a instal·lar les dependències del projecte:
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+1. **Clonar el repositori** (si encara no ho has fet):
+  ```bash
+  git clone https://github.com/sergi1307/ProyectoIntermodular.git
+  cd ProyectoIntermodular/Frontend
+  ```
 
-## Project Setup
+2. **Instal·lar dependències**:
+  ```bash
+  npm install
+  ```
 
-```sh
-npm install
-```
+## Execució en Desenvolupament 
 
-### Compile and Hot-Reload for Development
-
-```sh
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+Una vegada en funcionament, `ctrl` + `click esquerre` en la URL: `http://localhost:5174/`
 
-```sh
-npm run build
+## Estructura del Projecte
+
+```text
+src/
+|-- assets/  # Imatges i fitxers estàtics
+|-- components/ # Components reutilitzables
+|-- routes/ # Enrutament entre les vistes
+|-- views/  # Vistes principals de l'aplicació
+|-- main.js # Component arrel
 ```

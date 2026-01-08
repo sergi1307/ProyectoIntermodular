@@ -1,8 +1,13 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
+<<<<<<<<< Temporary merge branch 1
+        'pretty_version' => 'v12.11.0',
+        'version' => '12.11.0.0',
+=========
         'pretty_version' => '1.0.0+no-version-set',
         'version' => '1.0.0.0',
+>>>>>>>>> Temporary merge branch 2
         'reference' => null,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -398,8 +403,13 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
+<<<<<<<<< Temporary merge branch 1
+            'pretty_version' => 'v12.11.0',
+            'version' => '12.11.0.0',
+=========
             'pretty_version' => '1.0.0+no-version-set',
             'version' => '1.0.0.0',
+>>>>>>>>> Temporary merge branch 2
             'reference' => null,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',

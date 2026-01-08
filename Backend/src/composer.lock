@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
     "content-hash": "c514d8f7b9fc5970bdd94287905ef584",
-=======
+=========
     "content-hash": "8f387a0734f3bf879214e4aa2fca6e2f",
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
+>>>>>>>>> Temporary merge branch 2
     "packages": [
         {
             "name": "brick/math",
@@ -1338,8 +1338,8 @@
             "time": "2025-11-21T20:52:52+00:00"
         },
         {
-<<<<<<< HEAD
-=======
+<<<<<<<<< Temporary merge branch 1
+=========
             "name": "laravel/sanctum",
             "version": "v4.2.1",
             "source": {
@@ -1403,7 +1403,7 @@
             "time": "2025-11-21T13:59:03+00:00"
         },
         {
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
+>>>>>>>>> Temporary merge branch 2
             "name": "laravel/serializable-closure",
             "version": "v2.0.7",
             "source": {

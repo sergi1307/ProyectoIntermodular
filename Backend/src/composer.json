@@ -8,10 +8,10 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-<<<<<<< HEAD
-=======
+<<<<<<<<< Temporary merge branch 1
+=========
         "laravel/sanctum": "^4.2",
->>>>>>> 3967b7dea6b2cd43a8f3e024147fddbaab3b30b7
+>>>>>>>>> Temporary merge branch 2
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {

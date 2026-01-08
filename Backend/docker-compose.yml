@@ -3,7 +3,6 @@ name: proxiMarkt
 services:
   php:
     build: ./php
-    container_name: proxiMarkt_php
     user: 1000:1000
     volumes:
       - ./src:/var/www/html
@@ -18,7 +17,6 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: proxiMarkt_nginx
     ports:
       - "8080:80"
     volumes:
@@ -29,7 +27,6 @@ services:
 
   mysql:
     image: mysql:8
-    container_name: proxiMarkt_mysql
     environment:
       MYSQL_ROOT_PASSWORD: administrador
       MYSQL_USER: alumno
