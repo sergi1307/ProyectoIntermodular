@@ -33,14 +33,14 @@ Content-Type: application/json
 
 
 ### Caso A: Obtener un usuario existente
-GET http://localhost:8080/api/index
+GET http://localhost:8080/api/users/index
 Accept: application/json
 ###
-GET http://localhost:8080/api/show/1
+GET http://localhost:8080/api/users/show/1
 Accept: application/json
 
 ### Caso A: Actualizar un usuario correctamente
-PUT http://localhost:8080/api/update/1
+PUT http://localhost:8080/api/users/update/1
 Content-Type: application/json
 Accept: application/json
 
@@ -53,6 +53,6 @@ Accept: application/json
 
 
 ### Caso A: Eliminar un usuario existente
-DELETE http://localhost:8080/api/destroy/1
+DELETE http://localhost:8080/api/users/destroy/1
 Accept: application/json
 

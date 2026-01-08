@@ -12,7 +12,7 @@
     defineEmits(['cambiar-a-registro']);
 
     // Funció per a enviar les dades al backend
-    const enviarDatos = () => {
+    const enviarDatos = async () => {
 
         // Si algún valor d'estos es null que done una alerta per a que els plene tots
         if (!email.value || !password.value) {
@@ -29,7 +29,9 @@
         console.log("Enviando datos al backend:", datos);
 
         // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-        axios.post('http://localhost:8080/api/login', datos);
+        const response = await axios.post('http://localhost:8080/api/login', datos);
+
+        console.log("Respuesta del servidor:", response.data);
     }
 </script>
 
