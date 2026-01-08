@@ -28,6 +28,7 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"> </script>
+    
         <script>
         // Inicializo el mapa centrado en coordenadas de Madrid (aprox) con zoom 6
         var map = L.map('map').setView([40.4167, -3.70325], 6);
