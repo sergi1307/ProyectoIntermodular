@@ -29,7 +29,7 @@
         console.log("Enviando datos al backend:", datos);
 
         // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-        axios.post('/users/login', datos);
+        axios.post('http://localhost:8080/api/login', datos);
     }
 </script>
 

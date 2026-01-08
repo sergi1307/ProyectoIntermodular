@@ -32,7 +32,7 @@
         console.log("Enviando datos al backend:", datos);
 
         // Fem la petició axios al backend enviant les dades necessàries per a fer el registre
-        axios.post('/users/createAccount', datos);
+        axios.post('http://localhost:8080/api/register', datos);
     }
 </script>
 
