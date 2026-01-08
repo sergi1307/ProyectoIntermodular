@@ -1,7 +1,6 @@
+# Registrar o crear un usuari
 POST http://localhost:8080/api/register
 Content-Type: application/json
-# Accept: application/json
-
 
 {
   "name": "Test2",
@@ -11,7 +10,7 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+### Iniciar sessió amb un usuari autenticat
 POST http://localhost:8080/api/login 
 Content-Type: application/json
 
@@ -20,7 +19,7 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+### Iniciar sessió de manera inválida
 POST http://localhost:8080/api/login
 Content-Type: application/json
 
@@ -28,18 +27,15 @@ Content-Type: application/json
   "email": "test@example.com",
   "password": "bad_password"
 }
-### Variables Globales
 
-
-
-### Caso A: Obtener un usuario existente
+### Obtindre els usuaris existents
 GET http://localhost:8080/api/users/index
 Accept: application/json
-###
+### Obtindre un usuari existent
 GET http://localhost:8080/api/users/show/1
 Accept: application/json
 
-### Caso A: Actualizar un usuario correctamente
+### Actualitzar un usuari correctament
 PUT http://localhost:8080/api/users/update/1
 Content-Type: application/json
 Accept: application/json
@@ -52,7 +48,6 @@ Accept: application/json
 }
 
 
-### Caso A: Eliminar un usuario existente
+### Eliminar un usuari existent
 DELETE http://localhost:8080/api/users/destroy/1
 Accept: application/json
-
