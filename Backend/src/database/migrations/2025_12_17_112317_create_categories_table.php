@@ -16,7 +16,6 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id_categorie');
-            $table->integer('id_product');
             $table->string('name', 255);
         });
     }
