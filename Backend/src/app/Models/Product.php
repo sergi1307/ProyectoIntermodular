@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Delivery_Point;
+use App\Models\Category;
 
 class Product extends Model
 {
@@ -26,7 +27,8 @@ class Product extends Model
 
     protected $hidden = [
         'id_user',
-        'id_delivery_point'
+        'id_delivery_point',
+        'id_category'
     ];
 
     public function user()
@@ -37,5 +39,10 @@ class Product extends Model
     public function delivery_point()
     {
         return $this->belongsTo(Delivery_Point::class, 'id_delivery_point');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'id_category');
     }
 }

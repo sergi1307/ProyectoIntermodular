@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name'])->get();
+        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category:id_category,name'])->get();
         return response()->json($products);
     }
 
@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name'])->findOrFail($id);
+        $product = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category:id_category,name'])->findOrFail($id);
         return response()->json($product);
     }
 
@@ -41,6 +41,7 @@ class ProductController extends Controller
         $product = Product::create([
             'id_user' => $request->id_user,
             'id_delivery_point' => $request->id_delivery_point,
+            'id_category' => $request->id_category,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
@@ -77,6 +78,7 @@ class ProductController extends Controller
         $product->update([
             'id_user' => $request->id_user,
             'id_delivery_point' => $request->id_delivery_point,
+            'id_category' => $request->id_category,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
