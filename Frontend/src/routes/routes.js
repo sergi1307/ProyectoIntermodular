@@ -1,7 +1,7 @@
 import PaginaPrincipal from '../views/index.vue';
 import login from '../views/login.vue';
-import MapaGeneral from '../views/MapaGeneral.vue';
-import MapaEspecifico from '../views/MapaEspecifico.vue';
+import MapaGeneral from '../views/mapaGeneral.vue';
+import MapaEspecifico from '../views/mapaEspecifico.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
