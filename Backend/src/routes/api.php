@@ -35,4 +35,3 @@ Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('
 // Endpoint /mapa
 // Mostra el mapa dels punts de venta
 Route::get('/mapa', [UserController::class, 'mostrarMapa'])
-    ->name('mapa');
