@@ -14,7 +14,10 @@ class ProductController extends Controller
      */
     public function index()
     {
+        // Obtenim els productes amb els camps relacionats de les altres taules de la base de dades
         $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category:id_category,name'])->get();
+
+        // Retornme la resposta en JSON
         return response()->json($products);
     }
 
@@ -26,7 +29,10 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        // Obtenim el producte amb els camps relacionats de les altres taules de la base de dades buscat per id
         $product = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category:id_category,name'])->findOrFail($id);
+
+        // Retornem la resposta en JSON
         return response()->json($product);
     }
 
@@ -38,6 +44,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // Creem el producte amb els camps: id_user, id_delivery_point, id_category, name, description, price, stock, image, type_stock, state, publication_date
         $product = Product::create([
             'id_user' => $request->id_user,
             'id_delivery_point' => $request->id_delivery_point,
@@ -52,6 +59,7 @@ class ProductController extends Controller
             'publication_date' => $request->publication_date
         ]);
 
+        // Retornem la resposta en JSON en cas de que no done error
         return response()->json([
             'status' => 'true',
             'message' => 'Producte creat correctament'
@@ -66,8 +74,10 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Busquem el producte per id
         $product = Product::findOrFail($id);
 
+        // Comprobem que el producte existeix
         if (!$product) {
             return response()->json([
                 'status' => 'false',
@@ -75,6 +85,7 @@ class ProductController extends Controller
             ], 404);
         }
 
+        // Actualitzem les dades del producte
         $product->update([
             'id_user' => $request->id_user,
             'id_delivery_point' => $request->id_delivery_point,
@@ -89,6 +100,7 @@ class ProductController extends Controller
             'publication_date' => $request->publication_date
         ]);
 
+        // Retornem en cas afirmatiu un json
         return response()->json([
             'message' => 'Producte actualitzat correctament.'
         ], 200);
@@ -102,8 +114,10 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        // Busquem el producte per id
         $product = Product::findOrFail($id);
 
+        // Comprobem que el producte existeix
         if (!$product) {
             return response()->json([
                 'status' => 'false',
@@ -111,7 +125,10 @@ class ProductController extends Controller
             ], 404);
         }
 
+        // Eliminem el producte de la base de dades
         $product->delete();
+
+        // En cas de que no done error retornem una resposta json
         return response()->json([
             'status' => 'true',
             'message' => 'Producte eliminat correctament'

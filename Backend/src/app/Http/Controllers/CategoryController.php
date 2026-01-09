@@ -14,7 +14,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        // Obtenim totes les categories
         $categories = Category::all();
+
+        // Retornem les categories en format JSON
         return response()->json($categories);
     }
 
@@ -24,8 +27,12 @@ class CategoryController extends Controller
      * @param int $id
      * @return json
      */
-    public function show($id) {
+    public function show($id)
+    {
+        // Busquem la categoria per id
         $category = Category::findOrFail($id);
+
+        // Retornem esta categoria en format JSON
         return response()->json($category);
     }
 
@@ -36,11 +43,14 @@ class CategoryController extends Controller
      * @param Request $request
      * @return json
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
+        // Creem la categoria amb el camp name
         $category = Category::create([
             'name'
         ]);
 
+        // Retornem una resposta afirmativa en casa de que no done error
         return response()->json([
             'status' => 'true',
             'message' => 'Categoria creada correctamente'
@@ -55,21 +65,26 @@ class CategoryController extends Controller
      * @param int $id_categorie
      * @return json
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
+        // Busquem la categoria per id
         $category = Category::findOrFail($id);
 
+        // Comprobem que la categoria existeix
         if (!$category) {
             return response()->json(['message' => 'Esta categoria no existeix']);
         }
 
-        $datos = [
+        // Actualitzem la categoria amb el camp name
+        $category->update([
             'name' => $request->name
-        ];
-        $category->update($datos);
-
-        return response()->json([
-            'message' => 'Categoria actualitzada correctament'
         ]);
+
+        // Retornem una resposta afirmativa en cas de que no done error
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Categoria actualitzada correctament'
+        ], 200);
     }
 
     /**
@@ -78,14 +93,26 @@ class CategoryController extends Controller
      * @param int $id
      * @return json
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
+        // Busquem la categoria per id
         $category = Category::findOrFail($id);
 
+        // Comprobem que la categoria existeix
         if(!$category) {
-            return response()->json(['message' => 'Esta categoria no existeix']);
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Esta categoria no existeix'
+            ], 404);
         }
 
+        // Eliminem la categoria
         $category->delete();
-        return response()->json(['message' => 'Categoria eliminada correctament']);
+
+        // Retornem una resposta afirmativa en cas de que no done error
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Categoria eliminada correctament'
+        ], 200);
     }
 }
