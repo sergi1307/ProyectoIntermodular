@@ -1,7 +1,7 @@
 import PaginaPrincipal from '../views/index.vue';
 import login from '../views/login.vue';
-import MapaGeneral from '../views/mapaGeneral.vue';
-import MapaEspecifico from '../views/mapaEspecifico.vue';
+import mapaGeneral from '../views/mapaGeneral.vue';
+import mapaEspecifico from '../views/mapaEspecifico.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -21,13 +21,13 @@ const routes = [
         // Esta es la ruta pública para que cualquiera vea las tiendas
         path: '/mapa',
         name: 'mapa_general',
-        component: MapaGeneral
+        component: mapaGeneral
     },
     {
         // Esta ruta es para yo probar el selector de tiendas separado del formulario
         path: '/mis-tiendas',
         name: 'mapa_pruebas',
-        component: MapaEspecifico
+        component: mapaEspecifico
     }
 ];
 
