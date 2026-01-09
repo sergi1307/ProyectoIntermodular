@@ -21,7 +21,7 @@ class CategoryController extends Controller
     /**
      * Funció que retorna una categoria
      *
-     * @param number $id
+     * @param int $id
      * @return json
      */
     public function show($id) {
@@ -52,7 +52,7 @@ class CategoryController extends Controller
      * - name
      * 
      * @param Request $request
-     * @param number $id_categorie
+     * @param int $id_categorie
      * @return json
      */
     public function update(Request $request, $id) {
@@ -75,7 +75,7 @@ class CategoryController extends Controller
     /**
      * Funció per a eliminar una categoria per Id
      * 
-     * @param number $id
+     * @param int $id
      * @return json
      */
     public function destroy($id) {

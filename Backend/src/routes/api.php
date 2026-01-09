@@ -1,38 +1,31 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
 
+// Endpoints d'Autenticació
+Route::prefix('auth')->name('auth.')->group(function (){
+    Route::post('/register', [AuthController::class, 'createUser'])->name('register');
+    Route::post('/login', [AuthController::class, 'loginUser'])->name('login');
+});
 
-// Endpoint /register
-// Registra un usuari 
-Route::post('/register', [AuthController::class, 'createUser'])
-    ->name('register');
+// Endpoints d'Usuaris
+Route::prefix('users')->name('users.')->group(function (){
+    Route::get('/',[UserController::class, 'index'])->name('index');
+    Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
+    Route::post('/store', [UserController::class, 'store'])->name('store');
+    Route::get('/show/{id}', [UserController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
+});
 
-// Endpoint /login
-// Autentica un usuari
-Route::post('/login', [AuthController::class, 'loginUser'])
-    ->name('login');
-
-// Endpoint /users/index
-// Obté tots els usuaris 
-Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
-
-// Endpoint /users/show/{id}
-// Obté un usuari 
-Route::get('/users/show/{id}', [UserController::class, 'show'])->name('users.show');
-
-// Endpoint /users/update/{id}
-// Actualitza les dades d'un usuari
-Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
-
-// Endpoint /users/destroy/{id}
-// Elimina un usuari
-Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-
-// Endpoint /mapa
-// Mostra el mapa dels punts de venta
-Route::get('/mapa', [UserController::class, 'mostrarMapa'])
-    ->name('mapa');
+// Endpoints de Productes
+Route::prefix('products')->name('products.')->group(function (){
+    Route::get('/',[ProductController::class, 'index'])->name('index');
+    Route::post('/store', [ProductController::class, 'store'])->name('store');
+    Route::get('/show/{id}', [ProductController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [ProductController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
+});

@@ -12,41 +12,107 @@ class ProductController extends Controller
      * 
      * @return json
      */
-    public function index() {
-        $products = Product::all();
+    public function index()
+    {
+        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name'])->get();
         return response()->json($products);
     }
 
     /**
      * Funció que retorna un producte
      * 
-     * @param number $id
+     * @param int $id
      * @return json
      */
-    public function show($id) {
-        $product = Product::findOrFail($id);
+    public function show($id)
+    {
+        $product = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name'])->findOrFail($id);
         return response()->json($product);
     }
 
     /**
-     * Funció per a crear un producte mitjançant:
-     * - id_user
-     * - id_delivery_point
-     * - name
-     * - description
-     * - price
-     * - stock
-     * - image
-     * - type_stock
-     * - state
-     * - publicacion
+     * Funció per a crear un producte
      * 
      * @param Request $request
      * @return json
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $product = Product::create([
-            
-        ])
+            'id_user' => $request->id_user,
+            'id_delivery_point' => $request->id_delivery_point,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'image' => $request->image,
+            'type_stock' => $request->type_stock,
+            'state' => $request->state,
+            'publication_date' => $request->publication_date
+        ]);
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Producte creat correctament'
+        ], 200);
+    }
+
+    /**
+     * Funció per a actualitzar un producte
+     * 
+     * @param Request $request
+     * @param int $id
+     */
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Este producte no existeix'
+            ], 404);
+        }
+
+        $product->update([
+            'id_user' => $request->id_user,
+            'id_delivery_point' => $request->id_delivery_point,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'image' => $request->image,
+            'type_stock' => $request->type_stock,
+            'state' => $request->state,
+            'publication_date' => $request->publication_date
+        ]);
+
+        return response()->json([
+            'message' => 'Producte actualitzat correctament.'
+        ], 200);
+    }
+
+    /**
+     * Funció per a eliminar un producte per id
+     * 
+     * @param int $id
+     * @return json
+     */
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Este producte no existeix'
+            ], 404);
+        }
+
+        $product->delete();
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Producte eliminat correctament'
+        ], 200);
     }
 }
