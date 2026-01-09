@@ -16,7 +16,7 @@ class Delivery_pointController extends Controller
         ]);
         return response() -> json([
             'status' => 'true',
-            'message' => 'Venta creat correctament',
+            'message' => 'punto de venta creat correctament',
         ],200);
     }
     public function index(){
@@ -36,7 +36,7 @@ class Delivery_pointController extends Controller
             'length' => $request -> length,
         ]);
         return response() -> json([
-            'message' => 'Venta actualizada',
+            'message' => 'punto de venta actualizada',
             'Delivery_Point' => $delivery_point
         ],200);
     }
