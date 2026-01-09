@@ -11,11 +11,13 @@ class Delivery_Point extends Model
     public $timestamps = false;
     protected $primaryKey = 'id_delivery_point';
     protected $fillable = [
-        'id_user',
         'name',
         'direction',
         'latitude',
-        'length'
+        'length',
+    ];
+    protected $hidden = [
+        'id_user',
     ];
 
     public function products()

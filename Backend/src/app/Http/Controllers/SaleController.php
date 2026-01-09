@@ -21,7 +21,7 @@ class SaleController extends Controller
         ]);
         return response()->json([
             'status' => 'true',
-            'message' => 'Venta creat correctament'
+            'message' => 'Venta creat correctament',
         ], 200);
     }
     public function index()
@@ -34,7 +34,7 @@ class SaleController extends Controller
         if (!$sale){
         return response() -> json(['message' => 'no se ha encontrado la venta'], 404);
         }
-        return response() -> json($sale);
+        return response() -> json($sale,200);
     }
     public function update(request $request, $id){
         $sale = Sale::find($id);
@@ -46,16 +46,17 @@ class SaleController extends Controller
             'total' => $request -> total,
             'collection_date' =>  Carbon::parse($request->collection_date),
         ];
+        $sale->update($datos);
         return response()->json([
             'message' => 'Venta actualizada',
             'sale' => $sale
-        ]);
+        ],200);
     }
     public function destroy($id){
     $sale = Sale::findOrFail($id);
     $sale->delete();
         return response()-> json([
-            'message' => 'Usuario eliminado'
+            'message' => 'Venta eliminada'
         ],200);
     }
 
