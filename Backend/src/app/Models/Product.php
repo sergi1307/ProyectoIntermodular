@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = 'products';
-    //HE TENID QUE ÑADIR ESTA LINEA SINO NO PODIA CREAR UN PRODUCTO PARA PROBAR EL MAPA Y NO ME DEJABA
+    //HE TENID QUE AÑADIR ESTA LINEA SINO NO PODIA CREAR UN PRODUCTO PARA PROBAR EL MAPA Y NO ME DEJABA
     public $timestamps = false;
+    protected $primaryKey = 'id_product';
+
     protected $fillable = [
-        'id_user',
-        'id_delivery_point',
         'name',
         'description',
         'price',
@@ -21,5 +21,9 @@ class Product extends Model
         'state',
         'publication_date'
         
+    ];
+    protected $hidden = [
+        'id_user',
+        'id_delivery_point',
     ];
 }

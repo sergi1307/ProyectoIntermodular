@@ -22,7 +22,7 @@ class User extends Authenticatable
         'registration_date',
     ];
     protected $casts = [
-        'registration_date' => 'date', //  Indica que es una data
+        'registration_date' => 'date',
     ];
 
     protected $hidden = [
