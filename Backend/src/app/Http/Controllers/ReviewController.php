@@ -15,7 +15,7 @@ class ReviewController extends Controller
         ]);
         return response() ->json([
             'status' => 'true',
-            'message' => 'punto de venta creat correctament',
+            'message' => 'review creat correctament',
         ],200);
     }
     public function index(){
