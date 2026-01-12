@@ -8,34 +8,49 @@ use Carbon\Carbon;
 
 class SaleController extends Controller
 {
-    public function createSale(Request $request){
+    // 1. Crear una Venta
+    public function createSale(Request $request)
+    {
         $sale = Sale::create([
-            'id_product' => $request -> id_product,
-            'id_buyer' => $request -> id_buyer,
-            'id_seller' => $request -> id_saller,
-            'id_delivery_point' => $request -> id_delivery_point,
-            'id_review' => $request -> id_review,
-            'sale_date' => Carbon::parse($request->sale_date),
-            'total' => $request -> total,
-            'collection_date' =>  Carbon::parse($request->collection_date),
+            'id_product'        => $request->id_product,
+            'id_buyer'          => $request->id_buyer,
+            'id_seller'         => $request->id_seller,
+            'id_delivery_point' => $request->id_delivery_point,
+            'sale_date'         => Carbon::parse($request->sale_date),
+            'total'             => $request->total,
+            'collection_date'   => Carbon::parse($request->collection_date),
         ]);
+
         return response()->json([
             'status' => 'true',
-            'message' => 'Venta creat correctament',
+            'message' => 'Venta creada correctamente',
         ], 200);
     }
+
+    // 2. Listar Ventas
     public function index()
     {
-        $sale = Sale::with(['product:id_product,name','user:id_user,name','user:id_user,name','Delivery_Point:id_delivery_point,name','review:id_review,calification']) ->get();
-        return response()->json( $sale,200 );
+        $sales = Sale::with([
+            'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
+        ])->get();
+
+        return response()->json($sales, 200);
     }
-    public function show($id){
-        $sale = Sale::with('product:id,name','user:id,name','user:id,name','Delivery_Point:id,calification','review:id_review,calification')->find($id);
-        if (!$sale){
-        return response() -> json(['message' => 'no se ha encontrado la venta'], 404);
+
+    // 3. Mostrar una Venta
+    public function show($id)
+    {
+        $sale = Sale::with([
+            'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
+        ])->find($id);
+
+        if (!$sale) {
+            return response()->json(['message' => 'No se ha encontrado la venta'], 404);
         }
-        return response() -> json($sale,200);
+
+        return response()->json($sale, 200);
     }
+    // 4. Actualizar una Venta
     public function update(request $request, $id){
         $sale = Sale::find($id);
         if (!$sale){
@@ -52,6 +67,7 @@ class SaleController extends Controller
             'sale' => $sale
         ],200);
     }
+    // 5. Eliminar una Venta
     public function destroy($id){
     $sale = Sale::findOrFail($id);
     $sale->delete();

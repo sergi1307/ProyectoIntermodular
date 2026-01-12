@@ -10,11 +10,14 @@ use App\Models\Category;
 class Product extends Model
 {
     protected $table = 'products';
-    //HE TENID QUE ÑADIR ESTA LINEA SINO NO PODIA CREAR UN PRODUCTO PARA PROBAR EL MAPA Y NO ME DEJABA
+
     public $timestamps = false;
 
     protected $primaryKey = 'id_product';
     protected $fillable = [
+        'id_user',
+        'id_delivery_point',
+        'id_category',
         'name',
         'description',
         'price',
@@ -28,6 +31,28 @@ class Product extends Model
     protected $hidden = [
         'id_user',
         'id_delivery_point',
-        'id_category'
+        'id_category',
     ];
+    protected $casts = [
+        'price' => 'double',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user','id_user');
+    }
+
+    public function delivery_point()
+    {
+        return $this->belongsTo(Delivery_Point::class, 'id_delivery_point','id_delivery_point');
+    }
+
+    public function categorie()
+    {
+        return $this->belongsToMany(Category::class,'category_product','id_product','id_category');
+    }
+    public function sale()
+    {
+        return $this->hasOne(Sale::class, 'id_product', 'id_product');
+    }
 }

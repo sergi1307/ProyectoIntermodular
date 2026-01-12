@@ -51,3 +51,110 @@ Accept: application/json
 ### Eliminar un usuari existent
 DELETE http://localhost:8080/api/users/destroy/1
 Accept: application/json
+
+
+### Crear un punt d'entrega
+POST http://localhost:8080/api/delivery_points/create
+Content-Type: application/json
+
+{
+    "id_user": 1,
+    "name": "Punto Centro",
+    "direction": "Carrer Major 123",
+    "latitude": "41.3851",
+    "length": "2.1734"
+}
+
+### Llistar tots els punts d'entrega
+GET http://localhost:8080/api/delivery_points
+Accept: application/json
+
+### Mostrar un punt d'entrega específic
+GET http://localhost:8080/api/delivery_points/show/2
+Accept: application/json
+
+### Actualitzar un punt d'entrega
+PUT http://localhost:8080/api/delivery_points/update/2
+Content-Type: application/json
+
+{
+    "name": "Punto Centro Actualizado",
+    "direcction": "Carrer Menor 456", 
+    "latitude": "41.3900",
+    "length": "2.1800"
+}
+
+### Eliminar un punt d'entrega
+DELETE http://localhost:8080/api/delivery_points/destroy/2
+Accept: application/json
+
+### Crear una review
+POST http://localhost:8080/api/reviews/create
+Content-Type: application/json
+
+{
+    "id_sale": 1,
+    "calification": 5,
+    "comment": "Tot perfecte, molt ràpid",
+    "review_date": "2023-10-30"
+}
+
+### Llistar totes les reviews
+GET http://localhost:8080/api/reviews
+Accept: application/json
+
+### Mostrar una review específica
+GET http://localhost:8080/api/reviews/show/1
+Accept: application/json
+
+### Actualitzar una review
+PUT http://localhost:8080/api/reviews/update/1
+Content-Type: application/json
+
+{
+    "id_sale": 1,
+    "calification": 3,
+    "comment": "Ha arribat una mica tard",
+    "review_date": "2023-10-31"
+}
+
+### Eliminar una review
+DELETE http://localhost:8080/api/reviews/destroy/1
+Accept: application/json
+### 1. Crear una nueva venta
+POST http://localhost:8080/api/sales/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_product": 1,
+    "id_buyer": 1,
+    "id_saller": 2,
+    "id_delivery_point": 1,
+    "sale_date": "2023-10-27",
+    "total": 55.50,
+    "collection_date": "2023-10-30"
+}
+
+### 2. Listar todas las ventas
+GET http://localhost:8080/api/sales
+Accept: application/json
+
+### 3. Mostrar una venta específica
+GET http://localhost:8080/api/sales/show/1
+Accept: application/json
+
+### 4. Actualizar una venta
+PUT http://localhost:8080/api/sales/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "sale_date": "2023-11-01",
+    "total": 100.00,
+    "collection_date": "2023-11-05"
+}
+
+### 5. Eliminar una venta
+DELETE http://localhost:8080/api/sales/destroy/1
+Accept: application/json

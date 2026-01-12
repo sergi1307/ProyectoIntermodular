@@ -29,4 +29,20 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public function delivery_points()
+    {
+        return $this->hasMany(Delivery_Point::class, 'id_user', 'id_user');
+    }
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'id_user', 'id_user');
+    }
+    public function buyer()
+    {
+        return $this->hasMany(Sale::class, 'id_buyer', 'id_user');
+    }
+    public function seller()
+    {
+        return $this->hasMany(Sale::class, 'id_seller', 'id_user');
+    }
 }

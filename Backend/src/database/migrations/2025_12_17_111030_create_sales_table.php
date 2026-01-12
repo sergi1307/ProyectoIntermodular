@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('id_buyer');
             $table->integer('id_seller');
             $table->integer('id_delivery_point');
-            $table->integer('id_review');
             $table->date('sale_date');
             $table->double('total');
             $table->date('collection_date');
