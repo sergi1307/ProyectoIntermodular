@@ -35,7 +35,7 @@ const productosConCategoria = computed(() => {
 
     return {
       ...producto,
-      category_name: categoria ? categoria.name : 'Sin categoría'
+      category: categoria ? categoria.name : 'Sin categoría'
     }
   })
 })
@@ -84,7 +84,7 @@ onMounted(obtenerDatos)
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
-            <tr v-for="producto in productos" :key="producto.id">
+            <tr v-for="producto in productosConCategoria" :key="producto.id">
                 <td>{{ producto.name }}</td>
                 <td>{{ producto.category }}</td>
                 <td id="price">{{ producto.price }}</td>

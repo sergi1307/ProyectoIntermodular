@@ -6,7 +6,7 @@
     "price": 2.5,
     "stock": 120,
     "type_stock": "kg",
-    "status": "disponible"
+    "state": "disponible"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "price": 1.2,
     "stock": 40,
     "type_stock": "unidad",
-    "status": "disponible"
+    "state": "disponible"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "price": 6.9,
     "stock": 15,
     "type_stock": "kg",
-    "status": "reservado"
+    "state": "reservado"
   },
   {
     "id": 4,
@@ -33,6 +33,6 @@
     "price": 1.1,
     "stock": 80,
     "type_stock": "kg",
-    "status": "agotado"
+    "state": "agotado"
   }
 ]
