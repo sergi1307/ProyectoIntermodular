@@ -29,7 +29,7 @@ class AuthController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
 
             // Insertem en les cookies el token creat abans
-            $cookie = cookie('auth_token', $token, 9999, null, null, false, true);
+            $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
 
             // Retorna la contrasenya en JSON
             return response()->json([
@@ -68,14 +68,14 @@ class AuthController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
 
             // Insertem el token en les cookies
-            $cookie = cookie('auth_token', $token, 9999, null, null, false, true);
+            $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
 
             // Resposta en JSON
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari autenticat correctament',
                 'token' => $token,
-            ], 200);
+            ], 200)->withCookie($cookie);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'true',
@@ -86,5 +86,4 @@ class AuthController extends Controller
         }
         
     }
-
 }
