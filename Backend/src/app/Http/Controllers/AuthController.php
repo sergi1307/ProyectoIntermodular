@@ -24,13 +24,20 @@ class AuthController extends Controller
                     // Xifra la contrasenya per a que no siga una contrasenya en texet pla
                     'password' => Hash::make($request->password),
                 ]);
+
+            // Creem el token a partir de les dades de l'usuari
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            // Insertem en les cookies el token creat abans
+            $cookie = cookie('auth_token', $token, 9999, null, null, false, true);
+
             // Retorna la contrasenya en JSON
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari creat correctament',
                 // Creació del token per al usuari al registrar-se
-                'token' => $user->createToken('api-token')->plainTextToken,
-            ], 200);
+                'token' => $token,
+            ], 200)->withCookie($cookie);
         } catch(Exception $e) {
             return response()->json([
                 'status' => 'false',
@@ -56,12 +63,18 @@ class AuthController extends Controller
             }
             // Verifica el usuari
             $user = User::where('email', $request->email)->first();
+
+            // Creem el token a partir de les dades de l'usuari
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            // Insertem el token en les cookies
+            $cookie = cookie('auth_token', $token, 9999, null, null, false, true);
+
             // Resposta en JSON
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari autenticat correctament',
-                // Creació del token per al usuari al iniciar sessió
-                'token' => $user->createToken('api-token')->plainTextToken,
+                'token' => $token,
             ], 200);
         } catch (Exception $e) {
             return response()->json([

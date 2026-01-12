@@ -47,7 +47,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Seleccionamos la fecha de hoy
-        $fecha = Carbon::now();
+        $fecha = Carbon::now('Europe/Madrid')->format('Y-m-d');
 
         // Validem les dades abans d'insertar el producte en la base de dades 
         $validated = $request->validate([
