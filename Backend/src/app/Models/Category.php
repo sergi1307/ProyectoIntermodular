@@ -9,6 +9,13 @@ class Category extends Model
     protected $table = 'categories';
     protected $primaryKey = 'id_category';
     protected $fillable = [
-        'name'
+        'name',
     ];
+
+    public function product()
+{
+    return $this->belongsToMany(
+            Product::class,'category_product','id_category','id_product',
+        );
+}
 }

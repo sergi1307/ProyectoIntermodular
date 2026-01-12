@@ -15,6 +15,9 @@ class Product extends Model
 
     protected $primaryKey = 'id_product';
     protected $fillable = [
+        'id_user',
+        'id_delivery_point',
+        'id_category',
         'name',
         'description',
         'price',
@@ -28,21 +31,28 @@ class Product extends Model
     protected $hidden = [
         'id_user',
         'id_delivery_point',
-        'id_category'
+        'id_category',
+    ];
+    protected $casts = [
+        'price' => 'double',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user','id_user');
     }
 
     public function delivery_point()
     {
-        return $this->belongsTo(Delivery_Point::class, 'id_delivery_point');
+        return $this->belongsTo(Delivery_Point::class, 'id_delivery_point','id_delivery_point');
     }
 
-    public function category()
+    public function categorie()
     {
-        return $this->hasMany(Category::class, 'id_category');
+        return $this->belongsToMany(Category::class,'category_product','id_product','id_category');
+    }
+    public function sale()
+    {
+        return $this->hasOne(Sale::class, 'id_product', 'id_product');
     }
 }

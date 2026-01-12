@@ -5,6 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\Delivery_pointController;
+use App\Http\Controllers\ReviewController;
 
 // Endpoints d'Autenticació
 Route::prefix('auth')->name('auth.')->group(function (){
@@ -38,4 +41,30 @@ Route::prefix('categories')->name('categories.')->group(function (){
     Route::get('/show/{id}', [CategoryController::class, 'show'])->name('show');
     Route::put('/update/{id}', [CategoryController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+});
+// Endpoints de Ventas 
+Route::prefix('sales')->name('sales.')->group(function (){
+    Route::get('/', [SaleController::class, 'index'])->name('index');
+    Route::post('/create', [SaleController::class, 'create'])->name('create'); 
+    Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [SaleController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [SaleController::class, 'destroy'])->name('destroy');
+});
+
+// Endpoints de Puntos de Entrega
+Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
+    Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
+    Route::post('/create', [Delivery_pointController::class, 'create'])->name('create');
+    Route::get('/show/{id}', [Delivery_pointController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [Delivery_pointController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [Delivery_pointController::class, 'destroy'])->name('destroy');
+});
+
+// Endpoints de Reseñas
+Route::prefix('reviews')->name('reviews.')->group(function (){
+    Route::get('/', [ReviewController::class, 'index'])->name('index');    
+    Route::post('/create', [ReviewController::class, 'create'])->name('create');
+    Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [ReviewController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [ReviewController::class, 'destroy'])->name('destroy');
 });

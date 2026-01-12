@@ -84,7 +84,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return response()->json(['message' => 'Usuario eliminado']);
+        return response()->json(['message' => 'Usuario eliminado'],200);
     }
 
     public function mostrarMapa() {

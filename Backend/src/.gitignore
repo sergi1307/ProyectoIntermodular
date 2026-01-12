@@ -1,6 +1,10 @@
 *.log
 .DS_Store
+<<<<<<<<< Temporary merge branch 1
+# .env
+=========
 .env
+>>>>>>>>> Temporary merge branch 2
 .env.backup
 .env.production
 .phpactor.json
