@@ -59,7 +59,7 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_stock' => 'required|in:Kg,Unidad',
             'state' => 'required|in:Agotado,Reservado,Disponible',
-            'categories' => 'nullable|exists:categories, id_category'
+            'categories' => 'nullable|exists:categories,id_category'
         ]);
 
         // Inicialitzem la variable de la ruta de la imatge
@@ -120,7 +120,7 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_stock' => 'required|in:Kg,Unidad',
             'state' => 'required|in:Agotado,Reservado,Disponible',
-            'categories' => 'nullable|exists:categories, id_category'
+            'categories' => 'nullable|exists:categories,id_category'
         ]);
 
         // Assignem la ruta a la imatge que ja teniem abans

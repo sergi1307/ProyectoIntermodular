@@ -47,7 +47,7 @@ class CategoryController extends Controller
     {
         // Creem la categoria amb el camp name
         $category = Category::create([
-            'name'
+            'name' => $request->name
         ]);
 
         // Retornem una resposta afirmativa en casa de que no done error
