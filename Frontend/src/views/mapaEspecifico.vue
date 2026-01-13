@@ -24,7 +24,7 @@
   </template>
   
   <script>
-  import MapaTiendas from '../components/MapaTiendas.vue';
+  import MapaTiendas from '../components/mapaPuntosdeventa.vue';
   
   export default {
     name: 'MapaEspecifico',
