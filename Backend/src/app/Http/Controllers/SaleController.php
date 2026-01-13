@@ -12,13 +12,13 @@ class SaleController extends Controller
     public function createSale(Request $request)
     {
         $sale = Sale::create([
-            'id_product'        => $request->id_product,
-            'id_buyer'          => $request->id_buyer,
-            'id_seller'         => $request->id_seller,
+            'id_product' => $request->id_product,
+            'id_buyer' => $request->id_buyer,
+            'id_seller' => $request->id_seller,
             'id_delivery_point' => $request->id_delivery_point,
-            'sale_date'         => Carbon::parse($request->sale_date),
-            'total'             => $request->total,
-            'collection_date'   => Carbon::parse($request->collection_date),
+            'sale_date'=> Carbon::parse($request->sale_date),
+            'total' => $request->total,
+            'collection_date' => Carbon::parse($request->collection_date),
         ]);
 
         return response()->json([
