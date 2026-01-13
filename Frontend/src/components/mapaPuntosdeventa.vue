@@ -5,7 +5,7 @@
       <div id="mapa-leaflet"></div>
   
       <p v-if="puntos.length === 0" class="error">
-          Cargando tiendas o no hay datos...
+          Esperando datos de ubicación...
       </p>
     </div>
   </template>
@@ -14,7 +14,7 @@
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   
-  // FIX: Arreglo para que se vean los iconos en Vite (copiado de internet)
+  // Configuración de iconos (Esto estaba bien, lo dejamos igual)
   import icon from 'leaflet/dist/images/marker-icon.png';
   import iconShadow from 'leaflet/dist/images/marker-shadow.png';
   let DefaultIcon = L.icon({
@@ -26,53 +26,107 @@
   export default {
       name: 'MapaTiendas',
       props: {
-          // Los datos me llegarán desde la Vista (Padre)
           puntos: { type: Array, required: true },
           titulo: { type: String, default: 'Mapa' },
-          // Interruptor: false = solo ver, true = seleccionar
           esSeleccionable: { type: Boolean, default: false }
       },
+      data() {
+          return {
+              map: null,      // Guardamos la instancia del mapa aquí para poder controlarla luego
+              layerGroup: null // Grupo de capas para poder borrar marcadores antiguos si actualizamos
+          }
+      },
       mounted() {
-          // Espero a que se monte el componente para cargar el mapa
-          this.cargarMapa();
+          this.iniciarMapa();
+      },
+      // IMPORTANTE: Observamos 'puntos'. Si la vista padre actualiza la lista, 
+      // el mapa se repinta automáticamente.
+      watch: {
+          puntos: {
+              handler(newVal) {
+                  if (this.map && newVal.length > 0) {
+                      this.dibujarMarcadores();
+                  }
+              },
+              deep: true
+          }
+      },
+      beforeUnmount() {
+          // Limpieza: Si me voy de la página, mato el mapa para que no de errores al volver
+          if (this.map) {
+              this.map.remove();
+          }
       },
       methods: {
-          cargarMapa() {
-              // 1. Centro el mapa (Madrid aprox)
-              var mapa = L.map('mapa-leaflet').setView([40.4167, -3.70325], 6);
+          iniciarMapa() {
+              // 1. Iniciamos el mapa (centrado neutro, luego se ajustará)
+              this.map = L.map('mapa-leaflet').setView([40.4167, -3.70325], 5);
               
               L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                   attribution: '&copy; OpenStreetMap'
-              }).addTo(mapa);
+              }).addTo(this.map);
   
-              // 2. Pinto los marcadores
+              // Creamos una capa vacía donde meteremos los pines
+              this.layerGroup = L.layerGroup().addTo(this.map);
+  
+              // Si ya hay puntos al cargar, los dibujamos
+              if (this.puntos.length > 0) {
+                  this.dibujarMarcadores();
+              }
+          },
+          dibujarMarcadores() {
+              // Limpiamos marcadores antiguos para no duplicar
+              this.layerGroup.clearLayers();
+              
+              // Array para calcular el auto-zoom
+              const limites = [];
+  
               this.puntos.forEach(punto => {
-                  // Uso 'length' porque así se llama en mi base de datos
-                  if (punto.latitude && punto.length) {
-                      
-                      var marcador = L.marker([punto.latitude, punto.length]).addTo(mapa);
+                  // OJO: Asegúrate de si tu BD usa 'length' o 'longitude'. 
+                  // Aquí compruebo las dos por si acaso.
+                  const lat = punto.latitude;
+                  const lng = punto.longitude || punto.length; 
   
-                      // LÓGICA DEL INTERRUPTOR
+                  if (lat && lng) {
+                      // Creamos el marcador
+                      const marcador = L.marker([lat, lng]);
+                      
+                      // Lógica del Popup (Tu lógica original estaba bien)
                       if (this.esSeleccionable) {
-                          // Modo Vendedor
                           marcador.bindPopup(`<b>${punto.name}</b><br>Click para seleccionar`);
                           marcador.on('click', () => {
-                              // Aviso a la vista padre de que han elegido esta tienda
                               this.$emit('tienda-elegida', punto.id);
                               marcador.openPopup();
                           });
                       } else {
-                          // Modo Cliente (Solo info)
                           marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}`);
                       }
+  
+                      // Añadimos al grupo de capas
+                      this.layerGroup.addLayer(marcador);
+                      
+                      // Guardamos coordenadas para el auto-zoom
+                      limites.push([lat, lng]);
                   }
               });
+  
+              // MAGIA: Si hay puntos, ajustamos el mapa para que se vean todos
+              if (limites.length > 0) {
+                  this.map.fitBounds(limites, { padding: [50, 50] });
+              }
           }
       }
   }
   </script>
   
   <style scoped>
-  #mapa-leaflet { height: 400px; width: 100%; border: 1px solid #ccc; border-radius: 5px; z-index: 1; }
-  .error { color: grey; font-style: italic; }
+  /* Asegura que el mapa tiene altura o no se verá */
+  #mapa-leaflet { 
+      height: 400px; 
+      width: 100%; 
+      border: 1px solid #ccc; 
+      border-radius: 5px; 
+      z-index: 1; 
+  }
+  .error { color: grey; font-style: italic; padding: 10px; }
   </style>
