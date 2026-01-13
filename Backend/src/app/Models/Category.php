@@ -11,11 +11,12 @@ class Category extends Model
     protected $fillable = [
         'name',
     ];
+    public $timestamps = false;
 
-    public function product()
-{
-    return $this->belongsToMany(
-            Product::class,'category_product','id_category','id_product',
-        );
-}
+    public function products()
+    {
+        return $this->belongsToMany(
+                Product::class,'category_product','id_category','id_product',
+            );
+    }
 }

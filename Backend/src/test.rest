@@ -1,10 +1,11 @@
 # Registrar o crear un usuari
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
+Accept: application/json
 
 {
   "name": "Test2",
-  "email": "test2@example.com",
+  "email": "test6@example.com",
   "phone": "1234",
   "registration_date": "2026-01-02",
   "password": "password"
@@ -70,7 +71,7 @@ GET http://localhost:8080/api/delivery_points
 Accept: application/json
 
 ### Mostrar un punt d'entrega específic
-GET http://localhost:8080/api/delivery_points/show/2
+GET http://localhost:8080/api/delivery_points/show/1
 Accept: application/json
 
 ### Actualitzar un punt d'entrega
@@ -128,8 +129,8 @@ Accept: application/json
 
 {
     "id_product": 1,
-    "id_buyer": 1,
-    "id_saller": 2,
+    "id_buyer": 2,
+    "id_seller": 3,
     "id_delivery_point": 1,
     "sale_date": "2023-10-27",
     "total": 55.50,
@@ -157,4 +158,82 @@ Accept: application/json
 
 ### 5. Eliminar una venta
 DELETE http://localhost:8080/api/sales/destroy/1
+Accept: application/json
+
+### 6. Crear un producto
+# Nota: Enviamos JSON. Si quieres subir imagen, el cliente debe usar multipart/form-data.
+POST http://localhost:8080/api/products/store
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_user": 2,
+    "id_delivery_point": 1,
+    "name": "Tomates de Huerto",
+    "description": "Tomates ecológicos recién recogidos",
+    "price": 3.50,
+    "stock": 50,
+    "type_stock": "Kg",
+    "state": "Disponible",
+    "categories": [2, 3]
+}
+
+### 7. Listar todos los productos
+GET http://localhost:8080/api/products
+Accept: application/json
+
+### 8. Mostrar un producto específico
+GET http://localhost:8080/api/products/show/3
+Accept: application/json
+
+### 9. Actualizar un producto
+# Nota: Actualizamos datos textuales. El stock y precio cambian.
+PUT http://localhost:8080/api/products/update/3
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_user": 2,
+    "id_delivery_point": 1,
+    "name": "Tomates de Huerto Premium",
+    "description": "Tomates ecológicos calidad superior",
+    "price": 4.00,
+    "stock": 45,
+    "type_stock": "Kg",
+    "state": "Reservado",
+    "categories": [2]
+}
+
+### 10. Eliminar un producto
+DELETE http://localhost:8080/api/products/destroy/2
+Accept: application/json
+
+### 11. Crear una categoria
+POST http://localhost:8080/api/categories/store
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Verdura"
+}
+
+### 12. Listar todas las categorias
+GET http://localhost:8080/api/categories
+Accept: application/json
+
+### 13. Mostrar una categoria específica
+GET http://localhost:8080/api/categories/show/2
+Accept: application/json
+
+### 14. Actualizar una categoria
+PUT http://localhost:8080/api/categories/update/2
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Fruta"
+}
+
+### 15. Eliminar una categoria
+DELETE http://localhost:8080/api/categories/destroy/2
 Accept: application/json

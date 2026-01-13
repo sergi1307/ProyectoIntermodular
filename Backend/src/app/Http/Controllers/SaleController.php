@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class SaleController extends Controller
 {
     // 1. Crear una Venta
-    public function createSale(Request $request)
+    public function create(Request $request)
     {
         $sale = Sale::create([
             'id_product' => $request->id_product,

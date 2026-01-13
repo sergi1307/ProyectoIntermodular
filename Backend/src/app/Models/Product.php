@@ -47,7 +47,7 @@ class Product extends Model
         return $this->belongsTo(Delivery_Point::class, 'id_delivery_point','id_delivery_point');
     }
 
-    public function categorie()
+    public function categories()
     {
         return $this->belongsToMany(Category::class,'category_product','id_product','id_category');
     }

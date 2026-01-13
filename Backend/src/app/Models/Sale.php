@@ -37,10 +37,10 @@ class Sale extends Model
         return $this->belongsTo(Product::class, 'id_product', 'id_product');
     }
     public function buyer(){
-    return $this->belongsTo(User::Class,'id_buyer','id_user');
+    return $this->belongsTo(User::class,'id_buyer','id_user');
     }
     public function seller(){
-    return $this->belongsTo(User::Class,'id_seller','id_user');
+    return $this->belongsTo(User::class,'id_seller','id_user');
     }
     public function delivery_point()
 {
@@ -49,7 +49,7 @@ class Sale extends Model
     );
 }
     public function reviews(){
-    return $this->hasMany(Review::Class,'id_sale','id_sale');
+    return $this->hasMany(Review::class,'id_sale','id_sale');
     }
 
 }
