@@ -1,4 +1,4 @@
-import PaginaPrincipal from '../views/index.vue';
+import PaginaPrincipal from '../views/paginaDeInicio.vue';
 import login from '../views/login.vue';
 import mapaGeneral from '../views/mapaGeneral.vue';
 import mapaEspecifico from '../views/mapaEspecifico.vue';
@@ -29,6 +29,7 @@ const routes = [
         name: 'mapa_pruebas',
         component: mapaEspecifico
     }
+
 ];
 
 const router = createRouter({
