@@ -58,7 +58,8 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_stock' => 'required|in:Kg,Unidad',
-            'state' => 'required|in:Agotado,Reservado,Disponible'
+            'state' => 'required|in:Agotado,Reservado,Disponible',
+            'categories' => 'nullable|exists:categories, id_category'
         ]);
 
         // Inicialitzem la variable de la ruta de la imatge
@@ -118,7 +119,8 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_stock' => 'required|in:Kg,Unidad',
-            'state' => 'required|in:Agotado,Reservado,Disponible'
+            'state' => 'required|in:Agotado,Reservado,Disponible',
+            'categories' => 'nullable|exists:categories, id_category'
         ]);
 
         // Assignem la ruta a la imatge que ja teniem abans
@@ -172,7 +174,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         // Eliminem l'imatge que ja existía
-        Storage::disk('public')->delete($product->image);
+        // Storage::disk('public')->delete($product->image);
 
         // Eliminem el producte de la base de dades
         $product->delete();

@@ -70,7 +70,7 @@ GET http://localhost:8080/api/delivery_points
 Accept: application/json
 
 ### Mostrar un punt d'entrega específic
-GET http://localhost:8080/api/delivery_points/show/2
+GET http://localhost:8080/api/delivery_points/show/1
 Accept: application/json
 
 ### Actualitzar un punt d'entrega
@@ -128,8 +128,8 @@ Accept: application/json
 
 {
     "id_product": 1,
-    "id_buyer": 1,
-    "id_saller": 2,
+    "id_buyer": 2,
+    "id_seller": 3,
     "id_delivery_point": 1,
     "sale_date": "2023-10-27",
     "total": 55.50,
@@ -157,4 +157,52 @@ Accept: application/json
 
 ### 5. Eliminar una venta
 DELETE http://localhost:8080/api/sales/destroy/1
+Accept: application/json
+
+### 6. Crear un producto
+# Nota: Enviamos JSON. Si quieres subir imagen, el cliente debe usar multipart/form-data.
+POST http://localhost:8080/api/products/store
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_user": 1,
+    "id_delivery_point": 1,
+    "name": "Tomates de Huerto",
+    "description": "Tomates ecológicos recién recogidos",
+    "price": 3.50,
+    "stock": 50,
+    "type_stock": "Kg",
+    "state": "Disponible",
+    "categories": [1, 2]
+}
+
+### 7. Listar todos los productos
+GET http://localhost:8080/api/products
+Accept: application/json
+
+### 8. Mostrar un producto específico
+GET http://localhost:8080/api/products/show/1
+Accept: application/json
+
+### 9. Actualizar un producto
+# Nota: Actualizamos datos textuales. El stock y precio cambian.
+PUT http://localhost:8080/api/products/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_user": 1,
+    "id_delivery_point": 1,
+    "name": "Tomates de Huerto Premium",
+    "description": "Tomates ecológicos calidad superior",
+    "price": 4.00,
+    "stock": 45,
+    "type_stock": "Kg",
+    "state": "Reservado",
+    "categories": [1, 2]
+}
+
+### 10. Eliminar un producto
+DELETE http://localhost:8080/api/products/destroy/1
 Accept: application/json

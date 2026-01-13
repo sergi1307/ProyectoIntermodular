@@ -18,7 +18,6 @@ return new class extends Migration
             $table->increments('id_product');
             $table->integer('id_user');
             $table->integer('id_delivery_point');
-            $table->integer('id_category');
             $table->string('name', 255);
             $table->text('description');
             $table->float('price');
