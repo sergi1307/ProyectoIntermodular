@@ -14,9 +14,10 @@
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   
-  // Configuración de iconos (Esto estaba bien, lo dejamos igual)
+  // Configuración de iconos estándar de Leaflet
   import icon from 'leaflet/dist/images/marker-icon.png';
   import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+  
   let DefaultIcon = L.icon({
       iconUrl: icon, shadowUrl: iconShadow,
       iconSize: [25, 41], iconAnchor: [12, 41]
@@ -32,15 +33,15 @@
       },
       data() {
           return {
-              map: null,      // Guardamos la instancia del mapa aquí para poder controlarla luego
-              layerGroup: null // Grupo de capas para poder borrar marcadores antiguos si actualizamos
+              map: null,       // Instancia del mapa
+              layerGroup: null // Grupo para gestionar los marcadores
           }
       },
       mounted() {
           this.iniciarMapa();
       },
-      // IMPORTANTE: Observamos 'puntos'. Si la vista padre actualiza la lista, 
-      // el mapa se repinta automáticamente.
+      // WATCH: Esto es vital. Si los datos tardan en llegar del servidor,
+      // este observador actualizará el mapa automáticamente cuando lleguen.
       watch: {
           puntos: {
               handler(newVal) {
@@ -52,46 +53,45 @@
           }
       },
       beforeUnmount() {
-          // Limpieza: Si me voy de la página, mato el mapa para que no de errores al volver
+          // Limpiamos el mapa al salir de la página para evitar errores de memoria
           if (this.map) {
               this.map.remove();
           }
       },
       methods: {
           iniciarMapa() {
-              // 1. Iniciamos el mapa (centrado neutro, luego se ajustará)
+              // Iniciamos el mapa
               this.map = L.map('mapa-leaflet').setView([40.4167, -3.70325], 5);
               
               L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                   attribution: '&copy; OpenStreetMap'
               }).addTo(this.map);
   
-              // Creamos una capa vacía donde meteremos los pines
+              // Creamos la capa para los marcadores
               this.layerGroup = L.layerGroup().addTo(this.map);
   
-              // Si ya hay puntos al cargar, los dibujamos
+              // Si ya hay datos, dibujamos
               if (this.puntos.length > 0) {
                   this.dibujarMarcadores();
               }
           },
           dibujarMarcadores() {
-              // Limpiamos marcadores antiguos para no duplicar
+              // 1. Borramos marcadores antiguos
               this.layerGroup.clearLayers();
               
-              // Array para calcular el auto-zoom
+              // Array para guardar coordenadas y hacer el auto-zoom luego
               const limites = [];
   
               this.puntos.forEach(punto => {
-                  // OJO: Asegúrate de si tu BD usa 'length' o 'longitude'. 
-                  // Aquí compruebo las dos por si acaso.
+                  // USAMOS 'length' COMO TU QUIERES
                   const lat = punto.latitude;
-                  const lng = punto.longitude || punto.length; 
+                  const lng = punto.length; 
   
+                  // Solo pintamos si las coordenadas existen
                   if (lat && lng) {
-                      // Creamos el marcador
                       const marcador = L.marker([lat, lng]);
                       
-                      // Lógica del Popup (Tu lógica original estaba bien)
+                      // Configuración del Popup
                       if (this.esSeleccionable) {
                           marcador.bindPopup(`<b>${punto.name}</b><br>Click para seleccionar`);
                           marcador.on('click', () => {
@@ -102,15 +102,15 @@
                           marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}`);
                       }
   
-                      // Añadimos al grupo de capas
+                      // Añadimos el marcador a la capa del mapa
                       this.layerGroup.addLayer(marcador);
                       
-                      // Guardamos coordenadas para el auto-zoom
+                      // Guardamos la coordenada para calcular el zoom
                       limites.push([lat, lng]);
                   }
               });
   
-              // MAGIA: Si hay puntos, ajustamos el mapa para que se vean todos
+              // AUTO-ZOOM: Ajusta el mapa para que se vean todos los puntos
               if (limites.length > 0) {
                   this.map.fitBounds(limites, { padding: [50, 50] });
               }
@@ -120,7 +120,6 @@
   </script>
   
   <style scoped>
-  /* Asegura que el mapa tiene altura o no se verá */
   #mapa-leaflet { 
       height: 400px; 
       width: 100%; 
