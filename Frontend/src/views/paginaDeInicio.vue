@@ -127,7 +127,7 @@
   .hero-section {
     position: relative;
     height: 90vh; /* Ocupa casi toda la altura de la pantalla */
-    background-image: url('https://blog.oxfamintermon.org/crea-tu-huerto-ecologico-y-disfruta-de-todos-sus-beneficios/');
+    background-image: url('https://blog.oxfamintermon.org/wp-content/uploads/2015/03/iStock_000076035727_Small.jpg');
     background-size: cover;
     background-position: center;
     /* Flex para centrar verticalmente el contenido */
