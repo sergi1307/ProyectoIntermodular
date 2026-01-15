@@ -35,14 +35,14 @@
           
           <div class="feature-card">
             <div class="icon-circle green">📍</div>
-            <h3>Al lao' de casa</h3>
-            <p>Pilla cosas de tu zona. Menos camiones dando vueltas = menos humo.</p>
+            <h3>Al lado de casa</h3>
+            <p>Coge cosas de tu zona. Menos camiones dando vueltas = menos humo.</p>
           </div>
   
           <div class="feature-card">
             <div class="icon-circle red">🛡️</div>
             <h3>Gente legal</h3>
-            <p>Sabes a quién le compras. Nada de movidas raras, todo verificado.</p>
+            <p>Sabes a quién le compras. Nada de cosas raras, todo verificado.</p>
           </div>
   
           <div class="feature-card">
@@ -54,7 +54,7 @@
           <div class="feature-card">
             <div class="icon-circle brown">🤝</div>
             <h3>Barrio Rico</h3>
-            <p>La pasta se queda aquí, pa la gente de tu pueblo o ciudad.</p>
+            <p>La pasta se reparte entre todos, por tu bien, por el bien de la comunidad.</p>
           </div>
         </div>
       </section>
