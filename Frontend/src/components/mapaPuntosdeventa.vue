@@ -120,12 +120,31 @@
   </script>
   
   <style scoped>
-  #mapa-leaflet { 
-      height: 400px; 
-      width: 100%; 
-      border: 1px solid #ccc; 
-      border-radius: 5px; 
-      z-index: 1; 
-  }
-  .error { color: grey; font-style: italic; padding: 10px; }
-  </style>
+    /*CORRECION DE ESTILOS PARA QUE EL MAPA SE VEA BIEN (CUADRADO Y NO ESTIRADO)*/ 
+    
+    .tarjeta-mapa {
+        /* 1. Dimensiones y Centrado */
+        width: 100%;
+        max-width: 500px; /* Tamaño máximo para que no se estire */
+        margin: 0 auto;   /* Centrado horizontal */
+        
+        /* 2. Estética de tarjeta */
+        background: white;
+        padding: 15px;    /* Un poco de espacio interior */
+        border-radius: 20px; /* Bordes redondeados */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Sombra elegante */
+        text-align: center; /* Título centrado */
+    }
+    
+    #mapa-leaflet { 
+        /* El mapa ocupará todo el ancho de la tarjeta pero con altura fija cuadrada */
+        width: 100%; 
+        height: 450px; /* Altura fija para que parezca cuadrado */
+        
+        border-radius: 15px; /* Redondeamos también el mapa */
+        border: 2px solid #eee; /* Borde sutil */
+        z-index: 1; 
+    }
+    
+    .error { color: grey; font-style: italic; padding: 10px; }
+    </style>
