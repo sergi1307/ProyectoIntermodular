@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Funció per a registrar un Usuari
+     *
+     * @param UserRequest $request
+     * @return json
+     */
     public function createUser(UserRequest $request)
     {
         try {
@@ -35,20 +41,24 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari creat correctament',
-                // Creació del token per al usuari al registrar-se
                 'token' => $token,
             ], 200)->withCookie($cookie);
         } catch(Exception $e) {
             return response()->json([
                 'status' => 'false',
                 'message' => 'Error al crear el usuari',
-                // Creació del token per al usuari al registrar-se
                 'error' => $e,
             ], 200);
         }
         
     }
 
+    /**
+     * Funció de login per a usuaris
+     *
+     * @param LoginUserRequest $request
+     * @return json
+     */
     public function loginUser(LoginUserRequest $request)
     {
         try {
@@ -80,7 +90,6 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'true',
                 'message' => 'Error al autenticar el usuari',
-                // Creació del token per al usuari al iniciar sessió
                 'error' => $e,
             ], 200);
         }
