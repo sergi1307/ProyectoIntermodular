@@ -1,12 +1,14 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
+// Importem les dades del JSON (borrar quan anem a fer les peticions al backend)
 import productosMock from '../views/productos.json'
 import categoriasMock from '../views/categorias.json'
 
-
+// Llista de les categories
 const categorias = ref([])
 
+// Definim els camps del formulari buits
 const name = ref('')
 const category_id = ref('')
 const price = ref(null)
@@ -14,13 +16,14 @@ const stock = ref(null)
 const type_stock = ref('')
 const state = ref('')
 
+// Definim el producte com a objecte requerit per al formulari
 const props = defineProps({
   producto: {
     type: Object,
     required: true
   }
 })
-
+// Emitim la senyal d'actualitzar
 const emit = defineEmits(['updated'])
 
 const cargarCategorias = async () => {
@@ -33,6 +36,7 @@ const cargarCategorias = async () => {
 
 
 const producto = computed(() => ({
+  // Mostrem el producte amb el valor que agafem del producte que editarem
   name: name.value,
   category_id: category_id.value,
   price: price.value,
@@ -40,7 +44,7 @@ const producto = computed(() => ({
   type_stock: type_stock.value,
   state: state.value
 }))
-   const guardar = async () => {
+const guardar = async () => {
     /*
   try{
     await axios.put(`/api/products/${props.producto.id}`, productoActualizado)
@@ -49,7 +53,7 @@ const producto = computed(() => ({
    console.log("Error al actualizar" + error)
   }
     */
-  // SIMULAMOS UPDATE
+  // Emitim la senyal de l'actualitzat amb les dades del formulari i en la vista producte s'actualitzara
   emit('updated', {
   id: props.producto.id,
   name: name.value,
@@ -77,6 +81,7 @@ watch(
   },
   { immediate: true }
 )
+// Carrega les categories per al desplegable
 onMounted(cargarCategorias)
 
 </script>
@@ -85,15 +90,19 @@ onMounted(cargarCategorias)
 <template>
   <div id="form-container">
     <form @submit.prevent="guardar">
+      <!--Nom del producte-->
       <label for="product">Producto</label><br></br>
       <input type="text" placeholder="Nombre del producto" v-model="name"/><br></br>
 
+      <!--Preu-->
       <label for="price">Precio</label><br></br>
-      <input type="number" placeholder="Precio" v-model="price"/><br></br>
+      <input type="number" step="0.01" placeholder="Precio" v-model="price"/><br></br>
 
+      <!--Stock-->
       <label for="stock">Stock</label><br></br>
       <input type="number" placeholder="Stock" v-model="stock"/><br></br>
 
+      <!--Tipus de stock-->
       <label for="type_stock">Tipo de stock</label><br></br>
       <select v-model="type_stock">
         <option disabled value="">Selecciona tipo de stock</option>
@@ -101,6 +110,7 @@ onMounted(cargarCategorias)
         <option value="kg">Kg</option>
       </select><br></br>
 
+      <!--Estat-->
       <label for="state">Estado</label><br></br>
       <select v-model="state">
         <option disabled value="">Selecciona estado</option>
@@ -108,9 +118,11 @@ onMounted(cargarCategorias)
         <option value="agotado">Agotado</option>
         <option value="reservado">Reservado</option>
       </select><br></br>
-
+      
+      <!--Categoria-->
       <label for="category">Categoria</label><br></br>
       <select v-model="category_id">
+      <!--Recorrem un for per a mostrar tots els valors de categoria en el desplegable-->
         <option disabled value="">Selecciona una categoría</option>
         <option
           v-for="categoria in categorias"
@@ -119,7 +131,7 @@ onMounted(cargarCategorias)
         >
         {{ categoria.name }}
         </option>
-      </select><br></br>
+      </select><br><br>
       <button type="submit">Actualizar producto</button>
     </form>
   </div>

@@ -12,15 +12,15 @@ const router = useRouter()
 // Obtenim un array dels objectes
 const productos = ref([])
 const categorias = ref([])
+// Fem objectes per a diferenciar si anem a:
+// afegir 
+// o
 const openCrear = ref(false)
+// editar un producte
 const openEditar = ref(false)
-
-const confirmarModal = () => {
-  open.value = false
-  console.log("Confirmado")
-}
-
+// Definim l'emissió per a l'actualització
 const emit = defineEmits(['updated'])
+// Definim el producteSeleccionat a null perquè no hem seleccionat res
 const productoSeleccionado = ref(null)
 
 const obtenerDatos = async () => {
@@ -58,31 +58,34 @@ const productosConCategoria = computed(() => {
       producto{
         id
         name
-        category_id{
-          name
-        }
         price
         stock
         type_stock
         state
+        category_id{
+          name
+        }
       }
       */
       ...producto,
+      // I ací agafem la categoria, i si no té li posem la etiqueta de "Sin categoría"
       category: categoria ? categoria.name : 'Sin categoría'
     }
   })
 })
 const agregarProducto = (nuevoProducto) => {
+  // Afegim el producte a la llista
   productos.value.push(nuevoProducto)
+  // I tanquem la finestra de crear el producte
   openCrear.value = false
 }
 
-// Funcio per a eliminar els productes
+// Funció per a eliminar els productes
 const eliminarProducto = async (id) => {
-  // Primerament et mostrara una alerta si estas segur d'eliminar el producte
+  // Primerament et mostrara una alerta si estàs segur d'eliminar el producte
   if (!window.confirm('¿Seguro que quieres eliminar este producto?')) return
   /*
-  // Si acceptes anira al backend i l'eliminara
+  // Si acceptes anirà al backend i l'eliminara
   try {
     await axios.delete(`http://localhost:8080/api/productos/${id}`)
   } catch (error) {
@@ -90,24 +93,26 @@ const eliminarProducto = async (id) => {
     console.error('Error eliminando producto:', error)
   }
   */
+  // Si l'accepta busca el producte pel seu id i l'esborra
   productos.value = productos.value.filter(
       producto => producto.id !== id
     )
 }
 const actualizarProducto = (productoActualizado) => {
+  // Busca el producte pel seu id
   const index = productos.value.findIndex(
     p => p.id === productoActualizado.id
   )
-
+  // Si és diferent d'un índex negatiu, li posa el número de l'índex del producte 
   if (index !== -1) {
     productos.value[index] = productoActualizado
   }
-
+  // Si no ho és, no l'edita
   openEditar.value = false
 }
 
 
-// Al executar fara la funció "obtenerDatos"
+// A l'executar farà la funció "obtenerDatos"
 onMounted(obtenerDatos)
 </script>
 
@@ -115,22 +120,28 @@ onMounted(obtenerDatos)
 <div id ="productos">
   
     <div id="contenedor">
-        <div id ="menu">
+      <div id="menu">
+        <p>Productos</p>
+        <p>Ordenes?</p>
+        <p>Mapas</p>
+      </div>
+        <div id ="menu_producto">
             <div id="search">
-                <img class="search" src="./assets/icons/search_icon.png" alt="Buscar"></img>
+                <img class="search" src="../assets/icons/search_icon.png" alt="Buscar"></img>
             </div>
             <div id ="filter">
-                <img class="filter" src="./assets/icons/filter_icon" alt="Filtrar"></img>
+                <img class="filter" src="../assets/icons/filter_icon.png" alt="Filtrar"></img>
                 <p>Filters</p>
             </div>
             <div id="boton">
-              <!-- Botón Añadir producto -->
+              <!-- Botó d'afegir producte amb el component del formulari per a crear producte-->
               <button @click="openCrear = true">Añadir producto</button>
               <BaseModal v-model="openCrear">
                 <createProduct
                   :categorias="categorias"
                   @created="agregarProducto"
                 />
+                <!--Ací n'hi ha un botó que referència al footer del modal amb el boto "Cancelar" per a tancar el modal-->
                 <template #footer>
                   <button @click="openCrear = false">Cancelar</button>
                 </template>
@@ -157,20 +168,22 @@ onMounted(obtenerDatos)
                 <td>{{ producto.type_stock }}</td>
                 <td id="status">{{ producto.state }}</td>
                 <td>
-                  <!--Botons per a editar i eliminar el producte-->
+                  <!-- Botó d'editar producte amb el component del formulari per a editar producte-->
                   <button @click="productoSeleccionado = producto; openEditar = true">
-                    Editar
+                    <img class="delete" src="../assets/icons/edit_icon.png" alt="Editar"></img>
                   </button>
                   <BaseModal v-model="openEditar">
                     <editProduct
                       :producto="productoSeleccionado"
                       @updated="actualizarProducto"
                     />
+                    <!--Ací n'hi ha un botó que referència al footer del modal amb el boto "Cancelar" per a tancar el modal-->
                     <template #footer>
                       <button @click="openEditar = false">Cancelar</button>
                     </template>
                   </BaseModal>
-                  <button @click="eliminarProducto(producto.id)"><img class="delete" src="./assets/icons/delete_icon.png" alt="Borrar"></img></button>
+                  <!--Botó d'eliminar producte-->
+                  <button @click="eliminarProducto(producto.id)"><img class="delete" src="../assets/icons/delete_icon.png" alt="Borrar"></img></button>
                 </td>
             </tr>
             </table>
@@ -181,9 +194,7 @@ onMounted(obtenerDatos)
 <style scoped>
     #boton{
         background-color: #1c5537;
-        text-decoration: none;
         border-radius: 20px;
-        color: white;
     }
     #price{
         

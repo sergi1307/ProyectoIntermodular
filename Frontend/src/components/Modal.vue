@@ -6,22 +6,24 @@
         class="modal-overlay"
         @click.self="close"
       >
+        
         <div class="modal-container">
-          <!-- Header -->
           <header class="modal-header">
-            <slot name="header">
-              <h3>Modal</h3>
-            </slot>
+            <!--Definim un botó "X" per a tancar el modal-->
             <button class="close-btn" @click="close">✕</button>
           </header>
 
-          <!-- Body -->
           <section class="modal-body">
+            <!--El contingut del modal anirà ací-->
             <slot />
           </section>
 
-          <!-- Footer -->
           <footer class="modal-footer">
+            <!--I ací el contingut del peu de pàgina si es referència com a:
+            <template #footer>
+              "I ací dins el contingut"
+            </template>
+            -->
             <slot name="footer" />
           </footer>
         </div>
@@ -33,6 +35,7 @@
 <script setup>
 import { watch, onMounted, onUnmounted } from 'vue'
 
+// Definim el valor del modal per a definir si està obert o no
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -42,30 +45,16 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+// Quan tanquem desaparixera el modal
 const close = () => {
   emit('update:modelValue', false)
 }
 
-// 🔒 Bloquear scroll
+// Bloqueja el scroll
 watch(() => props.modelValue, (value) => {
   document.body.style.overflow = value ? 'hidden' : ''
 })
 
-// ⌨️ Cerrar con ESC
-const handleKeydown = (e) => {
-  if (e.key === 'Escape' && props.modelValue) {
-    close()
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
-})
 </script>
 
 <style scoped>
@@ -87,7 +76,6 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.modal-header,
 .modal-footer {
   padding: 1rem;
   border-bottom: 1px solid #eee;
@@ -107,8 +95,5 @@ onUnmounted(() => {
   font-size: 1.2rem;
   cursor: pointer;
 }
-/* 
-/* Animaciones */
-
 
 </style>
