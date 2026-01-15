@@ -53,24 +53,26 @@
   
   <style scoped>
   .contenedor-especifico { 
-      padding: 20px; 
-      max-width: 900px; 
-      margin: 0 auto; 
+    padding: 20px; 
+    max-width: 900px; 
+    margin: 0 auto; 
+    text-align: center; /* Centramos todo */
   }
-  
-  /* Le pongo borde discontinuo para que se note que es un area de prueba */
+
+  /* Quitamos el borde dashed feo y dejamos solo espacio */
   .area-mapa { 
-      border: 2px dashed #ccc; 
-      padding: 10px; 
-      margin-top: 20px; 
+    padding: 20px 0; 
+    margin-top: 20px; 
   }
-  
-  .caja-debug { 
-      margin-top: 20px; 
-      padding: 15px; 
-      background-color: #d4edda; 
-      border: 1px solid #c3e6cb; 
-      color: #155724; 
-      border-radius: 5px;
+
+.caja-debug { 
+    margin-top: 30px; 
+    padding: 15px; 
+    background-color: #d4edda; 
+    border: 1px solid #c3e6cb; 
+    color: #155724; 
+    border-radius: 10px;
+    display: inline-block; /* Para que la caja ocupe solo lo necesario */
+    min-width: 300px;
   }
   </style>

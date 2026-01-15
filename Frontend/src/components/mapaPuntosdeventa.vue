@@ -1,5 +1,5 @@
 <template>
-    <div class="contenedor-mapa">
+    <div class="contenedor-mapa tarjeta-mapa">
       <h3>{{ titulo }}</h3>
       
       <div id="mapa-leaflet"></div>
@@ -123,26 +123,20 @@
     /*CORRECION DE ESTILOS PARA QUE EL MAPA SE VEA BIEN (CUADRADO Y NO ESTIRADO)*/ 
     
     .tarjeta-mapa {
-        /* 1. Dimensiones y Centrado */
-        width: 100%;
-        max-width: 500px; /* Tamaño máximo para que no se estire */
-        margin: 0 auto;   /* Centrado horizontal */
-        
-        /* 2. Estética de tarjeta */
-        background: white;
-        padding: 15px;    /* Un poco de espacio interior */
-        border-radius: 20px; /* Bordes redondeados */
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Sombra elegante */
-        text-align: center; /* Título centrado */
+    width: 100%;
+    max-width: 500px; /* Limite de ancho para que no se estire */
+    margin: 0 auto;   /* Centrado */
+    background: white;
+    padding: 15px;    
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    text-align: center;
     }
-    
     #mapa-leaflet { 
-        /* El mapa ocupará todo el ancho de la tarjeta pero con altura fija cuadrada */
         width: 100%; 
-        height: 450px; /* Altura fija para que parezca cuadrado */
-        
-        border-radius: 15px; /* Redondeamos también el mapa */
-        border: 2px solid #eee; /* Borde sutil */
+        height: 450px;
+        border-radius: 15px; 
+        border: 2px solid #eee;
         z-index: 1; 
     }
     
