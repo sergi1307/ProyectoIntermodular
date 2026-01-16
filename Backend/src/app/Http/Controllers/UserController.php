@@ -104,5 +104,17 @@ class UserController extends Controller
         // Retornem una resposta afirmativa de que ha anat tot bé
         return response()->json(['message' => 'Usuari eliminat'],200);
     }
+    
+    public function mostrarMapa(Request $request)
+    {
+        // 1. Obtenemos el usuario que está haciendo la petición (gracias al Token)
+        $usuario = $request->user();
+        // 2. Buscamos en la tabla delivery_points solo los que tengan su id_user
+        $puntos = Delivery_point::where('id_user', $usuario->id)->get();
 
+        // 3. Devolvemos esos puntos
+        return response()->json($puntos);
+        }
 }
+
+
