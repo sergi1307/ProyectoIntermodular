@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Tiendas</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
         body { font-family: sans-serif; padding: 20px; }
@@ -39,7 +39,7 @@
 
         puntos.forEach(punto => {
             // Verificamos que las coordenadas existan y no sean nulas
-            if (punto.latitude != null && punto.longitude != null) {
+            if (punto.latitude != null && punto.length != null) {
 
                 let htmlProductos = "";
 
@@ -61,7 +61,7 @@
                     </ul>
                 `;
 
-                L.marker([punto.latitude, punto.longitude])
+                L.marker([punto.latitude, punto.length])
                     .addTo(map)
                     .bindPopup(contenido);
             }
