@@ -124,7 +124,7 @@
     
     .tarjeta-mapa {
     width: 100%;
-    max-width: 500px; /* Limite de ancho para que no se estire */
+    max-width: 750px; /* Limite de ancho para que no se estire */
     margin: 0 auto;   /* Centrado */
     background: white;
     padding: 15px;    
@@ -134,7 +134,7 @@
     }
     #mapa-leaflet { 
         width: 100%; 
-        height: 450px;
+        height: 550px;
         border-radius: 15px; 
         border: 2px solid #eee;
         z-index: 1; 
