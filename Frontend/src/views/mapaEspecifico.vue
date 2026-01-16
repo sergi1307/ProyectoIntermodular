@@ -16,11 +16,10 @@
         <p><strong>Tienda seleccionada:</strong></p>
         <p>ID: <strong>{{ idCapturado }}</strong></p>
     </div>
-    
-    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
-        <p>Aún no has dado de alta ninguna tienda.</p>
-    </div>
 
+    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
+        <p>No tienes tiendas creadas todavía.</p>
+    </div>
   </div>
 </template>
 
@@ -34,40 +33,44 @@ export default {
   data() {
     return {
       idCapturado: null,
-      misTiendas: [], // Empezamos vacío
-      cargado: false  // Para saber si ya ha terminado de cargar
+      misTiendas: [],
+      cargado: false
     }
   },
   async mounted() {
       await this.cargarMisTiendas();
   },
   methods: {
+    //funcion para obtener cookies
+    obtenerCookie(nombre) {
+        const valor = `; ${document.cookie}`;
+        const partes = valor.split(`; ${nombre}=`);
+        if (partes.length === 2) return partes.pop().split(';').shift();
+        return null;
+    },
+    //Funcion para cargar las tiendas
     async cargarMisTiendas() {
         try {
-            // 1. RECUPERAR EL TOKEN
-            // Cuando hiciste login, debiste guardar el token. 
-            // Si lo llamaste de otra forma, cambia 'token' por el nombre correcto.
-            const token = localStorage.getItem('token'); 
+            const token = this.obtenerCookie('token'); 
 
             if (!token) {
-                alert("No estás logueado. Por favor, inicia sesión.");
-                this.$router.push('/login'); // Te devuelve al login si no hay token
+                console.warn("No se encontró la cookie del token");
+                alert("No estás logueado.");
+                this.$router.push('/login');
                 return;
             }
 
-            console.log("📡 Pidiendo MIS datos a Laravel...");
-
-            // 2. PETICIÓN CON CABECERA (HEADER)
-            // Aquí enviamos el token para que Laravel sepa quiénes somos
+            console.log("📡 Token recuperado de cookie:", token);
+            
             const response = await axios.get('http://localhost:8080/api/users/map', {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
                 }
             });
 
             console.log("✅ Mis tiendas recibidas:", response.data);
 
-            // 3. MAPEO DE DATOS (Igual que en el mapa general)
             this.misTiendas = response.data.map(punto => {
                 return {
                     id: punto.id_delivery_point,
@@ -83,7 +86,7 @@ export default {
         } catch (error) {
             console.error("❌ Error cargando mis tiendas:", error);
             if (error.response && error.response.status === 401) {
-                alert("Tu sesión ha caducado. Vuelve a entrar.");
+                alert("Sesión caducada.");
                 this.$router.push('/login');
             }
         }
@@ -102,23 +105,14 @@ export default {
     margin: 0 auto; 
     text-align: center;
 }
-.area-mapa { 
-    padding: 20px 0; 
-    margin-top: 20px; 
-}
+.area-mapa { padding: 20px 0; margin-top: 20px; }
 .caja-debug { 
-    margin-top: 20px; 
-    padding: 10px; 
-    background-color: #d4edda; 
-    border-radius: 5px;
+    margin-top: 20px; padding: 10px; 
+    background-color: #d4edda; border-radius: 5px; 
     display: inline-block;
 }
 .aviso-vacio {
-    margin-top: 20px;
-    color: #856404;
-    background-color: #fff3cd;
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #ffeeba;
+    margin-top: 20px; color: #856404; background-color: #fff3cd; 
+    padding: 15px; border-radius: 5px;
 }
 </style>

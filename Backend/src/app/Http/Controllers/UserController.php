@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Delivery_point;
 
 class UserController extends Controller
 {
