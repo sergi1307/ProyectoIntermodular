@@ -92,7 +92,15 @@ const enviarDatos = () => {
         </option>
       </select><br><br>
 
-      <button type="submit">Agregar producto</button>
+      <button id="submit" type="submit">Agregar producto</button>
     </form>
   </div>
 </template>
+<style>
+  #submit{
+    background-color: #1c5537;
+    border-radius: 20px;
+    border: none;
+    color: white;
+  }
+</style>

@@ -132,7 +132,15 @@ onMounted(cargarCategorias)
         {{ categoria.name }}
         </option>
       </select><br><br>
-      <button type="submit">Actualizar producto</button>
+      <button id="submit" type="submit">Actualizar producto</button>
     </form>
   </div>
 </template>
+<style>
+  #submit{
+    background-color: #1c5537;
+    border-radius: 20px;
+    border: none;
+    color: white;
+  }
+</style>

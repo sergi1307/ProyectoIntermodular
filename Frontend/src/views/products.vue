@@ -121,9 +121,11 @@ onMounted(obtenerDatos)
   
     <div id="contenedor">
       <div id="menu">
-        <p>Productos</p>
-        <p>Ordenes?</p>
-        <p>Mapas</p>
+        <ul>
+          <li><a href="#">Productos</a></li>
+          <li><a href="#">Ordenes?</a></li>
+          <li><a href="#">Mapas</a></li>
+        </ul>
       </div>
         <div id ="menu_producto">
             <div id="search">
@@ -135,7 +137,7 @@ onMounted(obtenerDatos)
             </div>
             <div id="boton">
               <!-- Botó d'afegir producte amb el component del formulari per a crear producte-->
-              <button @click="openCrear = true">Añadir producto</button>
+              <button @click="openCrear = true">+ Añadir producto</button>
               <BaseModal v-model="openCrear">
                 <createProduct
                   :categorias="categorias"
@@ -192,11 +194,16 @@ onMounted(obtenerDatos)
 </div>
 </template>
 <style scoped>
-    #boton{
-        background-color: #1c5537;
-        border-radius: 20px;
-    }
-    #price{
-        
-    }
+  #boton{
+    background-color: #1c5537;
+    border-radius: 20px;
+  }
+  #price{
+
+  }
+  button {
+    background: none;
+    border: none;
+    color: white;
+  }
 </style>
