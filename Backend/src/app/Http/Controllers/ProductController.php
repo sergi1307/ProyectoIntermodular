@@ -72,6 +72,9 @@ class ProductController extends Controller
         // Seleccionamos la fecha de hoy
         $fecha = Carbon::now('Europe/Madrid')->format('Y-m-d');
 
+        // Obtenim l'id de l'usuari per mig del token
+        $userId = $request->user()->id_user;
+
         // Validem les dades abans d'insertar el producte en la base de dades 
         $validated = $request->validate([
             'id_user' => 'required|integer|exists:users,id_user',
