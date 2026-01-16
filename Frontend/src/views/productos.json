@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "Manzanas",
+    "description": "a",
     "category_id": 1,
     "price": 2.5,
     "stock": 120,
@@ -11,6 +12,7 @@
   {
     "id": 2,
     "name": "Leche entera",
+    "description": "b",
     "category_id": 3,
     "price": 1.2,
     "stock": 40,
@@ -20,6 +22,7 @@
   {
     "id": 3,
     "name": "Pollo fresco",
+    "description": "c",
     "category_id": 4,
     "price": 6.9,
     "stock": 15,
@@ -29,6 +32,7 @@
   {
     "id": 4,
     "name": "Zanahorias",
+    "description": "d",
     "category_id": 2,
     "price": 1.1,
     "stock": 80,

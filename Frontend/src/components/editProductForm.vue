@@ -10,6 +10,7 @@ const categorias = ref([])
 
 // Definim els camps del formulari buits
 const name = ref('')
+const description = ref('')
 const category_id = ref('')
 const price = ref(null)
 const stock = ref(null)
@@ -38,6 +39,7 @@ const cargarCategorias = async () => {
 const producto = computed(() => ({
   // Mostrem el producte amb el valor que agafem del producte que editarem
   name: name.value,
+  description: description.value,
   category_id: category_id.value,
   price: price.value,
   stock: stock.value,
@@ -57,6 +59,7 @@ const guardar = async () => {
   emit('updated', {
   id: props.producto.id,
   name: name.value,
+  description: description.value,
   category_id: category_id.value,
   price: price.value,
   stock: stock.value,
@@ -73,6 +76,7 @@ watch(
     if (!p) return
 
     name.value = p.name
+    description.value = p.description
     category_id.value = p.category_id
     price.value = p.price
     stock.value = p.stock
@@ -94,6 +98,10 @@ onMounted(cargarCategorias)
       <label for="product">Producto</label><br></br>
       <input type="text" placeholder="Nombre del producto" v-model="name"/><br></br>
 
+      <!--Descrició del producte-->
+      <label>Descripción</label><br>
+      <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
+      
       <!--Preu-->
       <label for="price">Precio</label><br></br>
       <input type="number" step="0.01" placeholder="Precio" v-model="price"/><br></br>

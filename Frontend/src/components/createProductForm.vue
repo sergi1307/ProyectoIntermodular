@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 
 // Definim els camps del formulari buits
 const name = ref('')
+const description = ref('')
 const category_id = ref('')
 const price = ref(null)
 const stock = ref(null)
@@ -23,6 +24,7 @@ const emit = defineEmits(['created'])
 const producto = computed(() => ({
   id: Date.now(), 
   name: name.value,
+  description: description.value,
   category_id: category_id.value,
   price: price.value,
   stock: stock.value,
@@ -31,7 +33,7 @@ const producto = computed(() => ({
 }))
 
 const enviarDatos = () => {
-  if (!name.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
+  if (!name.value || !description.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
     alert('Por favor, rellena todos los campos')
     return
   }
@@ -41,6 +43,7 @@ const enviarDatos = () => {
 
   // I procedim a buidar les dades del formulari
   name.value = ''
+  description.value = ''
   category_id.value = ''
   price.value = null
   stock.value = null
@@ -56,6 +59,10 @@ const enviarDatos = () => {
       <!--Nom del producte-->
       <label>Nombre del producto</label><br>
       <input type="text" v-model="name" placeholder="Nombre del producto"/><br>
+
+      <!--Descrició del producte-->
+      <label>Descripción</label><br>
+      <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
 
       <!--Preu-->
       <label>Precio</label><br>

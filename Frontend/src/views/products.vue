@@ -28,7 +28,7 @@ const obtenerDatos = async () => {
     /*
     // Fem la petició al backend per a ovtindre els productes i les categories
     const [resProductos, resCategorias] = await Promise.all([
-      axios.get('http://localhost:8080/api/productos'),
+      axios.get('http://localhost:8080/api/products'),
       axios.get('http://localhost:8080/api/categorias')
     ])
     // Li passem les dades del backend als arrays 
@@ -154,6 +154,7 @@ onMounted(obtenerDatos)
             <table>
             <tr>
                 <th>Producto</th>
+                <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
                 <th>Stock</th>
@@ -164,6 +165,7 @@ onMounted(obtenerDatos)
             <!--Fem el bucle del producte mesclat amb les categories per a mostrar-los en la taula HTML-->
             <tr v-for="producto in productosConCategoria" :key="producto.id">
                 <td>{{ producto.name }}</td>
+                <td>{{ producto.description }}</td>
                 <td>{{ producto.category }}</td>
                 <td id="price">{{ producto.price }}</td>
                 <td id="stock">{{ producto.stock }}</td>
