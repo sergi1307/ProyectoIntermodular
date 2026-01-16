@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: rgb(31, 95, 62);
+    display: flex;
+    height: 85px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#empresa {
+    margin-left: 3%;
+    display: flex;
+    align-items: center;
+    padding: 0.5%;
+}
+
+#empresa p {
+    color: white;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+nav #iniciarSesion {
+    background-color: white;
+    color: #1f5f3e;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    margin-right: 3%;
+}
+
+#section1 {
+    background-image: url('../imgs/ImagenProductosCampo.png');
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+}
+
+.maximaAmplitud {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 4%;
+    border-radius: 20px;
+}
+
+#section1 #contenido {
+    width: 70%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+#section1 #contenido h2 {
+    font-size: 2em;
+}
+
+#section1 #contenido p {
+    text-align: justify;
+    padding-top: 2%;
+    font-style: italic;
+    font-size: 1.1em;
+}
+
+#section1 #sectionButtons {
+    padding-top: 7%;
+    width: 100%;
+}
+
+#section1 #sectionButtons #comenzar {
+    padding: 3%;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: #1f5f3e;
+    border-radius: 15px;
+    margin-right: 2%;
+}
+
+#section1 #sectionButtons #saberMas {
+    padding: 3%;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    border: 2px solid white;
+}
+
+#section2 {
+    background-color: #f2f2f2;
+    padding: 2%;
+}
+
+#section2 #contenido {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #1f5f3e;
+}
+
+#section2 #contenido h3 {
+    font-weight: bold;
+    font-size: 1.6em;
+    padding-bottom: 1%;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 4%;
+    text-align: center;
+}
+
+#grid div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #eaeaea;
+    padding: 4%;
+    width: 60%;
+    margin: 0 auto;
+    border-radius: 10px;
+    height: 150px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+#grid div h4 {
+    color: #1f5f3e;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#grid img {
+    border-radius: 15px;
+}
+
+#section3 {
+    background-color: #194b31;
+    color: white;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 3%;
+}
+
+#section3 h3 {
+    font-size: 1.6em;
+    padding-bottom: 1%;
+    font-weight: bold;
+}
+
+#section3 p {
+    padding-bottom: 1%;
+}
+
+#section3 #boton {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2%;
+    color: #194b31;
+    text-decoration: none;
+}
