@@ -1,6 +1,6 @@
 <template>
   <div class="contenedor-especifico">
-    <h2>📍 Mis Puntos de Venta</h2>
+    <h2>📍 Mis Puntos de Venta 📍</h2>
     <p>Gestiona tus ubicaciones activas.</p>
 
     <div class="area-mapa">
@@ -51,7 +51,7 @@ export default {
     //Funcion para cargar las tiendas
     async cargarMisTiendas() {
         try {
-            const token = this.obtenerCookie('token'); 
+            const token = this.obtenerCookie('auth_token'); 
 
             if (!token) {
                 console.warn("No se encontró la cookie del token");
@@ -60,8 +60,8 @@ export default {
                 return;
             }
 
-            console.log("📡 Token recuperado de cookie:", token);
-            
+            console.log("Token recuperado de cookie:", token);
+
             const response = await axios.get('http://localhost:8080/api/users/map', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -69,7 +69,7 @@ export default {
                 }
             });
 
-            console.log("✅ Mis tiendas recibidas:", response.data);
+            console.log("Mis tiendas recibidas:", response.data);
 
             this.misTiendas = response.data.map(punto => {
                 return {
@@ -84,7 +84,7 @@ export default {
             this.cargado = true;
 
         } catch (error) {
-            console.error("❌ Error cargando mis tiendas:", error);
+            console.error(" Error cargando mis tiendas:", error);
             if (error.response && error.response.status === 401) {
                 alert("Sesión caducada.");
                 this.$router.push('/login');
