@@ -5,7 +5,7 @@ import router from '../routes/routes';
 
 <template>
   <nav>
-    <div id="empresa">
+    <div class="empresa">
       <img src="../assets/imgs/logoEmpresa.png" alt="Logo ProxiMarkt" width="100px">
       <p>ProxiMarkt</p>
     </div>
@@ -61,4 +61,43 @@ import router from '../routes/routes';
       <router-link to="/login" id="boton">Comenzar Ahora</router-link>
     </div>
   </section>
+
+  <section id="section4">
+    <div id="contenido">
+      <div>
+        <div class="empresa">
+          <img src="../assets/imgs/logoEmpresa.png" alt="Logo de empresa" width="80px">
+          <p>ProxiMarkt</p>
+        </div>
+        <div>
+          <p>Conectando comunidades a través del comercio local y sostenible.</p>
+        </div>
+      </div>
+
+      <div>
+        <h4>Para Compradores</h4>
+        <p>Explorar Productos</p>
+        <p>Encontrar Vendedores</p>
+        <p>Cómo Funciona</p>
+      </div>
+
+      <div>
+        <h4>Para Vendedores</h4>
+        <p>Comenzar a Vender</p>
+        <p>Recursos para Vendedores</p>
+        <p>Historias de Éxito</p>
+      </div>
+      
+      <div>
+        <h4>Empresa</h4>
+        <p>Sobre Nosotros</p>
+        <p>Contacto</p>
+        <p>Política de Privacidad</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 ProxiMarkt. Todos los derechos reservados.</p>
+    </footer>
+  </section>  
 </template>
