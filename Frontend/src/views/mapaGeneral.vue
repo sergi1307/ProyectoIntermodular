@@ -9,18 +9,27 @@
   
   <script>
   import MapaTiendas from '../components/mapaPuntosdeventa.vue';
-  
+  import axios from 'axios';
   export default {
     name: 'MapaGeneral',
     components: { MapaTiendas },
     data() {
       return {
-        // DATOS MOCK: Simulo la respuesta de la API de Laravel
-        listaTiendas: [
-          { id: 1, name: 'Sede Central', latitude: 40.4167, length: -3.70325, direction: 'Madrid' },
-          { id: 2, name: 'Delegación Norte', latitude: 41.3851, length: 2.1734, direction: 'Barcelona' },
-          { id: 3, name: 'Delegación Sur', latitude: 37.3891, length: -5.9845, direction: 'Sevilla' }
-        ]
+
+        listaTiendas: []
+      }
+    },
+    async mounted(){
+      await this.cargarTiendas();
+    },
+    methods: {
+      async cargarTiendas(){
+        try {
+          const response = await axios.get('http://localhost:8080/api/tiendas');
+          this.listaTiendas = response.data;
+        } catch (error) {
+          console.error('Error al cargar tiendas:', error);
+        }
       }
     }
   }
