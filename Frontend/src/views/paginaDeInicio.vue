@@ -22,7 +22,6 @@
           
           <div class="hero-buttons">
             <router-link to="/mapa" class="btn btn-primary">Ver Mercado</router-link>
-            <button class="btn btn-outline">¿Ké ase esto?</button>
           </div>
         </div>
       </header>
