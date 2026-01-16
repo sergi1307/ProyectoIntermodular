@@ -9,6 +9,30 @@ use Illuminate\Support\Carbon;
 class ProductController extends Controller
 {
     /**
+     * Funció per a obtindre els productes d'un usuari
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function myProducts(Request $request)
+    {
+        // Obtenim l'ID de l'usuari des del token
+        $userId = $request->user()->id_user;
+
+        // Busquem els seus productes amb les relacions necesàries
+        $products = Product::where('id_user', $userId)
+            ->with(['categories', 'delivery_point:id_delivery_point,name'])
+            ->orderBy('publication_date', 'desc')
+            ->get();
+
+        // Retornem la resposta en format json
+        return response()->json([
+            'status' => 'true',
+            'data' => $products
+        ], 200);
+    }
+
+    /**
      * Funció que retorna tots els productes
      * 
      * @return json
@@ -47,6 +71,9 @@ class ProductController extends Controller
     {
         // Seleccionamos la fecha de hoy
         $fecha = Carbon::now('Europe/Madrid')->format('Y-m-d');
+
+        // Obtenim l'id de l'usuari per mig del token
+        $userId = $request->user()->id_user;
 
         // Validem les dades abans d'insertar el producte en la base de dades 
         $validated = $request->validate([
