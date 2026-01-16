@@ -15,7 +15,10 @@ class Delivery_Point extends Model
         'name',
         'direction',
         'latitude',
-        'length'
+        'length',
+    ];
+    protected $hidden = [
+        'id_user',
     ];
 
     public function products()
@@ -23,7 +26,10 @@ class Delivery_Point extends Model
         // Relación: Este Punto de Entrega "tiene muchos" (hasMany) Productos.
         // Le indicamos a Laravel que busque los productos donde la columna 
         // 'id_delivery_point' coincida con el ID de este punto.
-        return $this->hasMany(Product::class, 'id_delivery_point');
+        return $this->hasMany(Product::class, 'id_delivery_point','id_delivery_point');
+    }
+    public function user(){
+        return $this->belongsTo(User::class,'id_user');
     }
 
 } 

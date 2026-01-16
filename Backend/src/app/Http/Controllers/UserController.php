@@ -10,89 +10,112 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Controlador
     /**
-    * Crea un usuari mitjançant:
-    *  - nom
-    *  - correu electrònic
-    *  - numero de telefon
-    *  - contrassenya
-    */
-    public function createUser(UserRequest $request)
-    {
-        // Passa el nom, correu i contrassenya per a crear-lo
-        $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'registration_date' => $request->registration_date,
-                'password' => Hash::make($request->password),
-             ]);
-        // Resposta en forma de JSON
-        return response()->json([
-            'status' => 'true',
-            'message' => 'Usuari creat correctament'
-        ], 200);
-    }
+     * Funció per a obtindre tots els usuaris
+     *
+     * @return json
+     */
     public function index()
     {
+        // Obtenim tots els usuaris de la base de dades
         $users = User::all();
+
+        // Retornem una llista en format json dels usuaris
         return response()->json($users);
     }
+
+    /**
+     * Funció per a obtindre un usuari
+     *
+     * @param numeric $id
+     * @return json
+     */
     public function show($id)
     {
+        // Obtenim un usuari per id
         $user = User::find($id);
         
+        // Comprobem que l'usuari existeix
         if (!$user) {
-            return response()->json(['message' => 'No encontrado'], 404);
+            return response()->json(['message' => 'No trobat'], 404);
         }
         
+        // Retornem la resposta amb l'usuari en format json
         return response()->json($user);
     }
 
-    // Actualizar un usuario por id
+    /**
+     * Funció per a actualitzar un usuari
+     *
+     * @param Request $request
+     * @param numeric $id
+     * @return json
+     */
     public function update(Request $request, $id)
     {
+        // Obtenim l'usuari per id
         $user = User::find($id);
 
+        // Comprobem que l'usuari existeix
         if (!$user) {
-            return response()->json(['message' => 'No encontrado'], 404);
+            return response()->json(['message' => 'No trobat'], 404);
         }
 
-        // Preparamos los datos en el array para actualizarlos
-        $datos = [
+        // Validem les dades abans d'introduir-les en la base de dades
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'phone' => 'required|string'
+        ]);
+
+        // Actualitzem l'usuari definitivament
+        $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'registration_date' => $request->registration_date,
-        ];
-        $user->update($datos);
-        return response()->json([
-            'message' => 'Usuario actualizado',
-            'user' => $user
+            'phone' => $request->phone
         ]);
+
+        // Retornem una resposta com que ha anat tot bé
+        return response()->json([
+            'message' => 'Usuari actualitzat',
+            'user' => $user
+        ], 200);
     }
 
-    // eliminar un usario por id
+    /**
+     * Funció per a eliminar un usuari per id
+     *
+     * @param numeric $id
+     * @return json
+     */
     public function destroy($id)
     {
+        // Obtenim l'usuari per id
         $user = User::find($id);
 
+        // Comprobem que l'usuari existeix
         if (!$user) {
-            return response()->json(['message' => 'No encontrado'], 404);
+            return response()->json(['message' => 'Usuari no trobat'], 404);
         }
 
+        // Eliminem l'usuari
         $user->delete();
 
-        return response()->json(['message' => 'Usuario eliminado']);
+        // Retornem una resposta afirmativa de que ha anat tot bé
+        return response()->json(['message' => 'Usuari eliminat'],200);
     }
 
-    public function mostrarMapa() {
-        // Usamos 'with' para traer los puntos y sus productos en una sola operación.
-        // Esto evita hacer cientos de consultas separadas a la base de datos (evita problema N+1).
+    /**
+     * Funció per a mostrar el mapa
+     *
+     * @return json
+     */
+    public function mostrarMapa()
+    {
+        // Obtenim els punts d'entrega amb els productes que es venen en cada u de ells
         $puntos = Delivery_Point::with('products')->get();
-        // Si no usara el with, Laravel tendría que ir a la base de datos una vez por cada punto para buscar sus productos. Con with, lo hace todo de golpe y la web va más rápida
-        // Enviamos el paquete completo a la vista
+        
+        // Retornarem les dades per a la vista de vue
         return view('mapa', compact('puntos'));
     }
 }
