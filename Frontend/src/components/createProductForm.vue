@@ -61,7 +61,7 @@ const enviarDatos = () => {
       <input type="text" v-model="name" placeholder="Nombre del producto"/><br>
 
       <!--Descrició del producte-->
-      <label>Descripción</label><br>
+      <label for="description">Descripción</label><br>
       <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
 
       <!--Preu-->
@@ -103,11 +103,61 @@ const enviarDatos = () => {
     </form>
   </div>
 </template>
-<style>
-  #submit{
-    background-color: #1c5537;
-    border-radius: 20px;
-    border: none;
-    color: white;
-  }
+<style scoped>
+#form-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.15);
+}
+
+textarea {
+  resize: none;
+  min-height: 90px;
+}
+
+select {
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+button {
+  background-color: #1c5537;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  padding: 5px 15px;
+}
 </style>
