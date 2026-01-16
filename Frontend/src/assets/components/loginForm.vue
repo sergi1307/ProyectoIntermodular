@@ -2,8 +2,6 @@
     // Importem les llibreríes necessàries
     import { ref } from 'vue';
     import axios from 'axios';
-
-    axios.defaults.withCredentials = true;
     
     // Declarem les variables reactives que rebrem del formulari
     const email = ref('');
@@ -31,7 +29,7 @@
         console.log("Enviando datos al backend:", datos);
 
         // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-        const response = await axios.post('http://localhost:8080/api/auth/login', datos);
+        const response = await axios.post('http://localhost:8080/api/login', datos);
 
         console.log("Respuesta del servidor:", response.data);
     }
