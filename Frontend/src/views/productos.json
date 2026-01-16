@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Manzanas",
+    "category_id": 1,
+    "price": 2.5,
+    "stock": 120,
+    "type_stock": "kg",
+    "state": "disponible"
+  },
+  {
+    "id": 2,
+    "name": "Leche entera",
+    "category_id": 3,
+    "price": 1.2,
+    "stock": 40,
+    "type_stock": "Unidad",
+    "state": "disponible"
+  },
+  {
+    "id": 3,
+    "name": "Pollo fresco",
+    "category_id": 4,
+    "price": 6.9,
+    "stock": 15,
+    "type_stock": "kg",
+    "state": "reservado"
+  },
+  {
+    "id": 4,
+    "name": "Zanahorias",
+    "category_id": 2,
+    "price": 1.1,
+    "stock": 80,
+    "type_stock": "kg",
+    "state": "agotado"
+  }
+]
