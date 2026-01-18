@@ -11,6 +11,9 @@
 import MapaTiendas from '../components/mapaPuntosdeventa.vue';
 import axios from 'axios';
 
+/**
+ * Vista que muestra todas las tiendas disponibles
+ */
 export default {
   name: 'MapaGeneral',
   components: { MapaTiendas },
@@ -23,6 +26,9 @@ export default {
     await this.cargarTiendas();
   },
   methods: {
+    /**
+     * Carga todas las tiendas desde la API
+     */
     async cargarTiendas() {
       try {
         console.log("Pidiendo datos a Laravel...");

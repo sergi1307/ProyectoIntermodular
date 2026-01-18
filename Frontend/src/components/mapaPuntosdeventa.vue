@@ -22,6 +22,9 @@
   });
   L.Marker.prototype.options.icon = DefaultIcon;
   
+  /**
+   * Componente para mostrar el mapa interactivo con marcadores de puntos de venta
+   */
   export default {
       name: 'MapaTiendas',
       props: {
@@ -54,6 +57,9 @@
           }
       },
       methods: {
+        /**
+         * Inicializa el mapa de Leaflet con límites restringidos a España
+         */
         iniciarMapa() {
             var surOeste = L.latLng(33.0, -12.0); 
             var norteEste = L.latLng(45.0, 6.0);
@@ -77,12 +83,12 @@
                 this.dibujarMarcadores();
             }
         },
+          /**
+           * Dibuja todos los marcadores en el mapa y ajusta el zoom
+           */
           dibujarMarcadores() {
               this.layerGroup.clearLayers();
-              
-              // Guardamos coordenadas para ajustar el zoom automáticamente
               const limites = [];
-  
               this.puntos.forEach(punto => {
                   const lat = punto.latitude;
                   const lng = punto.length; 

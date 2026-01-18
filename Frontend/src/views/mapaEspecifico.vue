@@ -27,6 +27,9 @@
 import MapaTiendas from '../components/mapaPuntosdeventa.vue';
 import axios from 'axios';
 
+/**
+ * Vista que muestra las tiendas del usuario autenticado
+ */
 export default {
   name: 'MapaEspecifico',
   components: { MapaTiendas },
@@ -41,12 +44,20 @@ export default {
       await this.cargarMisTiendas();
   },
   methods: {
+    /**
+     * Obtiene el valor de una cookie por su nombre
+     * @param {string} nombre - Nombre de la cookie
+     * @returns {string|null} Valor de la cookie o null
+     */
     obtenerCookie(nombre) {
         const valor = `; ${document.cookie}`;
         const partes = valor.split(`; ${nombre}=`);
         if (partes.length === 2) return partes.pop().split(';').shift();
         return null;
     },
+    /**
+     * Carga las tiendas del usuario desde la API
+     */
     async cargarMisTiendas() {
         try {
             const token = this.obtenerCookie('auth_token'); 
@@ -89,6 +100,10 @@ export default {
             }
         }
     },
+    /**
+     * Maneja la selección de una tienda en el mapa
+     * @param {number} id - ID de la tienda seleccionada
+     */
     seleccionarTienda(id) {
         this.idCapturado = id;
     }
