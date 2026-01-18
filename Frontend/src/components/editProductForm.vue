@@ -1,75 +1,65 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
-// Importem les dades del JSON (borrar quan anem a fer les peticions al backend)
-import productosMock from '../views/productos.json'
-import categoriasMock from '../views/categorias.json'
 
-// Llista de les categories
 const categorias = ref([])
 
-// Definim els camps del formulari buits
+// Camps del formulari
 const name = ref('')
 const description = ref('')
-const category_id = ref('')
 const price = ref(null)
 const stock = ref(null)
 const type_stock = ref('')
 const state = ref('')
+const category_id = ref('')
 
-// Definim el producte com a objecte requerit per al formulari
+// Props del producte
 const props = defineProps({
-  producto: {
-    type: Object,
-    required: true
-  }
+  producto: { type: Object, required: true }
 })
-// Emitim la senyal d'actualitzar
+
+// Emitim la senyal d'actualitzat
 const emit = defineEmits(['updated'])
 
+// Carreguem les categories per al select
 const cargarCategorias = async () => {
-  /*
-  const res = await axios.get('http://localhost:8080/api/categorias')
-  categorias.value = res.data
-  */
-  categorias.value = categoriasMock
+  try {
+    const res = await axios.get('http://localhost:8080/api/categories')
+    categorias.value = res.data
+
+  } catch (error) {
+    console.error('Error cargando categorías:', error)
+  }
 }
 
-
-const producto = computed(() => ({
-  // Mostrem el producte amb el valor que agafem del producte que editarem
+// Computed per a enviar al backend solo els camps de productes
+const productoBackend = computed(() => ({
   name: name.value,
   description: description.value,
-  category_id: category_id.value,
   price: price.value,
   stock: stock.value,
   type_stock: type_stock.value,
   state: state.value
 }))
+
+// Guardar canvis
 const guardar = async () => {
-    /*
-  try{
-    await axios.put(`/api/products/${props.producto.id}`, productoActualizado)
-    emit('updated', productoActualizado)
-  } catch (error){
-   console.log("Error al actualizar" + error)
+  try {
+    const res = await axios.put(
+      `http://localhost:8080/api/products/update/${props.producto.id_product}`,
+      productoBackend.value
+    )
+
+    emit('updated', {
+      ...res.data.product,
+      category_id: category_id.value
+    })
+
+  } catch (error) {
+    console.error('Error al actualizar:', error)
   }
-    */
-  // Emitim la senyal de l'actualitzat amb les dades del formulari i en la vista producte s'actualitzara
-  emit('updated', {
-  id: props.producto.id,
-  name: name.value,
-  description: description.value,
-  category_id: category_id.value,
-  price: price.value,
-  stock: stock.value,
-  type_stock: type_stock.value,
-  state: state.value
-})
-
-
-
 }
+
 watch(
   () => props.producto,
   (p) => {
@@ -77,78 +67,125 @@ watch(
 
     name.value = p.name
     description.value = p.description
-    category_id.value = p.category_id
     price.value = p.price
     stock.value = p.stock
     type_stock.value = p.type_stock
     state.value = p.state
+    category_id.value = p.category_id ?? ''
   },
   { immediate: true }
 )
-// Carrega les categories per al desplegable
+
 onMounted(cargarCategorias)
-
 </script>
-
 
 <template>
   <div id="form-container">
     <form @submit.prevent="guardar">
+
       <!--Nom del producte-->
-      <label for="product">Producto</label><br></br>
-      <input type="text" placeholder="Nombre del producto" v-model="name"/><br></br>
+      <label>Nombre del producto</label><br>
+      <input type="text" v-model="name" placeholder="Nombre del producto"/><br>
 
       <!--Descrició del producte-->
-      <label>Descripción</label><br>
+      <label for="description">Descripción</label><br>
       <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
-      
+
       <!--Preu-->
-      <label for="price">Precio</label><br></br>
-      <input type="number" step="0.01" placeholder="Precio" v-model="price"/><br></br>
-
+      <label>Precio</label><br>
+      <input type="number" step="0.01" v-model="price" placeholder="Precio"/><br>
+      
       <!--Stock-->
-      <label for="stock">Stock</label><br></br>
-      <input type="number" placeholder="Stock" v-model="stock"/><br></br>
-
+      <label>Stock</label><br>
+      <input type="number" v-model="stock" placeholder="Stock"/><br>
+      
       <!--Tipus de stock-->
-      <label for="type_stock">Tipo de stock</label><br></br>
+      <label>Tipo de stock</label><br>
       <select v-model="type_stock">
         <option disabled value="">Selecciona tipo de stock</option>
-        <option value="unidad">Unidad</option>
-        <option value="kg">Kg</option>
-      </select><br></br>
-
+        <option value="Unidad">Unidad</option>
+        <option value="Kg">Kg</option>
+      </select><br>
+      
       <!--Estat-->
-      <label for="state">Estado</label><br></br>
+      <label>Estado</label><br>
       <select v-model="state">
         <option disabled value="">Selecciona estado</option>
-        <option value="disponible">Disponible</option>
-        <option value="agotado">Agotado</option>
-        <option value="reservado">Reservado</option>
-      </select><br></br>
+        <option value="Disponible">Disponible</option>
+        <option value="Agotado">Agotado</option>
+        <option value="Reservado">Reservado</option>
+      </select><br>
       
       <!--Categoria-->
-      <label for="category">Categoria</label><br></br>
+      <label>Categoría</label><br>
       <select v-model="category_id">
-      <!--Recorrem un for per a mostrar tots els valors de categoria en el desplegable-->
-        <option disabled value="">Selecciona una categoría</option>
-        <option
-          v-for="categoria in categorias"
-          :key="categoria.id"
-          :value="categoria.id"
-        >
-        {{ categoria.name }}
+        <!--Recorrem la llista de les categories per a mostrar-les en el desplegable-->
+        <option disabled value="">Selecciona categoría</option>
+        <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
+          {{ categoria.name }}
         </option>
       </select><br><br>
+
       <button id="submit" type="submit">Actualizar producto</button>
     </form>
   </div>
 </template>
-<style>
-  #submit{
-    background-color: #1c5537;
-    border-radius: 20px;
-    border: none;
-    color: white;
-  }
+
+<style scoped>
+#form-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.15);
+}
+
+textarea {
+  resize: none;
+  min-height: 90px;
+}
+
+select {
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+button {
+  background-color: #1c5537;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  padding: 5px 15px;
+}
 </style>
