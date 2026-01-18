@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Sale;
+use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 
 class SaleController extends Controller
@@ -25,11 +27,33 @@ class SaleController extends Controller
             'total' => 'required|numeric'
         ]);
 
+        // Obtenim el producte pel seu id
+        $product = Product::findOrFail($request->id_product);
+
+        // Comprobem que el stock siga major que la quantitat sol·licitada
+        if ($product->stock < $request->quantity) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Stock insuficiente'
+            ], 400);
+        }
+
+        // Obtenim del token l'id del comprador
+        $compradorId = $request->user()->id_user;
+
+        // Comprobem que l'usuari no intenta comprar el seu mateix producte
+        if ($product->id_user == $compradorId) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'No puedes comprar tus propios productos'
+            ], 403);
+        }
+
         // Insertem les dades definitivament
         $sale = Sale::create([
             'id_product' => $request->id_product,
-            'id_buyer' => $request->id_buyer,
-            'id_seller' => $request->id_seller,
+            'id_buyer' => $compradorId,
+            'id_seller' => $product->id_user,
             'id_delivery_point' => $request->id_delivery_point,
             'sale_date' => Carbon::now('Europe/Madrid')->format('Y-m-d'),
             'total' => $request->total
@@ -43,18 +67,25 @@ class SaleController extends Controller
     }
 
     /**
-     * Funció per a obtindre totes les ventes
+     * Funció per a obtindre totes les ventes d'un usuari
      *
      * @return json
      */
-    public function index()
+    public function myOrders(Request $request)
     {
-        // Obtenim totes les ventes en totes les seues dades associades
-        $sales = Sale::with([
-            'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
-        ])->get();
+        // Obtenim del token el id de l'usuari
+        $userId = $request->user()->id_user;
 
-        // Retornem la resposta en format json
+        // Obtenim la venta en tots els seus camps associats
+        $sales = Sale::where('id_buyer', $userId)
+            ->with([
+                'product:id_product,name,image,price', 
+                'seller:id_user,name', 
+                'delivery_point:id_delivery_point,name,direction'
+            ])
+            ->get();
+        
+        // Retornem la resposta amb les ventes
         return response()->json($sales, 200);
     }
 
@@ -94,7 +125,7 @@ class SaleController extends Controller
 
         // Comprobem que la venta existeix
         if (!$sale){
-        return response() -> json(['message' => 'no se ha encontrado la venta'],404 );
+            return response() -> json(['message' => 'no se ha encontrado la venta'],404 );
         }
 
         // Validem les dades que hem rebut
@@ -103,16 +134,8 @@ class SaleController extends Controller
         ]);
 
         // Actualitzem els camps definitivament
-        $sale->update([
-            'total' => $request->total,
-            'collection_date' => Carbon::now('Europe/Madrid')->format('Y-m-d')
-        ]);
-        
-        // Retornem una resposta en json
-        return response()->json([
-            'message' => 'Venta actualizada',
-            'sale' => $sale
-        ], 200);
+        $sale->update($request->all());
+        return response()->json(['message' => 'Actualizado', 'sale' => $sale]);
     }
 
     /**
