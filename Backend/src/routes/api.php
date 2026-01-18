@@ -19,7 +19,6 @@ Route::prefix('auth')->name('auth.')->group(function (){
 Route::prefix('users')->name('users.')->group(function (){
     Route::get('/',[UserController::class, 'index'])->name('index');
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
-    Route::post('/store', [UserController::class, 'store'])->name('store');
     Route::get('/show/{id}', [UserController::class, 'show'])->name('show');
     Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
@@ -45,7 +44,7 @@ Route::prefix('categories')->name('categories.')->group(function (){
 // Endpoints de Ventas 
 Route::prefix('sales')->name('sales.')->group(function (){
     Route::get('/', [SaleController::class, 'index'])->name('index');
-    Route::post('/create', [SaleController::class, 'create'])->name('create'); 
+    Route::post('/store', [SaleController::class, 'store'])->name('store'); 
     Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
     Route::put('/update/{id}', [SaleController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [SaleController::class, 'destroy'])->name('destroy');
@@ -54,7 +53,7 @@ Route::prefix('sales')->name('sales.')->group(function (){
 // Endpoints de Puntos de Entrega
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
-    Route::post('/create', [Delivery_pointController::class, 'create'])->name('create');
+    Route::post('/store', [Delivery_pointController::class, 'store'])->name('store');
     Route::get('/show/{id}', [Delivery_pointController::class, 'show'])->name('show');
     Route::put('/update/{id}', [Delivery_pointController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [Delivery_pointController::class, 'destroy'])->name('destroy');
@@ -63,7 +62,7 @@ Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
 // Endpoints de Reseñas
 Route::prefix('reviews')->name('reviews.')->group(function (){
     Route::get('/', [ReviewController::class, 'index'])->name('index');    
-    Route::post('/create', [ReviewController::class, 'create'])->name('create');
+    Route::post('/store', [ReviewController::class, 'store'])->name('store');
     Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
     Route::put('/update/{id}', [ReviewController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [ReviewController::class, 'destroy'])->name('destroy');

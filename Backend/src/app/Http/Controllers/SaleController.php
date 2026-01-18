@@ -8,72 +8,130 @@ use Carbon\Carbon;
 
 class SaleController extends Controller
 {
-    // 1. Crear una Venta
-    public function create(Request $request)
+    /**
+     * Funció per a crear una venta
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function store(Request $request)
     {
+        // Validem les dades abans d'insertar-les
+        $validated = $request->validate([
+            'id_product' => 'required|integer|exists:products,id_product',
+            'id_buyer' => 'required|integer|exists:users,id_user',
+            'id_seller' => 'required|integer|exists:users,id_user',
+            'id_delivery_point' => 'required|integer|exists:delivery_points,id_delivery_point',
+            'total' => 'required|numeric'
+        ]);
+
+        // Insertem les dades definitivament
         $sale = Sale::create([
             'id_product' => $request->id_product,
             'id_buyer' => $request->id_buyer,
             'id_seller' => $request->id_seller,
             'id_delivery_point' => $request->id_delivery_point,
-            'sale_date'=> Carbon::parse($request->sale_date),
-            'total' => $request->total,
-            'collection_date' => Carbon::parse($request->collection_date),
+            'sale_date' => Carbon::now('Europe/Madrid')->format('Y-m-d'),
+            'total' => $request->total
         ]);
 
+        // Retornem les dades definitivament en la base de dades
         return response()->json([
             'status' => 'true',
             'message' => 'Venta creada correctamente',
         ], 200);
     }
 
-    // 2. Listar Ventas
+    /**
+     * Funció per a obtindre totes les ventes
+     *
+     * @return json
+     */
     public function index()
     {
+        // Obtenim totes les ventes en totes les seues dades associades
         $sales = Sale::with([
             'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
         ])->get();
 
+        // Retornem la resposta en format json
         return response()->json($sales, 200);
     }
 
-    // 3. Mostrar una Venta
+    /**
+     * Funció per a obtindre una venta
+     *
+     * @param numeric $id
+     * @return json
+     */
     public function show($id)
     {
+        // Obtenim la venta amb totes les seues dades associades
         $sale = Sale::with([
             'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
         ])->find($id);
 
+        // Comprobem que la venta existeix
         if (!$sale) {
             return response()->json(['message' => 'No se ha encontrado la venta'], 404);
         }
 
+        // Retornem la venta en format json
         return response()->json($sale, 200);
     }
-    // 4. Actualizar una Venta
-    public function update(request $request, $id){
+
+    /**
+     * Funció per a actualitzar una venta
+     *
+     * @param request $request
+     * @param numeric $id
+     * @return json
+     */
+    public function update(request $request, $id)
+    {
+        // Funció per a obtindre la venta per id
         $sale = Sale::find($id);
+
+        // Comprobem que la venta existeix
         if (!$sale){
         return response() -> json(['message' => 'no se ha encontrado la venta'],404 );
         }
-        $datos = [
-            'sale_date' => Carbon::parse($request->sale_date),
-            'total' => $request -> total,
-            'collection_date' =>  Carbon::parse($request->collection_date),
-        ];
-        $sale->update($datos);
+
+        // Validem les dades que hem rebut
+        $validated = $request->validate([
+            'total' => 'required|numeric'
+        ]);
+
+        // Actualitzem els camps definitivament
+        $sale->update([
+            'total' => $request->total,
+            'collection_date' => Carbon::now('Europe/Madrid')->format('Y-m-d')
+        ]);
+        
+        // Retornem una resposta en json
         return response()->json([
             'message' => 'Venta actualizada',
             'sale' => $sale
-        ],200);
-    }
-    // 5. Eliminar una Venta
-    public function destroy($id){
-    $sale = Sale::findOrFail($id);
-    $sale->delete();
-        return response()-> json([
-            'message' => 'Venta eliminada'
-        ],200);
+        ], 200);
     }
 
+    /**
+     * Funció per a eliminar una venta
+     *
+     * @param numeric $id
+     * @return json
+     */
+    public function destroy($id)
+    {
+        // Obtenim una venta per id
+        $sale = Sale::findOrFail($id);
+
+        // Eliminem la venta
+        $sale->delete();
+
+        // Retornem una resposta en format json
+        return response()-> json([
+            'message' => 'Venta eliminada'
+        ], 200);
+    }
 }
