@@ -13,8 +13,6 @@
   <script>
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
-  
-  // Configuración de iconos estándar de Leaflet
   import icon from 'leaflet/dist/images/marker-icon.png';
   import iconShadow from 'leaflet/dist/images/marker-shadow.png';
   
@@ -33,15 +31,13 @@
       },
       data() {
           return {
-              map: null,       // Instancia del mapa
-              layerGroup: null // Grupo para gestionar los marcadores
+              map: null,       
+              layerGroup: null 
           }
       },
       mounted() {
           this.iniciarMapa();
       },
-      // WATCH: Esto es vital. Si los datos tardan en llegar del servidor,
-      // este observador actualizará el mapa automáticamente cuando lleguen.
       watch: {
           puntos: {
               handler(newVal) {
@@ -59,22 +55,32 @@
           }
       },
       methods: {
-          iniciarMapa() {
-              // Iniciamos el mapa
-              this.map = L.map('mapa-leaflet').setView([40.4167, -3.70325], 5);
-              
-              L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                  attribution: '&copy; OpenStreetMap'
-              }).addTo(this.map);
-  
-              // Creamos la capa para los marcadores
-              this.layerGroup = L.layerGroup().addTo(this.map);
-  
-              // Si ya hay datos, dibujamos
-              if (this.puntos.length > 0) {
-                  this.dibujarMarcadores();
-              }
-          },
+        iniciarMapa() {
+        // 1. Definimos los límites (Caja alrededor de España)
+            var surOeste = L.latLng(33.0, -12.0); 
+            var norteEste = L.latLng(45.0, 6.0);
+            var limitesEspaña = L.latLngBounds(surOeste, norteEste);
+
+        // 2. Iniciamos el mapa con las opciones RESTRICTIVAS
+            this.map = L.map('mapa-leaflet', {
+                center: [40.4167, -3.70325], // Centro en Madrid
+                zoom: 6,                     // Zoom inicial
+                minZoom: 5,                  // No pueden alejarse más que esto
+                maxBounds: limitesEspaña,    // El "candado" geográfico
+        });
+        
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(this.map);
+
+        // Creamos la capa para los marcadores
+            this.layerGroup = L.layerGroup().addTo(this.map);
+
+        // Si ya hay datos, dibujamos
+            if (this.puntos.length > 0) {
+                this.dibujarMarcadores();
+            }
+        },
           dibujarMarcadores() {
               // 1. Borramos marcadores antiguos
               this.layerGroup.clearLayers();
@@ -83,15 +89,12 @@
               const limites = [];
   
               this.puntos.forEach(punto => {
-                  // USAMOS 'length' COMO TU QUIERES
                   const lat = punto.latitude;
                   const lng = punto.length; 
-  
-                  // Solo pintamos si las coordenadas existen
+
                   if (lat && lng) {
                       const marcador = L.marker([lat, lng]);
                       
-                      // Configuración del Popup
                       if (this.esSeleccionable) {
                           marcador.bindPopup(`<b>${punto.name}</b><br>Click para seleccionar`);
                           marcador.on('click', () => {
@@ -102,15 +105,11 @@
                           marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}`);
                       }
   
-                      // Añadimos el marcador a la capa del mapa
                       this.layerGroup.addLayer(marcador);
                       
-                      // Guardamos la coordenada para calcular el zoom
                       limites.push([lat, lng]);
                   }
               });
-  
-              // AUTO-ZOOM: Ajusta el mapa para que se vean todos los puntos
               if (limites.length > 0) {
                   this.map.fitBounds(limites, { padding: [50, 50] });
               }
@@ -120,12 +119,11 @@
   </script>
   
   <style scoped>
-    /*CORRECION DE ESTILOS PARA QUE EL MAPA SE VEA BIEN (CUADRADO Y NO ESTIRADO)*/ 
     
     .tarjeta-mapa {
     width: 100%;
-    max-width: 750px; /* Limite de ancho para que no se estire */
-    margin: 0 auto;   /* Centrado */
+    max-width: 1200px;
+    margin: 0 auto;  
     background: white;
     padding: 15px;    
     border-radius: 20px;
@@ -134,7 +132,7 @@
     }
     #mapa-leaflet { 
         width: 100%; 
-        height: 550px;
+        height: 700px;
         border-radius: 15px; 
         border: 2px solid #eee;
         z-index: 1; 
