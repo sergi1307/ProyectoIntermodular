@@ -120,7 +120,6 @@
   </script>
   
   <style scoped>
-    
     .tarjeta-mapa {
     width: 100%;
     max-width: 1400px;
@@ -138,6 +137,5 @@
         border: 2px solid #eee;
         z-index: 1; 
     }
-    
     .error { color: grey; font-style: italic; padding: 10px; }
     </style>

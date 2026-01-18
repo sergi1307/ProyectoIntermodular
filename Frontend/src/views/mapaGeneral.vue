@@ -58,10 +58,9 @@ export default {
   <style scoped>
   .pagina-general { 
     padding: 40px 20px; 
-    text-align: center; /* Alineamos textos al centro */
-    background-color: #f9f9f9; /* Un gris muy clarito de fondo queda bien */
+    text-align: center;
+    background-color: #f9f9f9; 
   }
-
   h1 { margin-bottom: 10px; color: #333; }
   p { margin-bottom: 30px; color: #666; }
   </style>
