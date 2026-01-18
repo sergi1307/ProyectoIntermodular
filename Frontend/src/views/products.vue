@@ -66,10 +66,10 @@ const productosConCategoria = computed(() => {
   })
 })
 
-const agregarProducto = (nuevoProducto) => {
-  // Afegim el producte a la llista
-  productos.value.push(nuevoProducto)
-  // I tanquem la finestra de crear el producte
+const agregarProducto = async () => {
+  // Carregar altra vegada desde backend
+  await obtenerDatos()
+   // I tanquem la finestra de crear el producte 
   openCrear.value = false
 }
 
@@ -191,15 +191,12 @@ onMounted(obtenerDatos)
 </div>
 </template>
 <style scoped>
-  /* CONTENEDOR GENERAL */
 #productos {
   background-color: #f6f8f7;
   min-height: 100vh;
   padding: 24px;
   font-family: 'Inter', system-ui, sans-serif;
 }
-
-/* CAJA PRINCIPAL */
 #contenedor {
   background: white;
   border-radius: 14px;
@@ -207,7 +204,6 @@ onMounted(obtenerDatos)
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* MENU SUPERIOR */
 #menu ul {
   display: flex;
   gap: 32px;
@@ -230,7 +226,6 @@ onMounted(obtenerDatos)
   color: #1c5537;
 }
 
-/* BARRA DE ACCIONES */
 #menu_producto {
   display: flex;
   align-items: center;
@@ -238,7 +233,6 @@ onMounted(obtenerDatos)
   margin-bottom: 24px;
 }
 
-/* SEARCH */
 #search {
   background: #f3f4f6;
   border-radius: 999px;
@@ -252,7 +246,6 @@ onMounted(obtenerDatos)
   opacity: 0.6;
 }
 
-/* FILTER */
 #filter {
   display: flex;
   align-items: center;
@@ -269,7 +262,6 @@ onMounted(obtenerDatos)
   width: 16px;
 }
 
-/* BOTON AÑADIR */
 #boton button {
   background-color: #1c5537;
   padding: 12px 20px;
@@ -284,7 +276,6 @@ onMounted(obtenerDatos)
   background-color: #16432b;
 }
 
-/* TABLA */
 #listaProductos table {
   width: 100%;
   border-collapse: collapse;
@@ -305,18 +296,15 @@ onMounted(obtenerDatos)
   color: #374151;
 }
 
-/* PRECIO */
 #price {
   font-weight: 700;
   color: #111827;
 }
 
-/* STOCK */
 #stock {
   font-weight: 500;
 }
 
-/* ESTADO */
 #status {
   font-weight: 600;
 }
@@ -331,7 +319,6 @@ onMounted(obtenerDatos)
   margin-right: 8px;
 }
 
-/* ACCIONES */
 td button {
   background: transparent;
   border: none;
@@ -349,7 +336,6 @@ td img:hover {
   opacity: 1;
 }
 
-/* MODAL FOOTER BUTTON */
 template button {
   background: #e5e7eb;
   color: #374151;

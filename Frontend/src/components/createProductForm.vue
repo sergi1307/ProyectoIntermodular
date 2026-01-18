@@ -1,6 +1,7 @@
 <script setup>
 // Importem les funcions de vue
 import { ref, computed } from 'vue'
+import axios from 'axios'
 
 // Definim els camps del formulari buits
 const name = ref('')
@@ -22,7 +23,6 @@ const props = defineProps({
 const emit = defineEmits(['created'])
 
 const producto = computed(() => ({
-  id: Date.now(), 
   name: name.value,
   description: description.value,
   category_id: category_id.value,
@@ -32,23 +32,52 @@ const producto = computed(() => ({
   state: state.value
 }))
 
-const enviarDatos = () => {
-  if (!name.value || !description.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
+const enviarDatos = async () => {
+  if (
+    name.value.trim() === '' ||
+    description.value.trim() === '' ||
+    category_id.value === '' ||
+    price.value === null ||
+    stock.value === null ||
+    type_stock.value === '' ||
+    state.value === ''
+  ) {
     alert('Por favor, rellena todos los campos')
     return
   }
 
-  // Emitim el producte al pare
-  emit('created', producto.value)
+  try {
+    const payload = {
+      id_user: 1,                 // ⚠️ pon el id real o sácalo del token
+      id_delivery_point: 1,       // ⚠️ igual
+      name: name.value,
+      description: description.value,
+      price: price.value,
+      stock: stock.value,
+      type_stock: type_stock.value === 'kg' ? 'Kg' : 'Unidad',
+      state:
+        state.value === 'disponible'
+          ? 'Disponible'
+          : state.value === 'agotado'
+          ? 'Agotado'
+          : 'Reservado',
+      categories: [category_id.value] // 🔥 CLAVE
+    }
 
-  // I procedim a buidar les dades del formulari
-  name.value = ''
-  description.value = ''
-  category_id.value = ''
-  price.value = null
-  stock.value = null
-  type_stock.value = ''
-  state.value = ''
+    await axios.post(
+      'http://localhost:8080/api/products/store',
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    )
+
+    emit('created') // solo avisamos al padre
+  } catch (error) {
+    console.error('Error al crear producto:', error.response?.data || error)
+  }
 }
 </script>
 
@@ -153,11 +182,4 @@ select {
   padding-right: 40px;
 }
 
-button {
-  background-color: #1c5537;
-  border-radius: 20px;
-  border: none;
-  color: white;
-  padding: 5px 15px;
-}
 </style>
