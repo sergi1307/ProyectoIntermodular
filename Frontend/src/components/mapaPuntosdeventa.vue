@@ -49,43 +49,38 @@
           }
       },
       beforeUnmount() {
-          // Limpiamos el mapa al salir de la página para evitar errores de memoria
           if (this.map) {
               this.map.remove();
           }
       },
       methods: {
         iniciarMapa() {
-        // 1. Definimos los límites (Caja alrededor de España)
             var surOeste = L.latLng(33.0, -12.0); 
             var norteEste = L.latLng(45.0, 6.0);
             var limitesEspaña = L.latLngBounds(surOeste, norteEste);
 
-        // 2. Iniciamos el mapa con las opciones RESTRICTIVAS
             this.map = L.map('mapa-leaflet', {
-                center: [40.4167, -3.70325], // Centro en Madrid
-                zoom: 6,                     // Zoom inicial
-                minZoom: 5,                  // No pueden alejarse más que esto
-                maxBounds: limitesEspaña,    // El "candado" geográfico
+                center: [40.4167, -3.70325],
+                zoom: 6,
+                minZoom: 5,
+                maxZoom: 9,
+                maxBounds: limitesEspaña,
         });
         
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(this.map);
 
-        // Creamos la capa para los marcadores
             this.layerGroup = L.layerGroup().addTo(this.map);
 
-        // Si ya hay datos, dibujamos
             if (this.puntos.length > 0) {
                 this.dibujarMarcadores();
             }
         },
           dibujarMarcadores() {
-              // 1. Borramos marcadores antiguos
               this.layerGroup.clearLayers();
               
-              // Array para guardar coordenadas y hacer el auto-zoom luego
+              // Guardamos coordenadas para ajustar el zoom automáticamente
               const limites = [];
   
               this.puntos.forEach(punto => {
@@ -111,7 +106,7 @@
                   }
               });
               if (limites.length > 0) {
-                  this.map.fitBounds(limites, { padding: [50, 50] });
+                  this.map.fitBounds(limites, { padding: [50, 50], maxZoom: 8 });
               }
           }
       }

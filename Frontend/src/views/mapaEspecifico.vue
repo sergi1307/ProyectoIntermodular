@@ -41,14 +41,12 @@ export default {
       await this.cargarMisTiendas();
   },
   methods: {
-    //funcion para obtener cookies
     obtenerCookie(nombre) {
         const valor = `; ${document.cookie}`;
         const partes = valor.split(`; ${nombre}=`);
         if (partes.length === 2) return partes.pop().split(';').shift();
         return null;
     },
-    //Funcion para cargar las tiendas
     async cargarMisTiendas() {
         try {
             const token = this.obtenerCookie('auth_token'); 

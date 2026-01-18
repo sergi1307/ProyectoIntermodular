@@ -35,8 +35,8 @@ export default {
                 id: tienda.id_delivery_point, 
                 name: tienda.name,
                 direction: tienda.direction,
-                latitude: parseFloat(tienda.latitude), // Aseguramos que sea número en float
-                length: parseFloat(tienda.length)     //lo mismo en la longitud
+                latitude: parseFloat(tienda.latitude),
+                length: parseFloat(tienda.length)
             };
         });
 
