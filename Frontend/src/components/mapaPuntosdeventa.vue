@@ -123,7 +123,7 @@
     
     .tarjeta-mapa {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;  
     background: white;
     padding: 15px;    
@@ -133,7 +133,7 @@
     }
     #mapa-leaflet { 
         width: 100%; 
-        height: 700px;
+        height: 800px;
         border-radius: 15px; 
         border: 2px solid #eee;
         z-index: 1; 
