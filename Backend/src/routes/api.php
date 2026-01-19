@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/me', [UserController::class, 'show'])->name('me');
         Route::put('/update', [UserController::class, 'update'])->name('update');
         Route::delete('/destroy', [UserController::class, 'destroy'])->name('destroy');
+        Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
     });
 
     // VENTAS
@@ -77,4 +78,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('/categories/update/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    //MAPAS
+
+    
 });

@@ -45,37 +45,14 @@ export default {
   },
   methods: {
     /**
-     * Obtiene el valor de una cookie por su nombre
-     * @param {string} nombre - Nombre de la cookie
-     * @returns {string|null} Valor de la cookie o null
-     */
-    obtenerCookie(nombre) {
-        const valor = `; ${document.cookie}`;
-        const partes = valor.split(`; ${nombre}=`);
-        if (partes.length === 2) return partes.pop().split(';').shift();
-        return null;
-    },
-    /**
      * Carga las tiendas del usuario desde la API
      */
     async cargarMisTiendas() {
         try {
-            const token = this.obtenerCookie('auth_token'); 
-
-            if (!token) {
-                console.warn("No se encontró la cookie del token");
-                alert("No estás logueado.");
-                this.$router.push('/login');
-                return;
-            }
-
-            console.log("Token recuperado de cookie:", token);
-
+            console.log("Conectando con Laravel (Modo Sanctum Automático)...");
+            // 2. Activamos 'withCredentials: true' para que el navegador la envíe sola.
             const response = await axios.get('http://localhost:8080/api/users/map', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                }
+                withCredentials: true 
             });
 
             console.log("Mis tiendas recibidas:", response.data);
@@ -85,17 +62,17 @@ export default {
                     id: punto.id_delivery_point,
                     name: punto.name,
                     direction: punto.direction,
-                    latitude: parseFloat(punto.latitude),
-                    length: parseFloat(punto.length)
+                    latitude: parseFloat(punto.latitude), 
+                    length: parseFloat(punto.length)      
                 };
             });
             
             this.cargado = true;
 
         } catch (error) {
-            console.error(" Error cargando mis tiendas:", error);
+            console.error("Error cargando mis tiendas:", error);
             if (error.response && error.response.status === 401) {
-                alert("Sesión caducada.");
+                alert("Sesión caducada o no iniciada.");
                 this.$router.push('/login');
             }
         }
