@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Delivery_point;
 
 class UserController extends Controller
 {
@@ -104,18 +105,21 @@ class UserController extends Controller
         // Retornem una resposta afirmativa de que ha anat tot bé
         return response()->json(['message' => 'Usuari eliminat'],200);
     }
-
-    /**
-     * Funció per a mostrar el mapa
-     *
-     * @return json
-     */
-    public function mostrarMapa()
+    
+    public function mostrarMapa(Request $request)
     {
-        // Obtenim els punts d'entrega amb els productes que es venen en cada u de ells
-        $puntos = Delivery_Point::with('products')->get();
-        
-        // Retornarem les dades per a la vista de vue
-        return view('mapa', compact('puntos'));
+    // Esto obtiene el usuario automáticamente gracias al token
+    $user = $request->user(); 
+
+    if (!$user) {
+        return response()->json(['error' => 'No autorizado'], 401);
+    }
+
+    // Buscamos SOLO sus puntos
+    $puntos = \App\Models\Delivery_point::where('id_user', $user->id)->get();
+
+    return response()->json($puntos);
     }
 }
+
+

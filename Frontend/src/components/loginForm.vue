@@ -2,6 +2,9 @@
     // Importem les llibreríes necessàries
     import { ref } from 'vue';
     import axios from 'axios';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
     
     // Declarem les variables reactives que rebrem del formulari
     const email = ref('');
@@ -28,10 +31,18 @@
 
         console.log("Enviando datos al backend:", datos);
 
-        // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-        const response = await axios.post('http://localhost:8080/api/login', datos);
+        try {
+            // Fem la petició axios al backend enviant les dades necessàries per a fer el login
+            const response = await axios.post('http://localhost:8080/api/auth/login', datos);
 
-        console.log("Respuesta del servidor:", response.data);
+            console.log("Respuesta del servidor:", response.data);
+
+            if (response.data.status == 'true') {
+                router.push('/general');
+            }
+        } catch (error) {
+            alert(error.response.data.message);
+        }
     }
 </script>
 
