@@ -18,7 +18,6 @@ Route::prefix('auth')->name('auth.')->group(function (){
 // 2. Catálogo
 Route::prefix('products')->name('products.')->group(function (){
     Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::post('/store', [ProductController::class, 'store'])->name('store');
     Route::get('/show/{id}', [ProductController::class, 'show'])->name('show');
 });
 
@@ -59,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // PRODUCTOS
     Route::prefix('products')->name('products.')->group(function (){
         Route::get('/mine', [ProductController::class, 'myProducts'])->name('mine');
-        
+        Route::post('/store', [ProductController::class, 'store'])->name('store');
         Route::put('/update/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
     });
