@@ -17,7 +17,7 @@ const emit = defineEmits(['created'])
 // Definim els camps del formulari buits
 const name = ref('')
 const description = ref('')
-const category_id = ref('')
+const category_id = ref([])
 const price = ref(null)
 const stock = ref(null)
 const type_stock = ref('')
@@ -26,7 +26,7 @@ const state = ref('')
 const enviarDatos = async () => {
   if (
       !name.value || 
-      !category_id.value || 
+      category_id.value.length === 0 || 
       price.value === null || 
       stock.value === null || 
       !type_stock.value || 
@@ -65,7 +65,7 @@ try {
         : state.value === 'agotado'
         ? 'Agotado'
         : 'Reservado',
-    categories: [category_id.value]
+    categories: category_id.value.map(id => Number(id))
     } 
   
   await axios.post(
@@ -82,7 +82,7 @@ try {
     
     // I procedim a buidar les dades del formulari
     name.value = ''
-    category_id.value = ''
+    category_id.value = []
     price.value = null
     stock.value = null
     type_stock.value = ''
@@ -134,14 +134,24 @@ try {
       </select><br>
       
       <!--Categoria-->
-      <label>Categoría</label><br>
-      <select v-model="category_id">
-        <!--Recorrem la llista de les categories per a mostrar-les en el desplegable-->
-        <option disabled value="">Selecciona categoría</option>
-        <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
-          {{ categoria.name }}
-        </option>
-      </select><br><br>
+      <label>Categorías</label><br>
+      
+      <div class="checkbox-container">
+        <div v-if="props.categorias.length === 0" style="color:red; font-size:12px;">
+           No hay categorías cargadas.
+        </div>
+
+        <div v-for="categoria in props.categorias">
+          <input 
+            type="checkbox" 
+            :id="categoria.id" 
+            :value="categoria.id" 
+            v-model="category_id"
+          >
+          <label :for="categoria.id">{{ categoria.name }}</label>
+        </div>
+      </div>
+      <br>
 
       <button id="submit" type="submit">Agregar producto</button>
     </form>
