@@ -33,7 +33,7 @@
 
         try {
             // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-            const response = await axios.post('http://localhost:8080/api/auth/login', datos, {
+            const response = await axios.post('http://localhost:8000/api/auth/login', datos, {
                 withCredentials: true
             });
 

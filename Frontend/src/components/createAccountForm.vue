@@ -46,9 +46,20 @@
                 router.push('/general');
             }
         } catch(error) {
-            alert(error.response.data.message);
+            console.error("Error detallado:", error);
+
+            if (error.response) {
+                // El servidor respondió, pero con un código de error (4xx, 5xx)
+                console.log("Datos del error:", error.response.data);
+                alert(error.response.data.message || "Error en el servidor: " + error.response.status);
+            } else if (error.request) {
+                // La petición se hizo pero NO hubo respuesta (Servidor apagado o CORS)
+                alert("No se recibió respuesta del servidor. Comprueba que el backend esté encendido (Puerto 8000).");
+            } else {
+                // Error al configurar la petición
+                alert("Error al enviar la petición: " + error.message);
+            }
         }
-        
     }
 </script>
 

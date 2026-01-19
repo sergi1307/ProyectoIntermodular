@@ -24,7 +24,14 @@ const type_stock = ref('')
 const state = ref('')
 
 const enviarDatos = async () => {
-  if (!name.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
+  if (
+      !name.value || 
+      !category_id.value || 
+      price.value === null || 
+      stock.value === null || 
+      !type_stock.value || 
+      !state.value
+  ) {
     alert('Por favor, rellena todos los campos')
     return
   }
@@ -59,7 +66,7 @@ try {
         ? 'Agotado'
         : 'Reservado',
     categories: [category_id.value]
-    }
+    } 
   
   await axios.post(
     'http://localhost:8080/api/products/store',
@@ -99,7 +106,7 @@ try {
 
       <!--Descrició del producte-->
       <label for="description">Descripción</label><br>
-      <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
+      <textarea v-model="description" placeholder="Descripción del producto"></textarea><br>
 
       <!--Preu-->
       <label>Precio</label><br>
@@ -146,6 +153,10 @@ try {
   width: 100%;
   padding: 0;
   margin: 0;
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
 }
 
 form {
