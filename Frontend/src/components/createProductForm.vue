@@ -3,6 +3,17 @@
 import { ref, computed } from 'vue'
 import axios from 'axios'
 
+// Definim categoria com un array per al desplegable de les categories
+const props = defineProps({
+  categorias: {
+    type: Array,
+    default: () => []
+  }
+})
+
+// Definim l'emissió per a la creació
+const emit = defineEmits(['created'])
+
 // Definim els camps del formulari buits
 const name = ref('')
 const description = ref('')
@@ -12,69 +23,66 @@ const stock = ref(null)
 const type_stock = ref('')
 const state = ref('')
 
-// Definim categoria com un array per al desplegable de les categories
-const props = defineProps({
-  categorias: {
-    type: Array,
-    default: () => []
-  }
-})
-// Definim l'emissió per a la creació
-const emit = defineEmits(['created'])
-
-const producto = computed(() => ({
-  name: name.value,
-  description: description.value,
-  category_id: category_id.value,
-  price: price.value,
-  stock: stock.value,
-  type_stock: type_stock.value,
-  state: state.value
-}))
-
 const enviarDatos = async () => {
-  if (
-    name.value.trim() === '' ||
-    description.value.trim() === '' ||
-    category_id.value === '' ||
-    price.value === null ||
-    stock.value === null ||
-    type_stock.value === '' ||
-    state.value === ''
-  ) {
+  if (!name.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
     alert('Por favor, rellena todos los campos')
     return
   }
 
-  try {
-    const payload = {
-      id_user: 1,                 // ⚠️ pon el id real o sácalo del token
-      id_delivery_point: 1,       // ⚠️ igual
-      name: name.value,
-      description: description.value,
-      price: price.value,
-      stock: stock.value,
-      type_stock: type_stock.value === 'kg' ? 'Kg' : 'Unidad',
-      state:
-        state.value === 'disponible'
-          ? 'Disponible'
-          : state.value === 'agotado'
-          ? 'Agotado'
-          : 'Reservado',
-      categories: [category_id.value] // 🔥 CLAVE
-    }
+// const producto = computed(() => ({
+//   id: Date.now(),
+//   name: name.value,
+//   description: description.value,
+//   category_id: category_id.value,
+//   price: price.value,
+//   stock: stock.value,
+//   type_stock: type_stock.value,
+//   state: state.value
+// }))
 
-    await axios.post(
-      'http://localhost:8080/api/products/store',
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+// // Emitim el producte al pare
+// emit('created', producto.value)
+  
+try {
+  const payload = {
+    id_user: 1,        
+    id_delivery_point: 1,       
+    name: name.value,
+    description: description.value,
+    price: price.value,
+    stock: stock.value,
+    type_stock: type_stock.value === 'kg' ? 'Kg' : 'Unidad',
+    state:
+      state.value === 'disponible'
+        ? 'Disponible'
+        : state.value === 'agotado'
+        ? 'Agotado'
+        : 'Reservado',
+    categories: [category_id.value]
+    }
+  
+  await axios.post(
+    'http://localhost:8080/api/products/store',
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
-    )
+    }
+  )
 
     emit('created') // solo avisamos al padre
+    
+    // I procedim a buidar les dades del formulari
+    name.value = ''
+    category_id.value = ''
+    price.value = null
+    stock.value = null
+    type_stock.value = ''
+    state.value = ''
+    
+    alert ('Producto creado correctamente')
+    
   } catch (error) {
     console.error('Error al crear producto:', error.response?.data || error)
   }
@@ -132,6 +140,7 @@ const enviarDatos = async () => {
     </form>
   </div>
 </template>
+
 <style scoped>
 #form-container {
   width: 100%;
@@ -182,4 +191,10 @@ select {
   padding-right: 40px;
 }
 
+ #submit{
+    background-color: #1c5537;
+    border-radius: 20px;
+    border: none;
+    color: white;
+ }
 </style>

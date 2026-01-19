@@ -63,28 +63,20 @@ watch(() => props.modelValue, (value) => {
   inset: 0;
   background: rgba(0,0,0,0.6);
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;   
-  padding: 40px 16px;
-  overflow-y: auto;  
   z-index: 999;
 }
 
-
 .modal-container {
   background: white;
-  width: 100%;
-  max-width: 560px;
-  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
   overflow: hidden;
-
-  max-height: calc(100vh - 80px);
-  display: flex;
-  flex-direction: column;
 }
 
-
-.modal-footer {
+.modal-header {
   padding: 1rem;
   border-bottom: 1px solid #eee;
 }
@@ -102,34 +94,6 @@ watch(() => props.modelValue, (value) => {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-}
-.modal-container {
-  background: white;
-  width: 100%;
-  max-width: 560px; 
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.modal-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #eee;
-  flex-shrink: 0;
-}
-
-.modal-body {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.modal-footer {
-  padding: 16px 20px;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-shrink: 0;
 }
 
 </style>

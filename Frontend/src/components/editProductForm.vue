@@ -13,12 +13,12 @@ const type_stock = ref('')
 const state = ref('')
 const category_id = ref('')
 
-// Props del producte
+// Props del producte (rebem el producte seleccionat)
 const props = defineProps({
   producto: { type: Object, required: true }
 })
 
-// Emitim la senyal d'actualitzat
+// Emitim la senyal d'actualitzat al pare
 const emit = defineEmits(['updated'])
 
 // Carreguem les categories per al select
@@ -26,51 +26,55 @@ const cargarCategorias = async () => {
   try {
     const res = await axios.get('http://localhost:8080/api/categories')
     categorias.value = res.data
-
   } catch (error) {
     console.error('Error cargando categorías:', error)
   }
 }
 
-// Computed per a enviar al backend solo els camps de productes
+// Computed per a enviar al backend solo els camps necessaris
 const productoBackend = computed(() => ({
   name: name.value,
   description: description.value,
   price: price.value,
   stock: stock.value,
   type_stock: type_stock.value,
-  state: state.value
+  state: state.value,
+  category_id: category_id.value
 }))
 
 // Guardar canvis
 const guardar = async () => {
   try {
+    // 1. Enviem les dades al backend
     const res = await axios.put(
       `http://localhost:8080/api/products/update/${props.producto.id_product}`,
       productoBackend.value
     )
 
+    // 2. Avisem al component pare que ja hem acabat i passem les dades noves
     emit('updated', {
-      ...res.data.product,
+      ...res.data.product, // Assegurat que el backend retorna l'objecte 'product'
       category_id: category_id.value
     })
 
   } catch (error) {
     console.error('Error al actualizar:', error)
+    alert('Error al guardar. Revisa la consola.')
   }
 }
 
+// Mirem si canvia el producte seleccionat per omplir el formulari
 watch(
   () => props.producto,
   (p) => {
     if (!p) return
-
     name.value = p.name
     description.value = p.description
     price.value = p.price
     stock.value = p.stock
     type_stock.value = p.type_stock
     state.value = p.state
+    // Si category_id es null, posem cadena buida per a que el select no falli
     category_id.value = p.category_id ?? ''
   },
   { immediate: true }
@@ -83,50 +87,44 @@ onMounted(cargarCategorias)
   <div id="form-container">
     <form @submit.prevent="guardar">
 
-      <!--Nom del producte-->
-      <label>Nombre del producto</label><br>
-      <input type="text" v-model="name" placeholder="Nombre del producto"/><br>
+      <label>Nombre del producto</label>
+      <input type="text" v-model="name" placeholder="Nombre del producto"/>
 
-      <!--Descrició del producte-->
-      <label for="description">Descripción</label><br>
-      <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
+      <label>Descripción</label>
+      <textarea v-model="description" placeholder="Descripción del producto"></textarea>
 
-      <!--Preu-->
-      <label>Precio</label><br>
-      <input type="number" step="0.01" v-model="price" placeholder="Precio"/><br>
+      <label>Precio</label>
+      <input type="number" step="0.01" v-model="price" placeholder="Precio"/>
       
-      <!--Stock-->
-      <label>Stock</label><br>
-      <input type="number" v-model="stock" placeholder="Stock"/><br>
+      <label>Stock</label>
+      <input type="number" v-model="stock" placeholder="Stock"/>
       
-      <!--Tipus de stock-->
-      <label>Tipo de stock</label><br>
+      <label>Tipo de stock</label>
       <select v-model="type_stock">
         <option disabled value="">Selecciona tipo de stock</option>
         <option value="Unidad">Unidad</option>
         <option value="Kg">Kg</option>
-      </select><br>
+      </select>
       
-      <!--Estat-->
-      <label>Estado</label><br>
+      <label>Estado</label>
       <select v-model="state">
         <option disabled value="">Selecciona estado</option>
         <option value="Disponible">Disponible</option>
         <option value="Agotado">Agotado</option>
         <option value="Reservado">Reservado</option>
-      </select><br>
+      </select>
       
-      <!--Categoria-->
-      <label>Categoría</label><br>
+      <label>Categoría</label>
       <select v-model="category_id">
-        <!--Recorrem la llista de les categories per a mostrar-les en el desplegable-->
         <option disabled value="">Selecciona categoría</option>
         <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
           {{ categoria.name }}
         </option>
-      </select><br><br>
+      </select>
 
-      <button id="submit" type="submit">Actualizar producto</button>
+      <div class="actions">
+          <button id="submit" type="submit">Actualizar producto</button>
+      </div>
     </form>
   </div>
 </template>
@@ -148,6 +146,7 @@ label {
   font-size: 13px;
   font-weight: 600;
   color: #374151;
+  margin-bottom: -8px; /* Un poco de ajuste visual */
 }
 
 input,
@@ -158,6 +157,8 @@ textarea {
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   font-size: 14px;
+  background-color: #fff;
+  box-sizing: border-box; /* Importante para que no se salga del contenedor */
 }
 
 input:focus,
@@ -169,23 +170,38 @@ textarea:focus {
 }
 
 textarea {
-  resize: none;
+  resize: vertical;
   min-height: 90px;
+  font-family: inherit;
 }
 
 select {
   appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 14px center;
   background-size: 16px;
   padding-right: 40px;
 }
 
+.actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 button {
   background-color: #1c5537;
-  border-radius: 20px;
+  border-radius: 99px;
   border: none;
   color: white;
-  padding: 5px 15px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #14412a;
 }
 </style>
