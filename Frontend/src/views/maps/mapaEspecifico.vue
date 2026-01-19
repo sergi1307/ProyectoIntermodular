@@ -1,6 +1,6 @@
 <template>
   <div class="contenedor-especifico">
-    <h2>📍 Mis Puntos de Venta 📍</h2>
+    <h2>Mis Puntos de Venta</h2>
     <p>Gestiona tus ubicaciones activas.</p>
 
     <div class="area-mapa">
@@ -47,32 +47,31 @@ export default {
     /**
      * Carga las tiendas del usuario desde la API
      */
-    async cargarMisTiendas() {
+     async cargarMisTiendas() {
         try {
-            const response = await axios.get('http://localhost:8080/api/users/map', {
-                withCredentials: true 
-            });
+            const userTexto = localStorage.getItem('user'); 
 
-            console.log("Tiendas recibidas:", response.data);
-
-            this.misTiendas = response.data.map(punto => {
-                return {
-                    id: punto.id_delivery_point,
-                    name: punto.name,
-                    direction: punto.direction,
-                    latitude: parseFloat(punto.latitude), 
-                    length: parseFloat(punto.length)      
-                };
-            });
+            if (!userTexto) {
+                 alert("No hay sesión iniciada.");
+                 this.$router.push('/login');
+                 return;
+            }
+            const usuarioObjeto = JSON.parse(userTexto);
+            const idUsuario = usuarioObjeto.id; 
+            console.log("TU ID ES:", idUsuario);
+            const response = await axios.get(`http://localhost:8080/api/users/${idUsuario}/map`);
+            this.misTiendas = response.data.map(punto => ({
+                id: punto.id_delivery_point,
+                name: punto.name,
+                direction: punto.direction,
+                latitude: parseFloat(punto.latitude),
+                length: parseFloat(punto.length)
+            }));
             
             this.cargado = true;
 
         } catch (error) {
-            console.error("Error cargando tiendas:", error);
-            if (error.response && error.response.status === 401) {
-                alert("Sesión caducada o no iniciada.");
-                this.$router.push('/login');
-            }
+            console.error("Error:", error);
         }
     },
     /**
