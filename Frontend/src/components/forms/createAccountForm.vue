@@ -43,6 +43,15 @@
             console.log("Respuesta del servidor:", response.data);
 
             if (response.data.status == 'true') {
+                localStorage.setItem('token', response.data.token);
+
+                if(response.data.user) {
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    console.log("Usuari guardat en LocalStorage:", response.data.user);
+                } else {
+                    console.warn("El backend no ha tornat l'usuari");
+                }
+
                 router.push('/general');
             }
         } catch(error) {

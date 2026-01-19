@@ -1,9 +1,7 @@
 <template>
     <div class="contenedor-mapa tarjeta-mapa">
       <h3>{{ titulo }}</h3>
-      
-      <div id="mapa-leaflet"></div>
-  
+      <div :id="mapId"></div>
       <p v-if="puntos.length === 0" class="error">
           Esperando datos de ubicación...
       </p>
@@ -69,7 +67,7 @@
                 center: [40.4167, -3.70325],
                 zoom: 6,
                 minZoom: 5,
-                maxZoom: 9,
+                maxZoom: 19,
                 maxBounds: limitesEspaña,
         });
         
