@@ -118,19 +118,7 @@ onMounted(obtenerDatos)
 
 <template>
 <div id ="productos">
-  
     <div id="contenedor">
-      <div id="logo">
-      </div>
-      <div id="menu">
-        <ul>
-          <li><router-link to="/products">Productos</router-link></li>
-
-          <li><router-link to="/">Inicio</router-link></li>
-
-          <li><router-link to="/mapa">Mapas</router-link></li>
-        </ul>
-      </div>
         <div id ="menu_producto">
             <div id="search">
                 <img class="search" src="../assets/icons/search_icon.png" alt="Buscar"></img>
@@ -203,9 +191,6 @@ onMounted(obtenerDatos)
   #boton{
     background-color: #1c5537;
     border-radius: 20px;
-  }
-  #price{
-
   }
   button {
     background: none;

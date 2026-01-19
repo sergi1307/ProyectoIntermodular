@@ -15,33 +15,33 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: login
+        component: login,
+        
     },
     {
         path: '/products',
         name: 'products',
-        component: products
-
+        component: products,
+        meta: { vendedor: true }
     },
-    // --- RUTAS PARA LOS MAPAS ---
     {
-        // Esta es la ruta pública para que cualquiera vea las tiendas
         path: '/mapa',
         name: 'mapa_general',
-        component: mapaGeneral
+        component: mapaGeneral,
+        meta: { comprador: true }
     },
     {
-        // Esta ruta es para yo probar el selector de tiendas separado del formulario
         path: '/mis-tiendas',
         name: 'mapa_pruebas',
-        component: mapaEspecifico
+        component: mapaEspecifico,
+        meta: { comprador: true }
     },
     {
         path: '/general',
         name: 'general',
-        component: general
+        component: general,
+        meta: { comprador: true }
     }
-
 ];
 
 const router = createRouter({

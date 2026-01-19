@@ -1,24 +1,17 @@
 <template>
     <div class="pagina-general">
-
-      <div id="nav">
-        <div id="logo">
-              <img src="../assets/imgs/logoEmpresa.png">
-              <p><router-link to="/">ProxiMarket</router-link></p>
-        </div> 
-        <div id="navegador">
-          <p>navegador</p>
-        </div> 
-        <div id="nav2">
-        <p><router-link to="/products">Cambiar a modo comprador</router-link></p>
-        <p><router-link to="#">foto</router-link></p>
-        <p><router-link to="#">foto</router-link></p>
-        <p><router-link to="#">foto</router-link></p>
+       <div id="cabecera">
+        <div id="titulos">
+            <h1>Todas nuestras Tiendas</h1>
+            <p>Consulta dónde estamos.</p>
         </div>
-      </div>
-      <h1>Todas nuestras Tiendas</h1>
-      <p>Consulta dónde estamos.</p>
-      
+        <div id="selector">
+            <div id="borde">
+                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
+                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
+            </div>
+        </div>
+    </div>
       <mapa-tiendas :puntos="listaTiendas"></mapa-tiendas>
     </div>
   </template>
@@ -43,29 +36,83 @@
   </script>
   
   <style scoped>
-  .pagina-general { 
-    padding: 40px 20px; 
-    text-align: center; /* Alineamos textos al centro */
-    background-color: #f9f9f9; /* Un gris muy clarito de fondo queda bien */
-  }
-  #nav{
-    text-align: left;
-    text-decoration: none;
-    display:flex;
-  }
-  ul{
-  list-style:none;
-  display: flex;
-  justify-content: space-evenly;
-  }
-  li{
-    color: black;
-  }
-  a{
-  text-decoration: none;
-  color:black
+/* Contenedor principal */
+.pagina-general { 
+  padding: 40px 40px; /* Un poco más de margen lateral para que respire */
+  background-color: #f9f9f9;
+  min-height: 100vh; /* Asegura que ocupe al menos toda la altura */
 }
-  h1 { margin-bottom: 10px; color: #333; }
-  p { margin-bottom: 30px; color: #666; }
-  
-  </style>
+
+/* Cabecera: Flexbox para alinear texto (izq) y botones (der) */
+#cabecera {
+  display: flex;
+  justify-content: space-between; /* Separa los elementos a los extremos */
+  align-items: center; /* Alineación vertical perfecta */
+  margin-bottom: 30px; /* Espacio antes del mapa */
+}
+
+/* Títulos: Quitamos márgenes extraños para que centre bien */
+#titulos {
+  text-align: left;
+}
+
+#titulos h1 {
+  margin: 0; /* Clave para la alineación vertical */
+  font-size: 2rem;
+  color: #143b27;
+  font-weight: 700;
+}
+
+#titulos p {
+  margin: 5px 0 0 0; /* Pequeño espacio solo arriba */
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Selector (El borde blanco que contiene los botones) */
+#selector {
+  display: flex;
+  align-items: center;
+}
+
+#borde {
+  display: flex;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  gap: 5px; /* Pequeña separación entre botones */
+}
+
+/* Enlaces del router (a veces rompen el flex, esto lo arregla) */
+#borde a {
+  text-decoration: none;
+  display: block;
+}
+
+/* Estilo base de los botones */
+#borde button {
+  padding: 10px 24px;
+  border: none;
+  background-color: transparent;
+  color: #555;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+#borde button:hover {
+  background-color: #f0f0f0;
+}
+
+/* ESTADO ACTIVO (MAPA VERDE) */
+/* Esto se aplica cuando el botón tiene la clase .activo */
+#borde button.activo {
+  background-color: #1c5537; /* Verde corporativo */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+</style>

@@ -95,40 +95,40 @@ onMounted(cargarCategorias)
   <div id="form-container">
     <form @submit.prevent="guardar">
       <!--Nom del producte-->
-      <label for="product">Producto</label><br></br>
-      <input type="text" placeholder="Nombre del producto" v-model="name"/><br></br>
+      <label for="product">Producto</label><br>
+      <input type="text" placeholder="Nombre del producto" v-model="name"/><br>
 
       <!--Descrició del producte-->
       <label>Descripción</label><br>
       <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
       
       <!--Preu-->
-      <label for="price">Precio</label><br></br>
-      <input type="number" step="0.01" placeholder="Precio" v-model="price"/><br></br>
+      <label for="price">Precio</label><br>
+      <input type="number" step="0.01" placeholder="Precio" v-model="price"/><br>
 
       <!--Stock-->
-      <label for="stock">Stock</label><br></br>
-      <input type="number" placeholder="Stock" v-model="stock"/><br></br>
+      <label for="stock">Stock</label><br>
+      <input type="number" placeholder="Stock" v-model="stock"/><br>
 
       <!--Tipus de stock-->
-      <label for="type_stock">Tipo de stock</label><br></br>
+      <label for="type_stock">Tipo de stock</label><br>
       <select v-model="type_stock">
         <option disabled value="">Selecciona tipo de stock</option>
         <option value="unidad">Unidad</option>
         <option value="kg">Kg</option>
-      </select><br></br>
+      </select><br>
 
       <!--Estat-->
-      <label for="state">Estado</label><br></br>
+      <label for="state">Estado</label><br>
       <select v-model="state">
         <option disabled value="">Selecciona estado</option>
         <option value="disponible">Disponible</option>
         <option value="agotado">Agotado</option>
         <option value="reservado">Reservado</option>
-      </select><br></br>
+      </select><br>
       
       <!--Categoria-->
-      <label for="category">Categoria</label><br></br>
+      <label for="category">Categoria</label><br>
       <select v-model="category_id">
       <!--Recorrem un for per a mostrar tots els valors de categoria en el desplegable-->
         <option disabled value="">Selecciona una categoría</option>

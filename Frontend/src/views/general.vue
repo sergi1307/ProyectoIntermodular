@@ -14,7 +14,6 @@
 </script>
 
 <template>
-    <p>nav</p>
     <div id="cabecera">
         <div id="titulos">
             <h1>Descubre Productos Locales</h1>
@@ -22,8 +21,8 @@
         </div>
         <div id="selector">
             <div id="borde">
-                <button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button>
-                <button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button>
+                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
+                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
             </div>
         </div>
     </div>
@@ -77,6 +76,9 @@
 </template>
 
 <style scoped>
+    *{
+    text-decoration: none;
+    }
     #cabecera {
         display: flex;
         justify-content: space-between;
