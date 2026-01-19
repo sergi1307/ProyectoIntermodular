@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/update', [UserController::class, 'update'])->name('update');
         Route::delete('/destroy', [UserController::class, 'destroy'])->name('destroy');
     });
+    //MAPA ESPECIFICO
+    Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
 
     // VENTAS
     Route::prefix('sales')->name('sales.')->group(function (){
@@ -82,5 +84,3 @@ Route::middleware('auth:sanctum')->group(function() {
 
     
 });
-//MAPAS
-Route::get('/users/{id}/map', [UserController::class, 'mostrarMapa']);

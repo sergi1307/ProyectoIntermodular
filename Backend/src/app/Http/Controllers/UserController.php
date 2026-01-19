@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
@@ -105,9 +104,14 @@ class UserController extends Controller
         return response()->json(['message' => 'Usuari eliminat'],200);
     }
     
-    public function mostrarMapa($id)
+    public function mostrarMapa(Request $request)
     {
-        $puntos = Delivery_Point::where('id_user', $id)->get();
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'No autorizado'], 401);
+        }
+        $puntos = \App\Models\Delivery_Point::where('id_user', $user->id)->get();
+
         return response()->json($puntos);
     }
 
