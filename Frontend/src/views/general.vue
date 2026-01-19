@@ -15,6 +15,7 @@
 
 <template>
     <p>nav</p>
+    <router-link to="/my-products">Mis Productos</router-link>
     <div id="cabecera">
         <div id="titulos">
             <h1>Descubre Productos Locales</h1>

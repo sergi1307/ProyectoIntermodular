@@ -23,15 +23,12 @@ const routes = [
         component: products
 
     },
-    // --- RUTAS PARA LOS MAPAS ---
     {
-        // Esta es la ruta pública para que cualquiera vea las tiendas
         path: '/mapa',
         name: 'mapa_general',
         component: mapaGeneral
     },
     {
-        // Esta ruta es para yo probar el selector de tiendas separado del formulario
         path: '/mis-tiendas',
         name: 'mapa_pruebas',
         component: mapaEspecifico
@@ -40,8 +37,12 @@ const routes = [
         path: '/general',
         name: 'general',
         component: general
+    },
+    {
+        path: '/my-products',
+        name: 'my-products',
+        component: products
     }
-
 ];
 
 const router = createRouter({

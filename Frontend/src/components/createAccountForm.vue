@@ -37,7 +37,9 @@
 
         try {
             // Fem la petició axios al backend enviant les dades necessàries per a fer el registre
-            const response = await axios.post('http://localhost:8080/api/auth/register', datos);
+            const response = await axios.post('http://localhost:8080/api/auth/register', datos, {
+                withCredentials: true
+            });
             console.log("Respuesta del servidor:", response.data);
 
             if (response.data.status == 'true') {
