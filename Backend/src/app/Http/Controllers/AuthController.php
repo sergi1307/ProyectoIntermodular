@@ -30,7 +30,7 @@ class AuthController extends Controller
                     // Xifra la contrasenya per a que no siga una contrasenya en texet pla
                     'password' => Hash::make($request->password),
                 ]);
-
+            
             // Creem el token a partir de les dades de l'usuari
             $token = $user->createToken('api-token')->plainTextToken;
 
@@ -42,6 +42,7 @@ class AuthController extends Controller
                 'status' => 'true',
                 'message' => 'Usuari creat correctament',
                 'token' => $token,
+                'user' => $user,
             ], 200)->withCookie($cookie);
         } catch(Exception $e) {
             return response()->json([
@@ -85,13 +86,14 @@ class AuthController extends Controller
                 'status' => 'true',
                 'message' => 'Usuari autenticat correctament',
                 'token' => $token,
+                'user' => $user,
             ], 200)->withCookie($cookie);
         } catch (Exception $e) {
             return response()->json([
-                'status' => 'true',
+                'status' => 'false',
                 'message' => 'Error al autenticar el usuari',
                 'error' => $e,
-            ], 200);
+            ], 500);
         }
         
     }

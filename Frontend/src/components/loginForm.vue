@@ -33,13 +33,22 @@
 
         try {
             // Fem la petició axios al backend enviant les dades necessàries per a fer el login
-            const response = await axios.post('http://localhost:8000/api/auth/login', datos, {
+            const response = await axios.post('http://localhost:8080/api/auth/login', datos, {
                 withCredentials: true
             });
 
             console.log("Respuesta del servidor:", response.data);
 
             if (response.data.status == 'true') {
+                localStorage.setItem('token', response.data.token);
+
+                if(response.data.user) {
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    console.log("Usuari guardat en LocalStorage:", response.data.user);
+                } else {
+                    console.warn("El backend no ha tornat l'usuari");
+                }
+
                 router.push('/general');
             }
         } catch (error) {

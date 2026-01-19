@@ -3,7 +3,7 @@
     
     <div class="logo">
       <img src="../assets/imgs/logoEmpresa.png" alt="Logo ProxiMarkt" width="100px">
-      <span><router-link to="/">ProxiMarkt</router-link></span>
+      <span><router-link to="/general">ProxiMarkt</router-link></span>
     </div>
 
     <div class="menu">
@@ -15,16 +15,15 @@
       <div class="iconos">
         
         <button class="iconos">
-          <img src="../assets/imgs/campana.png" alt="foto campana"/> </button>
+          <img src="../assets/icons/campana.png" alt="foto campana"/> </button>
 
         <button class="iconos">
-          <img src="../assets/imgs/carrito.png" alt="foto carrito" /></button>
+          <img src="../assets/icons/carrito.png" alt="foto carrito" /></button>
 
         <button class="iconos">
-          <img src="../assets/imgs/perfil.png" alt="foto usuario" />
+          <img src="../assets/icons/usuario.png" alt="foto usuario" />
         </button>
 
-        
       </div>
     </div>
   </nav>
