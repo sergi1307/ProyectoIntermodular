@@ -1,6 +1,6 @@
 <script setup>
-import Comprador from './components/NavComprador.vue'
-import Vendedor from './components/NavVendedor.vue' 
+import Comprador from './components/nav/NavComprador.vue'
+import Vendedor from './components/nav/NavVendedor.vue' 
 import { RouterView, useRoute } from 'vue-router'
 const route = useRoute() 
 </script>
