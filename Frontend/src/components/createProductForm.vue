@@ -1,6 +1,18 @@
 <script setup>
 // Importem les funcions de vue
 import { ref, computed } from 'vue'
+import axios from 'axios'
+
+// Definim categoria com un array per al desplegable de les categories
+const props = defineProps({
+  categorias: {
+    type: Array,
+    default: () => []
+  }
+})
+
+// Definim l'emissió per a la creació
+const emit = defineEmits(['created'])
 
 // Definim els camps del formulari buits
 const name = ref('')
@@ -11,44 +23,69 @@ const stock = ref(null)
 const type_stock = ref('')
 const state = ref('')
 
-// Definim categoria com un array per al desplegable de les categories
-const props = defineProps({
-  categorias: {
-    type: Array,
-    default: () => []
-  }
-})
-// Definim l'emissió per a la creació
-const emit = defineEmits(['created'])
-
-const producto = computed(() => ({
-  id: Date.now(), 
-  name: name.value,
-  description: description.value,
-  category_id: category_id.value,
-  price: price.value,
-  stock: stock.value,
-  type_stock: type_stock.value,
-  state: state.value
-}))
-
-const enviarDatos = () => {
-  if (!name.value || !description.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
+const enviarDatos = async () => {
+  if (!name.value || !category_id.value || !price.value || !stock.value || !type_stock.value || !state.value) {
     alert('Por favor, rellena todos los campos')
     return
   }
 
-  // Emitim el producte al pare
-  emit('created', producto.value)
+// const producto = computed(() => ({
+//   id: Date.now(),
+//   name: name.value,
+//   description: description.value,
+//   category_id: category_id.value,
+//   price: price.value,
+//   stock: stock.value,
+//   type_stock: type_stock.value,
+//   state: state.value
+// }))
 
-  // I procedim a buidar les dades del formulari
-  name.value = ''
-  description.value = ''
-  category_id.value = ''
-  price.value = null
-  stock.value = null
-  type_stock.value = ''
-  state.value = ''
+// // Emitim el producte al pare
+// emit('created', producto.value)
+  
+try {
+  const payload = {
+    id_user: 1,        
+    id_delivery_point: 1,       
+    name: name.value,
+    description: description.value,
+    price: price.value,
+    stock: stock.value,
+    type_stock: type_stock.value === 'kg' ? 'Kg' : 'Unidad',
+    state:
+      state.value === 'disponible'
+        ? 'Disponible'
+        : state.value === 'agotado'
+        ? 'Agotado'
+        : 'Reservado',
+    categories: [category_id.value]
+    }
+  
+  await axios.post(
+    'http://localhost:8080/api/products/store',
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  )
+
+    emit('created') // solo avisamos al padre
+    
+    // I procedim a buidar les dades del formulari
+    name.value = ''
+    category_id.value = ''
+    price.value = null
+    stock.value = null
+    type_stock.value = ''
+    state.value = ''
+    
+    alert ('Producto creado correctamente')
+    
+  } catch (error) {
+    console.error('Error al crear producto:', error.response?.data || error)
+  }
 }
 </script>
 
@@ -61,7 +98,7 @@ const enviarDatos = () => {
       <input type="text" v-model="name" placeholder="Nombre del producto"/><br>
 
       <!--Descrició del producte-->
-      <label>Descripción</label><br>
+      <label for="description">Descripción</label><br>
       <input type="textarea" v-model="description" placeholder="Descripción del producto"/><br>
 
       <!--Preu-->
@@ -103,11 +140,61 @@ const enviarDatos = () => {
     </form>
   </div>
 </template>
-<style>
-  #submit{
+
+<style scoped>
+#form-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.15);
+}
+
+textarea {
+  resize: none;
+  min-height: 90px;
+}
+
+select {
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+ #submit{
     background-color: #1c5537;
     border-radius: 20px;
     border: none;
     color: white;
-  }
+ }
 </style>

@@ -1,78 +1,131 @@
 <template>
-    <div class="contenedor-especifico">
-      <h2>Prueba de Seleccion de Tienda</h2>
-      <p>Esta vista sirve para probar el funcionamiento del mapa antes de integrarlo en el formulario principal.</p>
-  
-      <div class="area-mapa">
-        
-        <mapa-tiendas 
-            titulo="Selecciona tu tienda"
-            :puntos="misTiendas"
-            :es-seleccionable="true" 
-            @tienda-elegida="probarSeleccion"
-        ></mapa-tiendas>
-  
-      </div>
-  
-      <div class="caja-debug" v-if="idCapturado">
-          <p><strong>Prueba exitosa:</strong></p>
-          <p>El componente ha enviado el ID: <strong>{{ idCapturado }}</strong></p>
-          <p><i>Este es el valor que se tendra que guardar en la base de datos.</i></p>
-      </div>
-  
+  <div class="contenedor-especifico">
+    <h2>📍 Mis Puntos de Venta 📍</h2>
+    <p>Gestiona tus ubicaciones activas.</p>
+
+    <div class="area-mapa">
+      <mapa-tiendas 
+          titulo="Mis Tiendas"
+          :puntos="misTiendas"
+          es-seleccionable 
+          @tienda-elegida="seleccionarTienda"
+      ></mapa-tiendas>
     </div>
-  </template>
-  
-  <script>
-  import MapaTiendas from '../components/mapaPuntosdeventa.vue';
-  
-  export default {
-    name: 'MapaEspecifico',
-    components: { MapaTiendas },
-    data() {
-      return {
-        idCapturado: null,
-        
-        // Estos datos son estaticos para poder trabajar sin el Backend.
-        // Simulan las tiendas que pertenecen al usuario logueado.
-        misTiendas: [
-          { id: 50, name: 'Mi Tienda Valencia', latitude: 39.4699, length: -0.3763, direction: 'C/ Colon 1' },
-          { id: 51, name: 'Mi Almacen', latitude: 39.48, length: -0.38, direction: 'Poligono Norte' }
-        ]
-      }
+
+    <div class="caja-debug" v-if="idCapturado">
+        <p><strong>Tienda seleccionada:</strong></p>
+        <p>ID: <strong>{{ idCapturado }}</strong></p>
+    </div>
+
+    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
+        <p>No tienes tiendas creadas todavía.</p>
+    </div>
+  </div>
+</template>
+
+<script>
+import MapaTiendas from '../components/mapaPuntosdeventa.vue';
+import axios from 'axios';
+
+/**
+ * Vista que muestra las tiendas del usuario autenticado
+ */
+export default {
+  name: 'MapaEspecifico',
+  components: { MapaTiendas },
+  data() {
+    return {
+      idCapturado: null,
+      misTiendas: [],
+      cargado: false
+    }
+  },
+  async mounted() {
+      await this.cargarMisTiendas();
+  },
+  methods: {
+    /**
+     * Obtiene el valor de una cookie por su nombre
+     * @param {string} nombre - Nombre de la cookie
+     * @returns {string|null} Valor de la cookie o null
+     */
+    obtenerCookie(nombre) {
+        const valor = `; ${document.cookie}`;
+        const partes = valor.split(`; ${nombre}=`);
+        if (partes.length === 2) return partes.pop().split(';').shift();
+        return null;
     },
-    methods: {
-      // Funcion que salta cuando el usuario hace click en un marcador
-      probarSeleccion(id) {
-          this.idCapturado = id;
-          console.log("Comprobando ID recibido:", id);
-      }
+    /**
+     * Carga las tiendas del usuario desde la API
+     */
+    async cargarMisTiendas() {
+        try {
+            const token = this.obtenerCookie('auth_token'); 
+
+            if (!token) {
+                console.warn("No se encontró la cookie del token");
+                alert("No estás logueado.");
+                this.$router.push('/login');
+                return;
+            }
+
+            console.log("Token recuperado de cookie:", token);
+
+            const response = await axios.get('http://localhost:8080/api/users/map', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            console.log("Mis tiendas recibidas:", response.data);
+
+            this.misTiendas = response.data.map(punto => {
+                return {
+                    id: punto.id_delivery_point,
+                    name: punto.name,
+                    direction: punto.direction,
+                    latitude: parseFloat(punto.latitude),
+                    length: parseFloat(punto.length)
+                };
+            });
+            
+            this.cargado = true;
+
+        } catch (error) {
+            console.error(" Error cargando mis tiendas:", error);
+            if (error.response && error.response.status === 401) {
+                alert("Sesión caducada.");
+                this.$router.push('/login');
+            }
+        }
+    },
+    /**
+     * Maneja la selección de una tienda en el mapa
+     * @param {number} id - ID de la tienda seleccionada
+     */
+    seleccionarTienda(id) {
+        this.idCapturado = id;
     }
   }
-  </script>
-  
-  <style scoped>
-  .contenedor-especifico { 
+}
+</script>
+
+<style scoped>
+.contenedor-especifico { 
     padding: 20px; 
     max-width: 900px; 
     margin: 0 auto; 
-    text-align: center; /* Centramos todo */
-  }
-
-  /* Quitamos el borde dashed feo y dejamos solo espacio */
-  .area-mapa { 
-    padding: 20px 0; 
-    margin-top: 20px; 
-  }
-
+    text-align: center;
+}
+.area-mapa { padding: 20px 0; margin-top: 20px; }
 .caja-debug { 
-    margin-top: 30px; 
-    padding: 15px; 
-    background-color: #d4edda; 
-    border: 1px solid #c3e6cb; 
-    color: #155724; 
-    border-radius: 10px;
-    display: inline-block; /* Para que la caja ocupe solo lo necesario */
-    min-width: 300px;
-  }
-  </style>
+    margin-top: 20px; padding: 10px; 
+    background-color: #d4edda; border-radius: 5px; 
+    display: inline-block;
+}
+.aviso-vacio {
+    margin-top: 20px; color: #856404; background-color: #fff3cd; 
+    padding: 15px; border-radius: 5px;
+}
+</style>

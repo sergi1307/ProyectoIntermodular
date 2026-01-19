@@ -76,7 +76,7 @@ watch(() => props.modelValue, (value) => {
   overflow: hidden;
 }
 
-.modal-footer {
+.modal-header {
   padding: 1rem;
   border-bottom: 1px solid #eee;
 }

@@ -1,75 +1,102 @@
 <template>
-    <div class="pagina-general">
-       <div id="cabecera">
-        <div id="titulos">
-            <h1>Todas nuestras Tiendas</h1>
-            <p>Consulta dónde estamos.</p>
+  <div class="pagina-general">
+    <div id="cabecera">
+      <div id="titulos">
+        <h1>Todas nuestras Tiendas</h1>
+        <p>Consulta dónde estamos.</p>
+      </div>
+      <div id="selector">
+        <div id="borde">
+          <router-link to="/general">
+            <button :class="{ 'activo': vistaActual === 'grid' }">Productos</button>
+          </router-link>
+          
+          <router-link to="/mapa">
+            <button :class="{ 'activo': vistaActual === 'map' }">Mapa</button>
+          </router-link>
         </div>
-        <div id="selector">
-            <div id="borde">
-                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
-                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
-            </div>
-        </div>
+      </div>
     </div>
-      <mapa-tiendas :puntos="listaTiendas"></mapa-tiendas>
-    </div>
-  </template>
-  
-  <script>
-  import MapaTiendas from '../components/mapaPuntosdeventa.vue';
-  
-  export default {
-    name: 'MapaGeneral',
-    components: { MapaTiendas },
-    data() {
-      return {
-        // DATOS MOCK: Simulo la respuesta de la API de Laravel
-        listaTiendas: [
-          { id: 1, name: 'Sede Central', latitude: 40.4167, length: -3.70325, direction: 'Madrid' },
-          { id: 2, name: 'Delegación Norte', latitude: 41.3851, length: 2.1734, direction: 'Barcelona' },
-          { id: 3, name: 'Delegación Sur', latitude: 37.3891, length: -5.9845, direction: 'Sevilla' }
-        ]
+
+    <mapa-tiendas :puntos="listaTiendas"></mapa-tiendas>
+  </div>
+</template>
+
+<script>
+import MapaTiendas from '../components/mapaPuntosdeventa.vue';
+import axios from 'axios';
+
+export default {
+  name: 'MapaGeneral',
+  components: { MapaTiendas },
+  data() {
+    return {
+      // Definimos la vista actual como 'map' para que el botón salga verde
+      vistaActual: 'map',
+      listaTiendas: [] // Empezamos vacío y lo llenamos con la API
+    }
+  },
+  async mounted() {
+    await this.cargarTiendas();
+  },
+  methods: {
+    async cargarTiendas() {
+      try {
+        console.log("Pidiendo datos a Laravel...");
+        const response = await axios.get('http://localhost:8080/api/delivery_points');
+        
+        // Mapeamos los datos para asegurar que latitud y longitud son números
+        this.listaTiendas = response.data.map(tienda => {
+            return {
+                id: tienda.id_delivery_point, 
+                name: tienda.name,
+                direction: tienda.direction,
+                // ParseFloat es vital para que el mapa entienda las coordenadas
+                latitude: parseFloat(tienda.latitude),
+                length: parseFloat(tienda.length)
+            };
+        });
+
+      } catch (error) {
+        console.error('Error al cargar tiendas:', error);
       }
     }
   }
-  </script>
-  
-  <style scoped>
-/* Contenedor principal */
+}
+</script>
+
+<style scoped>
+/* Estilos de Marc (Los bonitos) */
 .pagina-general { 
-  padding: 40px 40px; /* Un poco más de margen lateral para que respire */
+  padding: 40px 40px;
   background-color: #f9f9f9;
-  min-height: 100vh; /* Asegura que ocupe al menos toda la altura */
+  min-height: 100vh;
 }
 
-/* Cabecera: Flexbox para alinear texto (izq) y botones (der) */
 #cabecera {
   display: flex;
-  justify-content: space-between; /* Separa los elementos a los extremos */
-  align-items: center; /* Alineación vertical perfecta */
-  margin-bottom: 30px; /* Espacio antes del mapa */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-/* Títulos: Quitamos márgenes extraños para que centre bien */
 #titulos {
   text-align: left;
 }
 
 #titulos h1 {
-  margin: 0; /* Clave para la alineación vertical */
+  margin: 0;
   font-size: 2rem;
   color: #143b27;
   font-weight: 700;
 }
 
 #titulos p {
-  margin: 5px 0 0 0; /* Pequeño espacio solo arriba */
+  margin: 5px 0 0 0;
   color: #666;
   font-size: 1rem;
 }
 
-/* Selector (El borde blanco que contiene los botones) */
 #selector {
   display: flex;
   align-items: center;
@@ -82,16 +109,14 @@
   border-radius: 8px;
   padding: 5px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  gap: 5px; /* Pequeña separación entre botones */
+  gap: 5px;
 }
 
-/* Enlaces del router (a veces rompen el flex, esto lo arregla) */
 #borde a {
   text-decoration: none;
   display: block;
 }
 
-/* Estilo base de los botones */
 #borde button {
   padding: 10px 24px;
   border: none;
@@ -108,10 +133,8 @@
   background-color: #f0f0f0;
 }
 
-/* ESTADO ACTIVO (MAPA VERDE) */
-/* Esto se aplica cuando el botón tiene la clase .activo */
 #borde button.activo {
-  background-color: #1c5537; /* Verde corporativo */
+  background-color: #1c5537;
   color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

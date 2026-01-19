@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Delivery_point;
 
 class UserController extends Controller
 {
@@ -104,5 +105,21 @@ class UserController extends Controller
         // Retornem una resposta afirmativa de que ha anat tot bé
         return response()->json(['message' => 'Usuari eliminat'],200);
     }
+    
+    public function mostrarMapa(Request $request)
+    {
+    // Esto obtiene el usuario automáticamente gracias al token
+    $user = $request->user(); 
 
+    if (!$user) {
+        return response()->json(['error' => 'No autorizado'], 401);
+    }
+
+    // Buscamos SOLO sus puntos
+    $puntos = \App\Models\Delivery_point::where('id_user', $user->id)->get();
+
+    return response()->json($puntos);
+    }
 }
+
+

@@ -40,7 +40,13 @@ const routes = [
         path: '/general',
         name: 'general',
         component: general,
-        meta: { comprador: true }
+//         meta: { comprador: true } Esto lo pondremos en un futuro para asegurar nuestra ruta
+        component: general
+    },
+    {
+        path: '/my-products',
+        name: 'my-products',
+        component: products
     }
 ];
 

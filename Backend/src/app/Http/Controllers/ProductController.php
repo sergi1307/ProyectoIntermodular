@@ -135,7 +135,11 @@ class ProductController extends Controller
     {
         // Busquem el producte per id
         $product = Product::findOrFail($id);
-
+        // Completem les dades que no venen del frontend
+        $request->merge([
+            'id_user' => $product->id_user,
+            'id_delivery_point' => $product->id_delivery_point,
+        ]);
         // Validem les dades enviades del formulari
         $validated = $request->validate([
             'id_user' => 'required|integer|exists:users,id_user',
