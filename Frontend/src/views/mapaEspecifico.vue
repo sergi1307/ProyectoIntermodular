@@ -45,17 +45,6 @@ export default {
   },
   methods: {
     /**
-     * Obtiene el valor de una cookie por su nombre
-     * @param {string} nombre - Nombre de la cookie
-     * @returns {string|null} Valor de la cookie o null
-     */
-    obtenerCookie(nombre) {
-        const valor = `; ${document.cookie}`;
-        const partes = valor.split(`; ${nombre}=`);
-        if (partes.length === 2) return partes.pop().split(';').shift();
-        return null;
-    },
-    /**
      * Carga las tiendas del usuario desde la API
      */
     async cargarMisTiendas() {
