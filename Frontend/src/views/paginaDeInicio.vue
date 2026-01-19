@@ -19,7 +19,6 @@
       </div>
       <div id="sectionButtons">
         <router-link to="/login" id="comenzar">Comenzar</router-link>
-        <router-link to="/mapa" id="saberMas">Tiendas Locales</router-link>
       </div>
     </div>
   </section>
