@@ -105,11 +105,11 @@ GET http://localhost:8080/api/reviews
 Accept: application/json
 
 ### Mostrar una review específica
-GET http://localhost:8080/api/reviews/show/1
+GET http://localhost:8080/api/reviews/show/2
 Accept: application/json
 
 ### Actualitzar una review
-PUT http://localhost:8080/api/reviews/update/1
+PUT http://localhost:8080/api/reviews/update/2
 Content-Type: application/json
 
 {
@@ -120,7 +120,7 @@ Content-Type: application/json
 }
 
 ### Eliminar una review
-DELETE http://localhost:8080/api/reviews/destroy/1
+DELETE http://localhost:8080/api/reviews/destroy/2
 Accept: application/json
 ### 1. Crear una nueva venta
 POST http://localhost:8080/api/sales/create

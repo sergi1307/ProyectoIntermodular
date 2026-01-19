@@ -14,7 +14,7 @@ class SaleController extends Controller
      * Funció per a crear una venta
      *
      * @param Request $request
-     * @return void
+     * @return json
      */
     public function store(Request $request)
     {

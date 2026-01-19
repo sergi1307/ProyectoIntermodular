@@ -112,7 +112,6 @@ onMounted(obtenerDatos)
 
 <template>
 <div id ="productos">
-  
     <div id="contenedor">
       <div id="menu">
         <ul>

@@ -15,27 +15,32 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: login
+        component: login,
+        
     },
     {
         path: '/products',
         name: 'products',
-        component: products
-
+        component: products,
+        meta: { vendedor: true }
     },
     {
         path: '/mapa',
         name: 'mapa_general',
-        component: mapaGeneral
+        component: mapaGeneral,
+        meta: { comprador: true }
     },
     {
         path: '/mis-tiendas',
         name: 'mapa_pruebas',
-        component: mapaEspecifico
+        component: mapaEspecifico,
+        meta: { comprador: true }
     },
     {
         path: '/general',
         name: 'general',
+        component: general,
+//         meta: { comprador: true } Esto lo pondremos en un futuro para asegurar nuestra ruta
         component: general
     },
     {
