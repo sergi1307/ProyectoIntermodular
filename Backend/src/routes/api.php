@@ -49,7 +49,6 @@ Route::middleware('auth:sanctum')->group(function() {
     });
     //MAPA ESPECIFICO
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
-
     // VENTAS
     Route::prefix('sales')->name('sales.')->group(function (){
         Route::post('/store', [SaleController::class, 'store'])->name('store'); 

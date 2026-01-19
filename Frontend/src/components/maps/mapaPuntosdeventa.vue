@@ -28,7 +28,8 @@
       props: {
           puntos: { type: Array, required: true },
           titulo: { type: String, default: 'Mapa' },
-          esSeleccionable: { type: Boolean, default: false }
+          esSeleccionable: { type: Boolean, default: false },
+          mapId: { type: String, default: 'mapa-leaflet' }
       },
       data() {
           return {
@@ -63,7 +64,7 @@
             var norteEste = L.latLng(45.0, 6.0);
             var limitesEspaña = L.latLngBounds(surOeste, norteEste);
 
-            this.map = L.map('mapa-leaflet', {
+            this.map = L.map(this.mapId, {
                 center: [40.4167, -3.70325],
                 zoom: 6,
                 minZoom: 5,
@@ -128,7 +129,7 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
     text-align: center;
     }
-    #mapa-leaflet { 
+    .tarjeta-mapa > div:nth-child(2) { 
         width: 100%; 
         height: 800px;
         border-radius: 15px; 

@@ -5,14 +5,15 @@
   
       <div class="area-mapa">
         <mapa-tiendas 
-            v-if="cargado"
+            v-if="cargado && misTiendas.length > 0"
             titulo="Mis Tiendas"
             :puntos="misTiendas"
+            map-id="mapaEspecifico"
             es-seleccionable 
             @tienda-elegida="seleccionarTienda"
         ></mapa-tiendas>
         
-        <div v-else class="cargando">Cargando mapa...</div>
+        <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
       </div>
   
       <div class="caja-debug" v-if="idCapturado">
@@ -24,11 +25,9 @@
           <p>No tienes tiendas creadas todavía.</p>
       </div>
       
-      <div class="debug-info" style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-          <p><strong>Debug Info:</strong></p>
-          <p>Cargado: {{ cargado }}</p>
-          <p>Número de tiendas: {{ misTiendas.length }}</p>
-          <p>Tiendas: {{ misTiendas }}</p>
+      <div style="background: yellow; padding: 10px; margin: 10px;">
+          <p>Cargado: {{ cargado }} | Tiendas: {{ misTiendas.length }}</p>
+          <p>{{ debugMsg }}</p>
       </div>
     </div>
   </template>
@@ -44,31 +43,31 @@
       return {
         idCapturado: null,
         misTiendas: [],
-        cargado: false
+        cargado: false,
+        debugMsg: ''
       }
     },
-    async mounted() {
-        await this.cargarMisTiendas();
+    mounted() {
+        this.cargarMisTiendas();
     },
     methods: {
         async cargarMisTiendas() {
           try {
               const token = localStorage.getItem('token');
-              console.log("Token:", token);
+              this.debugMsg = 'Token: ' + (token ? 'existe' : 'NO existe');
+              
               if (!token) {
-                   alert("No hay token guardado. Tienes que hacer login.");
                    this.$router.push('/login');
                    return;
               }
-              console.log("Haciendo petición a /api/map...");
+
               const response = await axios.get('http://localhost:8080/api/map', {
                   headers: {
-                      'Authorization': `Bearer ${token}`
+                      'Authorization': 'Bearer ' + token
                   }
               });
-
-              console.log("Respuesta del servidor:", response.data);
-              console.log("Número de tiendas:", response.data.length);
+              
+              this.debugMsg = 'Respuesta: ' + JSON.stringify(response.data);
 
               this.misTiendas = response.data.map(punto => ({
                   id: punto.id_delivery_point,
@@ -78,22 +77,11 @@
                   length: parseFloat(punto.length)
               }));
               
-              console.log("Tiendas mapeadas:", this.misTiendas);
-              
               this.cargado = true;
 
           } catch (error) {
-              console.error("Error completo:", error);
-              console.error("Error response:", error.response);
-              
               this.cargado = true;
-              
-              if (error.response && error.response.status === 401) {
-                  alert("El token ha caducado. Entra de nuevo.");
-                  this.$router.push('/login');
-              } else {
-                  alert("Error al cargar tus tiendas.");
-              }
+              this.debugMsg = 'Error: ' + (error.response ? error.response.status + ' - ' + JSON.stringify(error.response.data) : error.message);
           }
       },
       seleccionarTienda(id) {

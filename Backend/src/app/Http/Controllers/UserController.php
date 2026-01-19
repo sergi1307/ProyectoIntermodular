@@ -110,11 +110,10 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'No autorizado'], 401);
         }
-        $puntos = \App\Models\Delivery_Point::where('id_user', $user->id)->get();
+        
+        $puntos = \App\Models\Delivery_Point::where('id_user', $user->id_user)->get();
 
         return response()->json($puntos);
     }
 
 }
-
-
