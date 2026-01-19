@@ -3,6 +3,7 @@ import login from '../views/login.vue';
 import products from '../views/products.vue';
 import mapaGeneral from '../views/mapaGeneral.vue';
 import mapaEspecifico from '../views/mapaEspecifico.vue';
+import general from '../views/general.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
         path: '/mis-tiendas',
         name: 'mapa_pruebas',
         component: mapaEspecifico
+    },
+    {
+        path: '/general',
+        name: 'general',
+        component: general
     }
 
 ];
