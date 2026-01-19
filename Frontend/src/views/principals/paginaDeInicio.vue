@@ -5,7 +5,7 @@
 <template>
   <nav>
     <div class="empresa">
-      <img src="../assets/imgs/logoEmpresa.png" alt="Logo ProxiMarkt" width="100px">
+      <img src="../../assets/imgs/logoEmpresa.png" alt="Logo ProxiMarkt" width="100px">
       <p>ProxiMarkt</p>
     </div>
     <router-link to="/login" id="iniciarSesion">Iniciar Sesión</router-link>

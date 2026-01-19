@@ -1,6 +1,6 @@
 import PaginaPrincipal from '../views/principals/paginaDeInicio.vue';
 import login from '../views/principals/login.vue';
-import products from '../views/products/products.vue';
+import products from '../views/products/dashboard.vue';
 import mapaGeneral from '../views/maps/mapaGeneral.vue';
 import mapaEspecifico from '../views/maps/mapaEspecifico.vue';
 import general from '../views/principals/general.vue';
