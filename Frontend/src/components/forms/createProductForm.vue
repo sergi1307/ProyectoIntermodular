@@ -17,7 +17,7 @@ const emit = defineEmits(['created'])
 // Definim els camps del formulari buits
 const name = ref('')
 const description = ref('')
-const category_id = ref([])
+const category_id = ref('')
 const price = ref(null)
 const stock = ref(null)
 const type_stock = ref('')
@@ -26,7 +26,7 @@ const state = ref('')
 const enviarDatos = async () => {
   if (
       !name.value || 
-      category_id.value.length === 0 || 
+      !category_id.value || 
       price.value === null || 
       stock.value === null || 
       !type_stock.value || 
@@ -49,10 +49,22 @@ const enviarDatos = async () => {
 
 // // Emitim el producte al pare
 // emit('created', producto.value)
-  
+
+const usuarioTexto = localStorage.getItem('user');
+
+if (!usuarioTexto) {
+    alert("No se encontró la sesión del usuario. Por favor, inicia sesión.");
+    return;
+}
+
+const user = JSON.parse(usuarioTexto);
+
+const id = user.id_user;
+
+console.log("ID del usuario:", id);
 try {
   const payload = {
-    id_user: 1,        
+    id_user: id,        
     id_delivery_point: 1,       
     name: name.value,
     description: description.value,
@@ -65,7 +77,7 @@ try {
         : state.value === 'agotado'
         ? 'Agotado'
         : 'Reservado',
-    categories: category_id.value.map(id => Number(id))
+    categories: category_id.value
     } 
   
   await axios.post(
@@ -82,7 +94,7 @@ try {
     
     // I procedim a buidar les dades del formulari
     name.value = ''
-    category_id.value = []
+    category_id.value = ''
     price.value = null
     stock.value = null
     type_stock.value = ''
@@ -137,19 +149,17 @@ try {
       <label>Categorías</label><br>
       
       <div class="checkbox-container">
-        <div v-if="props.categorias.length === 0" style="color:red; font-size:12px;">
+        <div v-if="props.categorias.length === 0">
            No hay categorías cargadas.
         </div>
 
-        <div v-for="categoria in props.categorias">
-          <input 
-            type="checkbox" 
-            :id="categoria.id" 
-            :value="categoria.id" 
-            v-model="category_id"
-          >
-          <label :for="categoria.id">{{ categoria.name }}</label>
-        </div>
+         <select v-model="category_id">
+        <!--Recorrem la llista de les categories per a mostrar-les en el desplegable-->
+        <option disabled value="">Selecciona categoría</option>
+        <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
+          {{ categoria.name }}
+        </option>
+      </select><br><br>
       </div>
       <br>
 

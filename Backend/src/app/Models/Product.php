@@ -47,12 +47,12 @@ class Product extends Model
         return $this->belongsTo(Delivery_Point::class, 'id_delivery_point','id_delivery_point');
     }
 
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class,'category_product','id_product','id_category');
-    }
     public function sale()
     {
         return $this->hasOne(Sale::class, 'id_product', 'id_product');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'id_category', 'id_category');
     }
 }
