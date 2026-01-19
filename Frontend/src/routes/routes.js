@@ -1,9 +1,9 @@
-import PaginaPrincipal from '../views/paginaDeInicio.vue';
-import login from '../views/login.vue';
-import products from '../views/products.vue';
-import mapaGeneral from '../views/mapaGeneral.vue';
-import mapaEspecifico from '../views/mapaEspecifico.vue';
-import general from '../views/general.vue';
+import PaginaPrincipal from '../views/principals/paginaDeInicio.vue';
+import login from '../views/principals/login.vue';
+import products from '../views/products/products.vue';
+import mapaGeneral from '../views/maps/mapaGeneral.vue';
+import mapaEspecifico from '../views/maps/mapaEspecifico.vue';
+import general from '../views/principals/general.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -40,7 +40,7 @@ const routes = [
         path: '/general',
         name: 'general',
         component: general,
-//         meta: { comprador: true } Esto lo pondremos en un futuro para asegurar nuestra ruta
+//      meta: { comprador: true } Esto lo pondremos en un futuro para asegurar nuestra ruta
         component: general
     },
     {
