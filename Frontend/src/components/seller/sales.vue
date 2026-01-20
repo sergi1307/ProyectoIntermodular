@@ -30,7 +30,7 @@ const rechazarVenta = async (ventas) => {
     const idUser = user?.id_user;
 
     const payload = {
-      'state': 'Terminado'
+      'state': 'Rechazada'
     };
 
     const response = await axios.put(url, payload, {
@@ -41,7 +41,34 @@ const rechazarVenta = async (ventas) => {
 
     console.log("Producto Rechazado Éxitosamente:", response.data);
 
-    ventas.state='Terminado';
+    ventas.state='Rechazada';
+  } catch (error) {
+    console.error("Error al rechazar la venta:", error);
+  }
+}
+
+const aceptarVenta = async (venta) => {
+  const url = `http://localhost:8080/api/sales/update/${venta.id_sale}`;
+
+  try {
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+
+    const idUser = user?.id_user;
+
+    const payload = {
+      'state': 'Aceptada'
+    };
+
+    const response = await axios.put(url, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log("Producto Aceptado Éxitosament:", response.data);
+
+    venta.state = 'Aceptada';
   } catch (error) {
     console.error("Error al rechazar la venta:", error);
   }
@@ -116,7 +143,7 @@ onMounted(obtenerVentas);
                   alt="Rechazar"
                 />
               </button>
-              <button title="Aceptar Venta" @click="">
+              <button title="Aceptar Venta" @click="aceptarVenta(venta)">
                 <img
                   class="action-icon"
                   src="../../assets/icons/aceptar.png"
