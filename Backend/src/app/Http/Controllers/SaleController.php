@@ -39,7 +39,7 @@ class SaleController extends Controller
         }
 
         // Obtenim del token l'id del comprador
-        $compradorId = $request->user()->id_user;
+        $compradorId = $request->user()->id_user ?? $request->id_buyer;
 
         // Comprobem que l'usuari no intenta comprar el seu mateix producte
         if ($product->id_user == $compradorId) {
@@ -52,8 +52,8 @@ class SaleController extends Controller
         // Insertem les dades definitivament
         $sale = Sale::create([
             'id_product' => $request->id_product,
-            'id_buyer' => $compradorId,
-            'id_seller' => $product->id_user,
+            'id_buyer' => $request->id_buyer,
+            'id_seller' => $request->id_seller,
             'id_delivery_point' => $request->id_delivery_point,
             'sale_date' => Carbon::now('Europe/Madrid')->format('Y-m-d'),
             'total' => $request->total

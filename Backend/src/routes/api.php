@@ -38,10 +38,11 @@ Route::prefix('reviews')->name('reviews.')->group(function (){
     Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
 });
 
-Route::middleware('auth:sanctum')->group(function() {
+// Route::middleware('auth:sanctum')->group(function() {
 
     // USUARIO
     Route::prefix('users')->name('users.')->group(function (){
+        Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/me', [UserController::class, 'show'])->name('me');
         Route::put('/update', [UserController::class, 'update'])->name('update');
         Route::delete('/destroy', [UserController::class, 'destroy'])->name('destroy');
@@ -81,4 +82,4 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
     
-});
+// });

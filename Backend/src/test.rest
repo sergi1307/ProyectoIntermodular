@@ -1,239 +1,159 @@
-# Registrar o crear un usuari
-POST http://localhost:8080/api/auth/register
+@url = http://localhost:8080/api
+
+### ------------------------------------------------------------------------
+### 1. AUTENTICACIÓN
+### ------------------------------------------------------------------------
+
+### Registrar un nuevo usuario
+POST {{url}}/auth/register
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Test2",
-  "email": "test6@example.com",
-  "phone": "1234",
-  "registration_date": "2026-01-02",
-  "password": "password"
+  "name": "Usuario Test",
+  "email": "usuario@test.com",
+  "phone": "600123456",
+  "registration_date": "2026-01-20",
+  "password": "password123"
 }
 
-### Iniciar sessió amb un usuari autenticat
-POST http://localhost:8080/api/auth/login 
-Content-Type: application/json
-
-{
-  "email": "test2@example.com",
-  "password": "password"
-}
-
-### Iniciar sessió de manera inválida
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "test@example.com",
-  "password": "bad_password"
-}
-
-### Obtindre els usuaris existents
-GET http://localhost:8080/api/users
-Accept: application/json
-
-### Obtindre un usuari existent
-GET http://localhost:8080/api/users/show/1
-Accept: application/json
-
-### Actualitzar un usuari correctament
-PUT http://localhost:8080/api/users/update/1
+### Iniciar sesión
+POST {{url}}/auth/login 
 Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Juan Actualizado",
-    "email": "nuevo_email@test.com",
-    "phone": "555-1234",
-    "registration_date": "2023-01-01"
+  "email": "usuario_sin_token@test.com",
+  "password": "password123"
 }
 
-### Eliminar un usuari existent
-DELETE http://localhost:8080/api/users/destroy/1
+
+### ------------------------------------------------------------------------
+### 2. CATEGORÍAS
+### ------------------------------------------------------------------------
+
+### Crear una categoría
+POST {{url}}/categories/store
+Content-Type: application/json
 Accept: application/json
 
+{
+    "name": "Verdura Ecológica"
+}
 
-### Crear un punt d'entrega
-POST http://localhost:8080/api/delivery_points/create
+### Listar categorías
+GET {{url}}/categories
+Accept: application/json
+
+### ------------------------------------------------------------------------
+### 3. PUNTOS DE ENTREGA
+### ------------------------------------------------------------------------
+
+### Crear un punto de entrega
+POST {{url}}/delivery_points/store
 Content-Type: application/json
+Accept: application/json
 
 {
     "id_user": 1,
     "name": "Punto Centro",
-    "direction": "Carrer Major 123",
-    "latitude": "41.3851",
-    "length": "2.1734"
+    "direction": "Plaza Mayor 1",
+    "latitude": 39.4699,
+    "length": -0.3763
 }
 
-### Llistar tots els punts d'entrega
-GET http://localhost:8080/api/delivery_points
-Accept: application/json
+### ------------------------------------------------------------------------
+### 4. PRODUCTOS
+### ------------------------------------------------------------------------
 
-### Mostrar un punt d'entrega específic
-GET http://localhost:8080/api/delivery_points/show/1
-Accept: application/json
-
-### Actualitzar un punt d'entrega
-PUT http://localhost:8080/api/delivery_points/update/2
+### CREAR PRODUCTO
+# Importante: Enviamos "id_user" manual porque no hay token
+POST {{url}}/products/store
 Content-Type: application/json
+Accept: application/json
 
 {
-    "name": "Punto Centro Actualizado",
-    "direcction": "Carrer Menor 456", 
-    "latitude": "41.3900",
-    "length": "2.1800"
+    "id_user": 1,
+    "id_delivery_point": 1,
+    "id_category": 1,
+    "name": "Lechugas Frescas",
+    "description": "Lechugas recién cortadas",
+    "price": 1.20,
+    "stock": 30,
+    "type_stock": "Unidad",
+    "state": "Disponible"
 }
 
-### Eliminar un punt d'entrega
-DELETE http://localhost:8080/api/delivery_points/destroy/2
+### Listar todos los productos
+GET {{url}}/products
 Accept: application/json
 
-### Crear una review
-POST http://localhost:8080/api/reviews/create
+### Ver mis productos
+# Nota: Añadimos ?id_user=1 para que el controlador sepa de quién buscar
+GET {{url}}/products/mine?id_user=1
+Accept: application/json
+
+### Actualizar producto
+PUT {{url}}/products/update/1
 Content-Type: application/json
+Accept: application/json
 
 {
-    "id_sale": 1,
-    "calification": 5,
-    "comment": "Tot perfecte, molt ràpid",
-    "review_date": "2023-10-30"
+    "id_user": 1,
+    "name": "Tomates (Precio Actualizado)",
+    "price": 6.00,
+    "state": "Reservado"
 }
 
-### Llistar totes les reviews
-GET http://localhost:8080/api/reviews
+### Eliminar producto
+DELETE {{url}}/products/destroy/1
 Accept: application/json
-
-### Mostrar una review específica
-GET http://localhost:8080/api/reviews/show/2
-Accept: application/json
-
-### Actualitzar una review
-PUT http://localhost:8080/api/reviews/update/2
-Content-Type: application/json
 
 {
-    "id_sale": 1,
-    "calification": 3,
-    "comment": "Ha arribat una mica tard",
-    "review_date": "2023-10-31"
+    "id_user": 1
 }
 
-### Eliminar una review
-DELETE http://localhost:8080/api/reviews/destroy/2
-Accept: application/json
-### 1. Crear una nueva venta
-POST http://localhost:8080/api/sales/create
+### ------------------------------------------------------------------------
+### 5. VENTAS (Sales)
+### ------------------------------------------------------------------------
+
+### Crear una venta
+POST {{url}}/sales/store
 Content-Type: application/json
 Accept: application/json
 
 {
     "id_product": 1,
-    "id_buyer": 2,
-    "id_seller": 3,
+    "id_buyer": 1,
+    "id_seller": 2,
     "id_delivery_point": 1,
-    "sale_date": "2023-10-27",
-    "total": 55.50,
-    "collection_date": "2023-10-30"
+    "total": 15.50,
+    "quantity": 2
 }
 
-### 2. Listar todas las ventas
-GET http://localhost:8080/api/sales
+### Ver mis compras (My Orders)
+GET {{url}}/my-orders?id_user=1
 Accept: application/json
 
-### 3. Mostrar una venta específica
-GET http://localhost:8080/api/sales/show/1
-Accept: application/json
+### ------------------------------------------------------------------------
+### 6. REVIEWS
+### ------------------------------------------------------------------------
 
-### 4. Actualizar una venta
-PUT http://localhost:8080/api/sales/update/1
+### Crear una review
+POST {{url}}/reviews/store
 Content-Type: application/json
 Accept: application/json
 
 {
-    "sale_date": "2023-11-01",
-    "total": 100.00,
-    "collection_date": "2023-11-05"
+    "id_sale": 1,
+    "calification": 5,
+    "comment": "Todo perfecto"
 }
 
-### 5. Eliminar una venta
-DELETE http://localhost:8080/api/sales/destroy/1
-Accept: application/json
+### ------------------------------------------------------------------------
+### 7. USUARIOS
+### ------------------------------------------------------------------------
 
-### 6. Crear un producto
-# Nota: Enviamos JSON. Si quieres subir imagen, el cliente debe usar multipart/form-data.
-POST http://localhost:8080/api/products/store
-Content-Type: application/json
-Accept: application/json
-
-{
-    "id_user": 2,
-    "id_delivery_point": 1,
-    "name": "Tomates de Huerto",
-    "description": "Tomates ecológicos recién recogidos",
-    "price": 3.50,
-    "stock": 50,
-    "type_stock": "Kg",
-    "state": "Disponible",
-    "categories": [2, 3]
-}
-
-### 7. Listar todos los productos
-GET http://localhost:8080/api/products
-Accept: application/json
-
-### 8. Mostrar un producto específico
-GET http://localhost:8080/api/products/show/3
-Accept: application/json
-
-### 9. Actualizar un producto
-# Nota: Actualizamos datos textuales. El stock y precio cambian.
-PUT http://localhost:8080/api/products/update/3
-Content-Type: application/json
-Accept: application/json
-
-{
-    "id_user": 2,
-    "id_delivery_point": 1,
-    "name": "Tomates de Huerto Premium",
-    "description": "Tomates ecológicos calidad superior",
-    "price": 4.00,
-    "stock": 45,
-    "type_stock": "Kg",
-    "state": "Reservado",
-    "categories": [2]
-}
-
-### 10. Eliminar un producto
-DELETE http://localhost:8080/api/products/destroy/2
-Accept: application/json
-
-### 11. Crear una categoria
-POST http://localhost:8080/api/categories/store
-Content-Type: application/json
-Accept: application/json
-
-{
-    "name": "Verdura"
-}
-
-### 12. Listar todas las categorias
-GET http://localhost:8080/api/categories
-Accept: application/json
-
-### 13. Mostrar una categoria específica
-GET http://localhost:8080/api/categories/show/2
-Accept: application/json
-
-### 14. Actualizar una categoria
-PUT http://localhost:8080/api/categories/update/2
-Content-Type: application/json
-Accept: application/json
-
-{
-    "name": "Fruta"
-}
-
-### 15. Eliminar una categoria
-DELETE http://localhost:8080/api/categories/destroy/2
+### Listar usuarios
+GET {{url}}/users
 Accept: application/json
