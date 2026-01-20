@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('id_delivery_point');
             $table->date('sale_date');
             $table->double('total');
-            $table->date('collection_date');
+            $table->date('collection_date')->nullable();
             $table->enum('state', ['Pendiente', 'En Curso', 'Terminado']);
         });
     }

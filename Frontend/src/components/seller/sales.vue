@@ -83,11 +83,18 @@ onMounted(obtenerVentas);
             </td>
 
             <td>
-              <button title="Ver detalles">
+              <button title="Rechazar Venta">
                 <img
                   class="action-icon"
-                  src="../../assets/icons/edit_icon.png"
-                  alt="Ver"
+                  src="../../assets/icons/rechazar.png"
+                  alt="Rechazar"
+                />
+              </button>
+              <button title="Aceptar Venta">
+                <img
+                  class="action-icon"
+                  src="../../assets/icons/aceptar.png"
+                  alt="Aceptar"
                 />
               </button>
             </td>
@@ -168,7 +175,7 @@ td button {
   margin-right: 6px;
 }
 .action-icon {
-  width: 18px;
+  width: 26px;
   opacity: 0.7;
 }
 
