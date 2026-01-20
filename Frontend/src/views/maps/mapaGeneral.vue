@@ -17,7 +17,6 @@
         </div>
       </div>
     </div>
-
     <mapa-tiendas :puntos="listaTiendas"></mapa-tiendas>
   </div>
 </template>
@@ -30,7 +29,6 @@ export default {
   name: 'MapaGeneral',
   components: { MapaTiendas },
   data() {
-    // Definimos los datos necesarios para la aplicación
     return {
       vistaActual: 'map',
       listaTiendas: []

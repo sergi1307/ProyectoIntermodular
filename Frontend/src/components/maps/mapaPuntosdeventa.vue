@@ -1,9 +1,7 @@
 <template>
     <div class="contenedor-mapa tarjeta-mapa">
       <h3>{{ titulo }}</h3>
-      
-      <div id="mapa-leaflet"></div>
-  
+      <div :id="mapId"></div>
       <p v-if="puntos.length === 0" class="error">
           Esperando datos de ubicación...
       </p>
@@ -30,7 +28,8 @@
       props: {
           puntos: { type: Array, required: true },
           titulo: { type: String, default: 'Mapa' },
-          esSeleccionable: { type: Boolean, default: false }
+          esSeleccionable: { type: Boolean, default: false },
+          mapId: { type: String, default: 'mapa-leaflet' }
       },
       data() {
           return {
@@ -65,11 +64,11 @@
             var norteEste = L.latLng(45.0, 6.0);
             var limitesEspaña = L.latLngBounds(surOeste, norteEste);
 
-            this.map = L.map('mapa-leaflet', {
+            this.map = L.map(this.mapId, {
                 center: [40.4167, -3.70325],
                 zoom: 6,
                 minZoom: 5,
-                maxZoom: 9,
+                maxZoom: 19,
                 maxBounds: limitesEspaña,
         });
         
@@ -130,7 +129,7 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
     text-align: center;
     }
-    #mapa-leaflet { 
+    .tarjeta-mapa > div:nth-child(2) { 
         width: 100%; 
         height: 800px;
         border-radius: 15px; 

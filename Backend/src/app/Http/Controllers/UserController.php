@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
@@ -107,18 +106,14 @@ class UserController extends Controller
     
     public function mostrarMapa(Request $request)
     {
-    // Esto obtiene el usuario automáticamente gracias al token
-    $user = $request->user(); 
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'No autorizado'], 401);
+        }
+        
+        $puntos = \App\Models\Delivery_Point::where('id_user', $user->id_user)->get();
 
-    if (!$user) {
-        return response()->json(['error' => 'No autorizado'], 401);
+        return response()->json($puntos);
     }
 
-    // Buscamos SOLO sus puntos
-    $puntos = \App\Models\Delivery_point::where('id_user', $user->id)->get();
-
-    return response()->json($puntos);
-    }
 }
-
-
