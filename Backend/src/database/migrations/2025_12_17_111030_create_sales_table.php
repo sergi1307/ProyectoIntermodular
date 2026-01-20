@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('sale_date');
             $table->double('total');
             $table->date('collection_date')->nullable();
-            $table->enum('state', ['Pendiente', 'En Curso', 'Terminado']);
+            $table->enum('state', ['Rechazada', 'Aceptada']);
         });
     }
 

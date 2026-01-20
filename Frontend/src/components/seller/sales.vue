@@ -20,11 +20,37 @@ const obtenerVentas = async () => {
   }
 };
 
+const rechazarVenta = async (ventas) => {
+  const url = `http://localhost:8080/api/sales/update/${ventas.id_sale}`;
+
+  try {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+
+    const idUser = user?.id_user;
+
+    const payload = {
+      'state': 'Terminado'
+    };
+
+    const response = await axios.put(url, payload, {
+      headers : {
+        Authorization : `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log("Producto Rechazado Éxitosamente:", response.data);
+
+    ventas.state='Terminado';
+  } catch (error) {
+    console.error("Error al rechazar la venta:", error);
+  }
+}
+
 // Función para dar color según el estado
 const claseEstado = (estado) => {
-  if (estado === "Pendiente") return "estado-pendiente";
-  if (estado === "En Curso") return "estado-encurso";
-  if (estado === "Terminado") return "estado-terminado";
+  if (estado === "Rechazada") return "estado-pendiente";
+  if (estado === "Aceptada") return "estado-terminado";
   return "";
 };
 
@@ -83,14 +109,14 @@ onMounted(obtenerVentas);
             </td>
 
             <td>
-              <button title="Rechazar Venta">
+              <button title="Rechazar Venta" @click="rechazarVenta(venta)">
                 <img
                   class="action-icon"
                   src="../../assets/icons/rechazar.png"
                   alt="Rechazar"
                 />
               </button>
-              <button title="Aceptar Venta">
+              <button title="Aceptar Venta" @click="">
                 <img
                   class="action-icon"
                   src="../../assets/icons/aceptar.png"

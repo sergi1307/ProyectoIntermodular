@@ -118,24 +118,23 @@ class SaleController extends Controller
      * @param numeric $id
      * @return json
      */
-    public function update(request $request, $id)
+    public function update(Request $request, $id_venta)
     {
-        // Funció per a obtindre la venta per id
-        $sale = Sale::find($id);
+        $sale = Sale::findOrFail($id_venta);
 
-        // Comprobem que la venta existeix
-        if (!$sale){
-            return response() -> json(['message' => 'no se ha encontrado la venta'],404 );
+        if (!$sale) {
+            return response()->json(['message' => 'Venta no encontrada'], 404);
         }
 
-        // Validem les dades que hem rebut
         $validated = $request->validate([
-            'total' => 'required|numeric'
+            'state' => 'required|string|in:Rechazada,Aceptada'
         ]);
 
-        // Actualitzem els camps definitivament
-        $sale->update($request->all());
-        return response()->json(['message' => 'Actualizado', 'sale' => $sale]);
+        $sale->state = $request->state;
+
+        $sale->save();
+
+        return response()->json(['message' => 'Venta actualizada', 'sale' => $sale], 200);
     }
 
     /**
