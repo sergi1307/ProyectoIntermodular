@@ -133,7 +133,9 @@ class CartController extends Controller
                 'id_seller' => $product->id_user,
                 'id_delivery_point' => $request->id_delivery_point,
                 'sale_date' => Carbon::now()->format('Y-m-d'),
-                'total' => $product->price * $item->quantity
+                'total' => $product->price * $item->quantity,
+                'collection_date' => Carbon::now()->addDays(3)->format('Y-m-d'),
+                'state' => 'Pendiente'
             ]);
             // restar stock
             $product->stock -= $item->quantity;
