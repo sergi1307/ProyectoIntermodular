@@ -6,12 +6,12 @@
     <button @click="abrirFormulario" class="boton-nuevo">Añadir Punto de Venta</button>
 
     <div v-if="mostrarFormulario" class="formulario">
-      <h3>{{ modoEdicion ? 'Editar' : 'Nueva' }} Tienda</h3>
+      <h3>Nueva Tienda</h3>
       
       <input v-model="form.name" placeholder="Nombre" class="campo">
       <input v-model="form.direction" placeholder="Dirección" class="campo">
-      <input v-model="form.latitude" type="number" step="0.000001" placeholder="Latitud" class="campo">
-      <input v-model="form.length" type="number" step="0.000001" placeholder="Longitud" class="campo">
+      <input v-model="form.latitude" placeholder="Latitud (ej: 39.4699)" class="campo">
+      <input v-model="form.length" placeholder="Longitud (ej: -0.3763)" class="campo">
       
       <button @click="guardar" class="boton-guardar">Guardar</button>
       <button @click="cancelar" class="boton-cancelar">Cancelar</button>
@@ -124,8 +124,16 @@ export default {
           );
           alert('Tienda actualizada');
         } else {
+          const user = JSON.parse(localStorage.getItem('user'));
+          const userId = user.id_user;
           await axios.post('http://localhost:8080/api/delivery_points/store', 
-            this.form, 
+            {
+              id_user: userId,
+              name: this.form.name,
+              direction: this.form.direction,
+              latitude: this.form.latitude,
+              length: this.form.length
+            }, 
             { headers: { 'Authorization': 'Bearer ' + token } }
           );
           alert('Tienda creada');
