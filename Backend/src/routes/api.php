@@ -40,7 +40,7 @@ Route::prefix('reviews')->name('reviews.')->group(function (){
     Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
 });
 
-Route::middleware('auth:sanctum')->group(function() {
+//Route::middleware('auth:sanctum')->group(function() {
 
     // USUARIO
     Route::prefix('users')->name('users.')->group(function (){
@@ -93,4 +93,4 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
     
-});
+//});

@@ -157,3 +157,49 @@ Accept: application/json
 ### Listar usuarios
 GET {{url}}/users
 Accept: application/json
+
+### ------------------------------------------------------------------------
+### 8. CARRITO (Cart)
+### ------------------------------------------------------------------------
+
+### Ver carrito
+GET {{url}}/cart?id_user=15
+Accept: application/json
+
+### Añadir producto al carrito
+POST {{url}}/cart/add
+Content-Type: application/json
+Accept: application/json
+{
+    "id_user": 15,
+    "id_product": 1,
+    "quantity": 2
+}
+### Actualizar cantidad de un item
+PUT {{url}}/cart/update/1
+Content-Type: application/json
+Accept: application/json
+{
+    "id_user": 15,
+    "quantity": 5
+}
+### Eliminar item del carrito
+DELETE {{url}}/cart/remove/1
+Accept: application/json
+{
+    "id_user": 15
+}
+### Vaciar carrito
+DELETE {{url}}/cart/clear
+Accept: application/json
+{
+    "id_user": 15
+}
+### Checkout (comprar todo el carrito)
+POST {{url}}/cart/checkout
+Content-Type: application/json
+Accept: application/json
+{
+    "id_user": 15,
+    "id_delivery_point": 2
+}
