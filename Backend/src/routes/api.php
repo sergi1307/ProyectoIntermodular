@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // VENTAS
     Route::prefix('sales')->name('sales.')->group(function (){
         Route::post('/store', [SaleController::class, 'store'])->name('store'); 
+        Route::put('/update/{id}', [SaleController::class, 'update'])->name('update');
         Route::get('/my-orders', [SaleController::class, 'myOrders'])->name('my-orders');
         Route::get('/show/{id}', [SaleController::class, 'show'])->name('show'); 
     });
