@@ -77,10 +77,10 @@ class SaleController extends Controller
         $userId = $request->user()->id_user;
 
         // Obtenim la venta en tots els seus camps associats
-        $sales = Sale::where('id_buyer', $userId)
+        $sales = Sale::where('id_seller', $userId)
             ->with([
                 'product:id_product,name,image,price', 
-                'seller:id_user,name', 
+                'buyer:id_user,name', 
                 'delivery_point:id_delivery_point,name,direction'
             ])
             ->get();

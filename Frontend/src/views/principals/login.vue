@@ -14,7 +14,7 @@
         <div id="container">
             <div id="izquierda">
                 <div id="titulo">
-                    <img src="../assets/imgs/logoEmpresa.png" alt="Logo de la empresa" width="90"></img>
+                    <img src="../../assets/imgs/logoEmpresa.png" alt="Logo de la empresa" width="90"></img>
                     <h1>ProxiMarkt</h1>
                 </div>
                 <div id="content">

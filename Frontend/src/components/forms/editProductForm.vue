@@ -10,7 +10,7 @@ const description = ref('')
 const price = ref(null)
 const stock = ref(null)
 const type_stock = ref('')
-const state = ref('')
+// const state = ref('') // Ya no lo necesitamos manual
 const category_id = ref('')
 
 // Props del producte (rebem el producte seleccionat)
@@ -31,35 +31,51 @@ const cargarCategorias = async () => {
   }
 }
 
-// Computed per a enviar al backend solo els camps necessaris
-const productoBackend = computed(() => ({
-  name: name.value,
-  description: description.value,
-  price: price.value,
-  stock: stock.value,
-  type_stock: type_stock.value,
-  state: state.value,
-  category_id: category_id.value
-}))
-
 // Guardar canvis
 const guardar = async () => {
+  // Cálculo automático del estado (Igual que en crear)
+  const estadoCalculado = stock.value > 0 ? 'Disponible' : 'Agotado';
+
+  // Preparamos los datos
+  const payload = {
+    name: name.value,
+    description: description.value,
+    price: price.value,
+    stock: stock.value,
+    type_stock: type_stock.value,
+    state: estadoCalculado,       // Automático
+    id_category: category_id.value // Nombre correcto para la BD
+  }
+
   try {
     // 1. Enviem les dades al backend
+    // CORRECCIÓN 403: AÑADIMOS EL HEADER CON EL TOKEN
     const res = await axios.put(
       `http://localhost:8080/api/products/update/${props.producto.id_product}`,
-      productoBackend.value
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
     )
 
-    // 2. Avisem al component pare que ja hem acabat i passem les dades noves
+    // 2. Avisem al component pare
     emit('updated', {
-      ...res.data.product, // Assegurat que el backend retorna l'objecte 'product'
+      ...res.data.product, 
+      id_product: props.producto.id_product, // Aseguramos mantener el ID
       category_id: category_id.value
     })
+    alert('Producto actualizado correctamente');
 
   } catch (error) {
-    console.error('Error al actualizar:', error)
-    alert('Error al guardar. Revisa la consola.')
+    console.error('Error al actualizar:', error.response?.data || error)
+    // Mostramos mensaje de error más claro si el backend lo envía
+    if (error.response?.status === 403) {
+       alert('No tienes permiso para editar este producto.');
+    } else {
+       alert('Error al guardar. Revisa la consola.');
+    }
   }
 }
 
@@ -73,9 +89,10 @@ watch(
     price.value = p.price
     stock.value = p.stock
     type_stock.value = p.type_stock
-    state.value = p.state
-    // Si category_id es null, posem cadena buida per a que el select no falli
-    category_id.value = p.category_id ?? ''
+    // state.value = p.state // Ya no hace falta
+    
+    // Intentamos coger id_category o category_id, lo que venga
+    category_id.value = p.id_category || p.category_id || ''
   },
   { immediate: true }
 )
@@ -106,18 +123,14 @@ onMounted(cargarCategorias)
         <option value="Kg">Kg</option>
       </select>
       
-      <label>Estado</label>
-      <select v-model="state">
-        <option disabled value="">Selecciona estado</option>
-        <option value="Disponible">Disponible</option>
-        <option value="Agotado">Agotado</option>
-        <option value="Reservado">Reservado</option>
-      </select>
-      
       <label>Categoría</label>
       <select v-model="category_id">
         <option disabled value="">Selecciona categoría</option>
-        <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
+        <option 
+          v-for="categoria in categorias" 
+          :key="categoria.id_category" 
+          :value="categoria.id_category"
+        >
           {{ categoria.name }}
         </option>
       </select>
@@ -146,7 +159,7 @@ label {
   font-size: 13px;
   font-weight: 600;
   color: #374151;
-  margin-bottom: -8px; /* Un poco de ajuste visual */
+  margin-bottom: -8px; 
 }
 
 input,
@@ -158,7 +171,7 @@ textarea {
   border: 1px solid #e5e7eb;
   font-size: 14px;
   background-color: #fff;
-  box-sizing: border-box; /* Importante para que no se salga del contenedor */
+  box-sizing: border-box; 
 }
 
 input:focus,
@@ -204,4 +217,4 @@ button {
 button:hover {
     background-color: #14412a;
 }
-</style>
+</style> 

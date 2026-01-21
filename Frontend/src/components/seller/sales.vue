@@ -6,12 +6,14 @@ const ventas = ref([]);
 
 // Función para obtener las ventas del backend
 const obtenerVentas = async () => {
+  console.log(localStorage.getItem("token"));
   try {
-    const response = await axios.get("http://localhost:8080/api/sales", {
+    const response = await axios.get("http://localhost:8080/api/sales/my-orders", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+    console.log(response);
     ventas.value = response.data;
   } catch (error) {
     console.error("Error cargando ventas:", error);
@@ -65,12 +67,12 @@ onMounted(obtenerVentas);
         </thead>
         <tbody>
           <tr v-for="venta in ventas" :key="venta.id_sale">
-            <td>{{ venta.id_product }}</td>
+            <td>{{ venta.product.name }}</td>
 
-            <td>{{ venta.id_buyer }}</td>
+            <td>{{ venta.buyer.name }}</td>
 
-            <td>{{ formatearFecha(venta.sale_date) }}</td>
-            <td>{{ formatearFecha(venta.collection_date) }}</td>
+            <td>{{ venta.sale_date }}</td>
+            <td>{{ venta.collection_date }}</td>
 
             <td id="precio">{{ venta.total }}€</td>
 

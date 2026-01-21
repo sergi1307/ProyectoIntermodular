@@ -1,6 +1,5 @@
 <script setup>
     import { ref } from 'vue';
-    import NavComprador from '../../components/nav/NavComprador.vue';
 
     const productos = ref([
     { id: 1, nombre: 'Tomates Orgánicos', granja: 'Granja del Valle', precio: 4.50, unidad: 'kg', distancia: '2.3 km', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU8W89aGsK2QYB_hVblPGlFpLVbRtb79TtrWQ9DqVUPaKJIEB2hf5o7OiSz1GpvpzEEsJgyn6wf63ISgsLCq26Y88kt-HwKXo49UtU7UiXYA&s=10' },
@@ -15,7 +14,6 @@
 </script>
 
 <template>
-    <NavComprador></NavComprador>
     <div id="cabecera">
         <div id="titulos">
             <h1>Descubre Productos Locales</h1>
