@@ -32,7 +32,8 @@ class AuthController extends Controller
                 ]);
 
             $user->profile()->create([
-            'profile_img' => null, // inicialitzem les variables de pefil buides
+            // inicialitzem les variables de pefil buides
+            'profile_img' => null, 
             ]);
             
             // Creem el token a partir de les dades de l'usuari
@@ -100,23 +101,32 @@ class AuthController extends Controller
             ], 500);
         }  
     }
-    /**
-     * Funció per a tancar la sessió dels usuaris
-     *
-     * @param Request $request
-     * @return json
-     */
-    public function logoutUser(Request $request)
-    {
-    // Revoca el token actual
-    $request->user()->currentAccessToken()->delete();
+/**
+ * Funció per a tancar la sessió dels usuaris
+ *
+ * @param Request $request
+ * @return json
+ */
+public function logoutUser(Request $request)
+{
+    try {
+        // Revoca el token actual
+        $request->user()->currentAccessToken()->delete();
 
-    // Elimina la cookie
-    $cookie = cookie()->forget('auth_token');
+        // Elimina la cookie
+        $cookie = cookie()->forget('auth_token');
 
-    return response()->json([
-        'status' => 'true',
-        'message' => 'Sessió tancada correctament'
-    ])->withCookie($cookie);
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Sessió tancada correctament'
+        ])->withCookie($cookie);
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'false',
+            'message' => 'Error al tancar la sessió',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 }

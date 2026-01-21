@@ -152,11 +152,11 @@ class UserController extends Controller
 
         // Fem la validació de les dades
         $data = validator($userData, [
-            'name' => 'string',
-            'email' => 'string',
-            'password' => 'string',
-            'phone' => 'string|nullable',
-            'profile.profile_img' => 'string|nullable',
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'password' => 'required|string',
+            'phone' => 'nullable|string',
+            'profile.profile_img' => 'nullable|string',
         ])->validate();
 
         // Actualitzem les dades del usuari
@@ -177,11 +177,11 @@ class UserController extends Controller
 
         // Refresca els atributs del usuari
         $user->refresh(); 
-        // Carrega el profile actualizado
+        // Carrega el perfil actualitzat
         $user->load('profile'); 
 
         return response()->json([
-            'message' => 'Perfil actualizado',
+            'message' => 'Perfil actualizat',
             'user' => $user
         ]);
     }

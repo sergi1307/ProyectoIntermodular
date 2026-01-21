@@ -15,6 +15,7 @@ use App\Http\Controllers\CartController;
 Route::prefix('auth')->name('auth.')->group(function (){
     Route::post('/register', [AuthController::class, 'createUser'])->name('register');
     Route::post('/login', [AuthController::class, 'loginUser'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout')->middleware('auth:sanctum');
 });
 
 // 2. Catálogo

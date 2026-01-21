@@ -23,10 +23,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "usuario_sin_token@test.com",
+  "email": "usuario2@test.com",
   "password": "password123"
 }
 
+### Cerrar sesión
+POST {{url}}/auth/logout
+Authorization: Bearer 6|pJgKg40zj6ad2NiXqxRHZNkycjurWPHwtABKCXEV57703ba4
 
 ### ------------------------------------------------------------------------
 ### 2. CATEGORÍAS
@@ -160,12 +163,12 @@ Accept: application/json
 
 ### Obtener los datos del usuario y del perfil
 GET {{url}}/users/my-profile
-Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
 Accept: application/json
 
 ### Actualizar los datos del usuario y del perfil
 PUT {{url}}/users/update-my-profile
-Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
 Content-Type: application/json
 Accept: application/json
 
@@ -183,8 +186,8 @@ Accept: application/json
 }
 
 ###
-DELETE {{url}}/users/destroy/1
-Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+DELETE {{url}}/users/destroy/2
+Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
 Accept: application/json
 
 
