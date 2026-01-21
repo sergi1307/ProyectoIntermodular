@@ -13,16 +13,18 @@ return new class extends Migration
      * Ejecutar la migración
      */
     public function up(): void
-    {
-        Schema::create('delivery_points', function (Blueprint $table) {
-            $table->increments('id_delivery_point');
-            $table->integer('id_user');
-            $table->string('name', 255);
-            $table->string('direction', 255);
-            $table->double('latitude');
-            $table->double('length');
-        });
-    }
+{
+    Schema::create('delivery_points', function (Blueprint $table) {
+        $table->increments('id_delivery_point');
+        $table->unsignedInteger('id_user');
+        $table->string('name', 255);
+        $table->string('direction', 255);
+        $table->double('latitude');
+        $table->double('length');
+
+        $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
+    });
+}
 
     /**
      * Reverse the migrations

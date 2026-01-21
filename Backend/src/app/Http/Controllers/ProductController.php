@@ -130,9 +130,11 @@ class ProductController extends Controller
         // Busquem el producte per id
         $product = Product::findOrFail($id);
 
-        if ($product->id_user !== $request->id_user) {
+        
+
+        if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
-        }
+        }   
 
         // Validem les dades enviades del formulari
         $validated = $request->validate([
@@ -189,7 +191,7 @@ class ProductController extends Controller
         // Busquem el producte per id
         $product = Product::findOrFail($id);
 
-        if ($product->id_user !== $request->id_user) {
+        if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
         }
 
