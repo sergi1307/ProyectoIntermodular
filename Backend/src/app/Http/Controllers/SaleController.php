@@ -7,6 +7,7 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+use function Symfony\Component\Clock\now;
 
 class SaleController extends Controller
 {
@@ -127,10 +128,17 @@ class SaleController extends Controller
         }
 
         $validated = $request->validate([
+            'collection_date' => 'nullable|date',
             'state' => 'required|string|in:Rechazada,Aceptada'
         ]);
 
         $sale->state = $request->state;
+        
+        if($request->state === 'Aceptada') {
+            $sale->collection_date = now();
+        } else {
+            $sale->collection_date = null;
+        }
 
         $sale->save();
 
