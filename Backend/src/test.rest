@@ -1,5 +1,5 @@
 @url = http://localhost:8080/api
-
+@token = 22|O7kAu0V7Yy1NfwKm7OkzORrkFDQm2jsRy5kUZ2z4988b30f7
 ### ------------------------------------------------------------------------
 ### 1. AUTENTICACIÓN
 ### ------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Accept: application/json
 
 {
   "name": "Usuario Test",
-  "email": "usuario@test.com",
+  "email": "usuario2@test.com",
   "phone": "600123456",
   "registration_date": "2026-01-20",
   "password": "password123"
@@ -157,3 +157,53 @@ Accept: application/json
 ### Listar usuarios
 GET {{url}}/users
 Accept: application/json
+
+### ------------------------------------------------------------------------
+### 8. CARRITO (Cart)
+### ------------------------------------------------------------------------
+
+### Ver carrito
+GET {{url}}/cart
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Añadir producto al carrito
+POST {{url}}/cart/add
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "id_product": 2,
+    "quantity": 2
+}
+
+### Actualizar cantidad de un item
+PUT {{url}}/cart/update/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "quantity": 5
+}
+
+### Eliminar item del carrito
+DELETE {{url}}/cart/remove/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Vaciar carrito
+DELETE {{url}}/cart/clear
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Checkout (comprar todo el carrito)
+POST {{url}}/cart/checkout
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "id_delivery_point": 2
+}
