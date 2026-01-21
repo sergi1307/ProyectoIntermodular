@@ -41,7 +41,6 @@ Route::prefix('reviews')->name('reviews.')->group(function (){
 });
 
 Route::middleware('auth:sanctum')->group(function() {
-Route::middleware('auth:sanctum')->group(function() {
 
     // USUARIO
     Route::prefix('users')->name('users.')->group(function (){

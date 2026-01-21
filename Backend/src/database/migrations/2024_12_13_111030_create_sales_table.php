@@ -22,8 +22,8 @@ return new class extends Migration
         $table->unsignedInteger('id_delivery_point');
         $table->date('sale_date');
         $table->double('total');
-        $table->date('collection_date');
-        $table->enum('state', ['Pendiente', 'En Curso', 'Terminado']);
+        $table->date('collection_date')->nullable();
+        $table->enum('state', ['Rechazado', 'En Curso', 'Aceptado']);
 
         $table->foreign('id_product')->references('id_product')->on('products')->onDelete('cascade');
         $table->foreign('id_buyer')->references('id_user')->on('users')->onDelete('cascade');

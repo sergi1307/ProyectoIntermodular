@@ -33,7 +33,7 @@ const rechazarVenta = async (ventas) => {
     const idUser = user?.id_user;
 
     const payload = {
-      'state': 'Rechazada'
+      'state': 'Rechazado'
     };
 
     const response = await axios.put(url, payload, {
@@ -44,7 +44,7 @@ const rechazarVenta = async (ventas) => {
 
     console.log("Producto Rechazado Éxitosamente:", response.data);
 
-    ventas.state='Rechazada';
+    ventas.state='Rechazado';
   } catch (error) {
     console.error("Error al rechazar la venta:", error);
   }
@@ -60,7 +60,7 @@ const aceptarVenta = async (venta) => {
     const idUser = user?.id_user;
 
     const payload = {
-      'state': 'Aceptada'
+      'state': 'Aceptado'
     };
 
     const response = await axios.put(url, payload, {
@@ -71,7 +71,7 @@ const aceptarVenta = async (venta) => {
 
     console.log("Producto Aceptado Éxitosament:", response.data);
 
-    venta.state = 'Aceptada';
+    venta.state = 'Aceptado';
     venta.collection_date = response.data.sale.collection_date;
   } catch (error) {
     console.error("Error al rechazar la venta:", error);

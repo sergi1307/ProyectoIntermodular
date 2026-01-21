@@ -129,12 +129,12 @@ class SaleController extends Controller
 
         $validated = $request->validate([
             'collection_date' => 'nullable|date',
-            'state' => 'required|string|in:Rechazada,Aceptada'
+            'state' => 'required|string|in:Rechazado,Aceptado'
         ]);
 
         $sale->state = $request->state;
         
-        if($request->state === 'Aceptada') {
+        if($request->state === 'Aceptado') {
             $sale->collection_date = now();
         } else {
             $sale->collection_date = null;
