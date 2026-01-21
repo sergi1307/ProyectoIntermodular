@@ -8,6 +8,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Delivery_pointController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CartController;
+
 
 // 1. Autenticación
 Route::prefix('auth')->name('auth.')->group(function (){
@@ -39,6 +41,7 @@ Route::prefix('reviews')->name('reviews.')->group(function (){
 });
 
 Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function() {
 
     // USUARIO
     Route::prefix('users')->name('users.')->group(function (){
@@ -49,6 +52,15 @@ Route::middleware('auth:sanctum')->group(function() {
     });
     //MAPA ESPECIFICO
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
+    // CARRITO
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'getCart']);
+        Route::post('/add', [CartController::class, 'addItem']);
+        Route::put('/update/{id}', [CartController::class, 'updateItem']);
+        Route::delete('/remove/{id}', [CartController::class, 'removeItem']);
+        Route::delete('/clear', [CartController::class, 'clear']);
+        Route::post('/checkout', [CartController::class, 'checkout']);
+    });
     // VENTAS
     Route::prefix('sales')->name('sales.')->group(function (){
         Route::post('/store', [SaleController::class, 'store'])->name('store'); 

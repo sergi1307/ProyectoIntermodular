@@ -13,15 +13,17 @@ return new class extends Migration
      * Ejecutar la migración
      */
     public function up(): void
-    {
-        Schema::create('reviews', function (Blueprint $table) {
-            $table->increments('id_review');
-            $table->integer('id_sale');
-            $table->enum('calification', [1,2,3,4,5]);
-            $table->text('comment');
-            $table->date('review_date');
-        });
-    }
+{
+    Schema::create('reviews', function (Blueprint $table) {
+        $table->increments('id_review');
+        $table->unsignedInteger('id_sale');
+        $table->enum('calification', [1,2,3,4,5]);
+        $table->text('comment');
+        $table->date('review_date');
+
+        $table->foreign('id_sale')->references('id_sale')->on('sales')->onDelete('cascade');
+    });
+}
 
     /**
      * Reverse the migrations
