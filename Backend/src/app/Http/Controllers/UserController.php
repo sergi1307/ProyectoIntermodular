@@ -147,10 +147,10 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        // Tomamos solo los datos dentro de 'user'
+        // Agafem les dades del usuari
         $userData = $request->input('user');
 
-        // Validación
+        // Fem la validació de les dades
         $data = validator($userData, [
             'name' => 'string',
             'email' => 'string',
@@ -159,7 +159,7 @@ class UserController extends Controller
             'profile.profile_img' => 'string|nullable',
         ])->validate();
 
-        // Actualizamos usuario
+        // Actualitzem les dades del usuari
         $user->update([
             'name' => $data['name'],
             'password' => Hash::make($data['password']),
@@ -167,7 +167,7 @@ class UserController extends Controller
             'phone' => $data['phone'] ?? $user->phone,
         ]);
 
-        // Actualizamos profile
+        // Actualizem les dades del perfil
         if (isset($data['profile']['profile_img'])) {
             $user->profile()->updateOrCreate(
                 ['id_user' => $user->id_user],
@@ -175,7 +175,7 @@ class UserController extends Controller
             );
         }
 
-        // refresca els atributs del usuari
+        // Refresca els atributs del usuari
         $user->refresh(); 
         // Carrega el profile actualizado
         $user->load('profile'); 

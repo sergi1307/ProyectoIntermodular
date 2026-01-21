@@ -182,6 +182,12 @@ Accept: application/json
   }
 }
 
+###
+DELETE {{url}}/users/destroy/1
+Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+Accept: application/json
+
+
 ### ------------------------------------------------------------------------
 ### 8. CARRITO (Cart)
 ### ------------------------------------------------------------------------
