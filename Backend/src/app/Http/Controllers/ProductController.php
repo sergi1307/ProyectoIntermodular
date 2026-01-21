@@ -42,11 +42,13 @@ class ProductController extends Controller
     {
         // Obtenim els productes amb els camps relacionats de les altres taules de la base de dades
         // Usem paginate per a no saturar la resposta
-        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category'])
+        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name,direction,latitude,length', 'category'])
             ->paginate(20);
 
         // Retornme la resposta en JSON
-        return response()->json($products);
+        return response()->json([
+            $products
+        ], 200);
     }
 
     /**
