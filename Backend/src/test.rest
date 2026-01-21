@@ -151,12 +151,36 @@ Accept: application/json
 }
 
 ### ------------------------------------------------------------------------
-### 7. USUARIOS
+### 7. USUARIOS I PERFILES
 ### ------------------------------------------------------------------------
 
 ### Listar usuarios
 GET {{url}}/users
 Accept: application/json
+
+### Obtener los datos del usuario y del perfil
+GET {{url}}/users/my-profile
+Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+Accept: application/json
+
+### Actualizar los datos del usuario y del perfil
+PUT {{url}}/users/update-my-profile
+Authorization: Bearer 1|z7aELIBc1oxcH0c7XSjgJnHcwo18A0VZ6Oaqmd741f5020bb
+Content-Type: application/json
+Accept: application/json
+
+{
+  "user": {
+    "id_user": 1,
+    "name": "Joey",
+    "password": "1234",
+    "email": "joey@mail.com",
+    "phone": "+34 12345678",
+    "profile": {
+      "profile_img": "ruta.jpg"
+    }
+  }
+}
 
 ### ------------------------------------------------------------------------
 ### 8. CARRITO (Cart)

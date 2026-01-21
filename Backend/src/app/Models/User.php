@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sale::class, 'id_seller', 'id_user');
     }
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'id_user', 'id_user');
+    }
+
 }
