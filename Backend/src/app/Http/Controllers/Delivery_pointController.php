@@ -7,6 +7,27 @@ use App\Models\Delivery_Point;
 class Delivery_pointController extends Controller
 {
     /**
+     * Funció per a obtindre els meus delivery points
+     *
+     * @return json
+     */
+    public function myPoints(Request $request) {
+        // Obtenim l'id de l'usuari per mig del token
+        $userId = $request->user()->id_user ?? $request->id_user;
+
+        // Busquem els seus productes amb les relacions necesàries
+        // NOTA: 'category' debe coincidir con el nombre de la función en tu Modelo Product
+        $delivery_points = Delivery_Point::where('id_user', $userId)->get();
+
+        // Retornem la resposta en format json
+        return response()->json([
+            'status' => 'true',
+            'total' => count($delivery_points),
+            'data' => $delivery_points
+        ], 200);
+    }
+
+    /**
      * Funció per a crear un punt d'entrega
      *
      * @param Request $request

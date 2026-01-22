@@ -10,9 +10,9 @@
                 withCredentials: true
             });
 
-            productos.value = resProductos.data[0].data; 
+            productos.value = resProductos.data.data; 
 
-            console.log(productos.value);
+            console.log("Datos limpios JSON:", JSON.parse(JSON.stringify(productos.value)));
         } catch (error) {
             console.error("Error cargando los productos:", error);
         }
@@ -64,12 +64,15 @@
                 <div v-for="producto in productos" :key="producto.id" class="tarjeta-producto">
 
                     <div id="imagen-producto">
-                        <img :src="producto.img" :alt="producto.nombre">
+                    <img 
+                        :src="`http://localhost:8080/storage/${producto.image}`" 
+                        :alt="producto.name"
+                        >
                     </div>
 
                     <div id="info-producto">
                         <div id="cabecera-info">
-                            <h3>{{ producto.image }}</h3>
+                            <h3>{{ producto.name }}</h3>
                             <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
                         </div>
                         <p id="granja">{{ producto.delivery_point.name }}</p>
