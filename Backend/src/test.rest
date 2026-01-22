@@ -1,5 +1,5 @@
 @url = http://localhost:8080/api
-@token = 22|O7kAu0V7Yy1NfwKm7OkzORrkFDQm2jsRy5kUZ2z4988b30f7
+@token = 9|KpMy71gziFAKyVpRZfqQxfLJ0FLPhTNsB0eGmO9H167a5f34
 ### ------------------------------------------------------------------------
 ### 1. AUTENTICACIÓN
 ### ------------------------------------------------------------------------
@@ -163,18 +163,18 @@ Accept: application/json
 
 ### Obtener los datos del usuario y del perfil
 GET {{url}}/users/my-profile
-Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
+Authorization: Bearer {{ token }}
 Accept: application/json
 
 ### Actualizar los datos del usuario y del perfil
 PUT {{url}}/users/update-my-profile
-Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
+Authorization: Bearer {{ token }}
 Content-Type: application/json
 Accept: application/json
 
 {
   "user": {
-    "id_user": 1,
+    "id_user": 4,
     "name": "Joey",
     "password": "1234",
     "email": "joey@mail.com",
@@ -186,8 +186,8 @@ Accept: application/json
 }
 
 ###
-DELETE {{url}}/users/destroy/2
-Authorization: Bearer 2|mycgHolHTjbVqkMP2D3oVv8zjaMCslz2l3iU5D2D4caa4956
+DELETE {{url}}/users/destroy/4
+Authorization: Bearer {{ token }}
 Accept: application/json
 
 
