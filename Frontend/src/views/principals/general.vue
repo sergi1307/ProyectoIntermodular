@@ -1,9 +1,15 @@
 <script setup>
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
 
     const productos = ref([]);
-
+    
+    const irAlDetalle = (id) => {
+        router.push({ name: 'product-details', params: { id: id } });
+    };
+    
     const obtenerProductos = async () => {
         try {
             const resProductos = await axios.get("http://localhost:8080/api/products/", {
@@ -24,76 +30,36 @@
 </script>
 
 <template>
-    <div id="cabecera">
-        <div id="titulos">
-            <h1>Descubre Productos Locales</h1>
-            <p>Productos Frescos de Granjas Cercanas a Ti</p>
-        </div>
-        <div id="selector">
-            <div id="borde">
-                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
-                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
-            </div>
-        </div>
+  <div id="productos">
+    <div v-for="producto in productos" :key="producto.id_product" class="tarjeta-producto" @click="irAlDetalle(producto.id_product)">
+
+    <div id="imagen-producto">
+        <img :src="producto.imagen" :alt="producto.nombre">
     </div>
 
-    <div id="contenedor-principal">
+      <div id="info-producto">
+        <div id="cabecera-info">
+          <h3>{{ producto.nombre }}</h3>
+          <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
+        </div>
 
-        <aside class="barraLateral">
-            <div id="filtro-barraLateral"><h3>Filtros</h3></div>
-            <div class="grupo-filtro">
-                <h4>Categoría</h4>
-                <ul>
-                    <li>Todas</li>
-                    <li>Verduras</li>
-                    <li>Frutas</li>
-                </ul>
-            </div>
-            <div class="grupo-filtro"><h4>Rango de Precios</h4><input type="range"><div id="rango-precios"><span>$0</span><span>$20</span></div></div>
-        </aside>
+        <p id="granja">{{ producto.delivery_point.name }}</p>
 
-        <main>
-            <div id="resultados">
-                <span>{{ productos.length }} Productos encontrados</span>
-                <select>
-                    <option>Ordenar por: Cercanía</option>
-                </select>
-            </div>
+        <div id="footer-tarjeta">
+          <span id="distancia" @click.stop>
+            <a 
+              :href="`https://www.google.com/maps/search/?api=1&query=${producto.delivery_point.latitude},${producto.delivery_point.longitude}`" 
+              target="_blank">
+              📍 Ver Mapa
+            </a>
+          </span>
 
-            <div id="productos">
-                <div v-for="producto in productos" :key="producto.id" class="tarjeta-producto">
+          <button id="añadir" @click.stop>+</button>
+        </div>
+      </div>
 
-                    <div id="imagen-producto">
-                    <img 
-                        :src="`http://localhost:8080/storage/${producto.image}`" 
-                        :alt="producto.name"
-                        >
-                    </div>
-
-                    <div id="info-producto">
-                        <div id="cabecera-info">
-                            <h3>{{ producto.name }}</h3>
-                            <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
-                        </div>
-                        <p id="granja">{{ producto.delivery_point.name }}</p>
-
-                        <div id="footer-tarjeta">
-                            <span id="distancia">
-                                <a 
-                                :href="`https://www.google.com/maps?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
-                                target="_blank"
-                                style="color: blue; text-decoration: underline; cursor: pointer;"
-                                >
-                                📍 Ver Mapa
-                                </a>
-                            </span>
-                            <button id="añadir">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
     </div>
+  </div>
 </template>
 
 <style scoped>

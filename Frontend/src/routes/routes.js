@@ -5,6 +5,7 @@ import mapaGeneral from '../views/maps/mapaGeneral.vue';
 import general from '../views/principals/general.vue';
 import ProductDetails from '../views/products/ProductDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+
 const routes = [
     {
         path: '/',
@@ -15,7 +16,6 @@ const routes = [
         path: '/login',
         name: 'login',
         component: login,
-        
     },
     {
         path: '/products',
@@ -33,8 +33,7 @@ const routes = [
         path: '/general',
         name: 'general',
         component: general,
-        meta: { comprador: true },
-        component: general
+        meta: { comprador: true }
     },
     {
         path: '/my-products',
@@ -42,11 +41,11 @@ const routes = [
         component: products
     },
     {
-        path: '/product-details',
+        path: '/product-details/:id', 
         name: 'product-details',
-        component: ProductDetails
+        component: ProductDetails,
+        props: true
     }
-
 ];
 
 const router = createRouter({
