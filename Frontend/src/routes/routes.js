@@ -4,8 +4,8 @@ import products from '../views/products/dashboard.vue';
 import mapaGeneral from '../views/maps/mapaGeneral.vue';
 import mapaEspecifico from '../views/maps/mapaEspecifico.vue';
 import general from '../views/principals/general.vue';
+import ProductDetails from '../views/products/ProductDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-
 const routes = [
     {
         path: '/',
@@ -47,7 +47,13 @@ const routes = [
         path: '/my-products',
         name: 'my-products',
         component: products
+    },
+    {
+        path: '/product-details',
+        name: 'product-details',
+        component: ProductDetails
     }
+
 ];
 
 const router = createRouter({

@@ -17,8 +17,7 @@
         <button class="iconos">
           <img src="../../assets/icons/campana.png" alt="foto campana"/> </button>
 
-        <button class="iconos">
-          <img src="../../assets/icons/carrito.png" alt="foto carrito" /></button>
+        <router-link to="/"><button class="iconos"><img src="../../assets/icons/carrito.png" alt="foto carrito" /></button></router-link>
 
         <button class="iconos">
           <img src="../../assets/icons/usuario.png" alt="foto usuario" />
