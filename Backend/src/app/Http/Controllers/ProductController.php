@@ -46,9 +46,7 @@ class ProductController extends Controller
             ->paginate(20);
 
         // Retornme la resposta en JSON
-        return response()->json([
-            $products
-        ], 200);
+        return response()->json($products, 200);
     }
 
     /**

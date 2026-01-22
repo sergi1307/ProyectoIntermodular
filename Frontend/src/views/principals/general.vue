@@ -10,9 +10,9 @@
                 withCredentials: true
             });
 
-            productos.value = resProductos.data[0].data; 
+            productos.value = resProductos.data.data; 
 
-            console.log(productos.value);
+            console.log("Datos limpios JSON:", JSON.parse(JSON.stringify(productos.value)));
         } catch (error) {
             console.error("Error cargando los productos:", error);
         }
@@ -64,12 +64,15 @@
                 <div v-for="producto in productos" :key="producto.id" class="tarjeta-producto">
 
                     <div id="imagen-producto">
-                        <img :src="producto.img" :alt="producto.nombre">
+                    <img 
+                        :src="`http://localhost:8080/storage/${producto.image}`" 
+                        :alt="producto.name"
+                        >
                     </div>
 
                     <div id="info-producto">
                         <div id="cabecera-info">
-                            <h3>{{ producto.image }}</h3>
+                            <h3>{{ producto.name }}</h3>
                             <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
                         </div>
                         <p id="granja">{{ producto.delivery_point.name }}</p>
@@ -339,4 +342,55 @@
             }
         }
     }
+
+    @media (max-width: 1024px) {
+    #productos {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .barraLateral {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    #cabecera {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    #contenedor-principal {
+        flex-direction: column;
+        padding: 0 15px;
+    }
+
+    .barraLateral {
+        width: 100%;
+        position: static;
+        margin: 0 0 20px 0;
+        box-sizing: border-box;
+    }
+
+    .grupo-filtro ul {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    #resultados {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    #productos {
+        grid-template-columns: 1fr !important;
+    }
+
+    .tarjeta-producto #imagen-producto {
+        height: 200px;
+    }
+}
 </style>
