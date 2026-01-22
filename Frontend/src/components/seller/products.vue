@@ -85,17 +85,9 @@ const eliminarProducto = async (id) => {
   }
 };
 
-const actualizarProducto = (productoActualizado) => {
-  const index = productos.value.findIndex(
-    (p) => p.id_product === productoActualizado.id_product,
-  );
-  if (index !== -1) {
-    productos.value[index] = {
-      ...productos.value[index],
-      ...productoActualizado,
-      category_id: productoActualizado.category_id,
-    };
-  }
+const actualizarProducto = (datosNuevos) => {
+  obtenerDatos();
+
   openEditar.value = false;
 };
 
