@@ -112,7 +112,7 @@ class Delivery_pointController extends Controller
         // Insertem les dades si no hi ha cap error en la base de dades
         $delivery_point ->update([
             'name' => $request -> name,
-            'direction' => $request -> direcction,
+            'direction' => $request -> direction,
             'latitude' => $request -> latitude,
             'length' => $request -> length,
         ]);

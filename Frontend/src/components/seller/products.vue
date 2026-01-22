@@ -301,4 +301,48 @@ td img {
   width: 18px;
   opacity: 0.7;
 }
+
+@media (max-width: 1024px) {
+  #listaProductos th:nth-child(2), 
+  #listaProductos td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+
+  #menu_producto {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #search, #filter, #boton, #boton button {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  #listaProductos {
+    overflow-x: auto;
+  }
+
+  #listaProductos th, 
+  #listaProductos td {
+    padding: 10px 5px;
+    font-size: 13px;
+  }
+
+  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
+  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3),
+  #listaProductos th:nth-child(5), #listaProductos td:nth-child(5),
+  #listaProductos th:nth-child(6), #listaProductos td:nth-child(6) {
+    display: none;
+  }
+
+  #listaProductos td:last-child {
+    white-space: nowrap;
+    text-align: right;
+  }
+}
 </style>
