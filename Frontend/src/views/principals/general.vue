@@ -1,13 +1,12 @@
 <script setup>
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
-    import { useRouter } from 'vue-router'; // Importamos el router
+    import { useRouter } from 'vue-router';
 
     const router = useRouter();
     const productos = ref([]);
-    const vistaActual = ref('grid'); // Variable para el selector de vistas
+    const vistaActual = ref('grid'); 
 
-    // Función de navegación corregida
     const irAlDetalle = (id) => {
         router.push({ name: 'product-details', params: { id: id } });
     };
@@ -74,15 +73,12 @@
                     v-for="producto in productos" 
                     :key="producto.id_product" 
                     class="tarjeta-producto"
-                    @click="irAlDetalle(producto.id_product)"
-                    style="cursor: pointer;"
-                >
+                    @click="irAlDetalle(producto.id_product)">
 
                     <div id="imagen-producto">
                         <img 
                             :src="`http://localhost:8080/storage/${producto.image}`" 
-                            :alt="producto.nombre"
-                        >
+                            :alt="producto.nombre">
                     </div>
 
                     <div id="info-producto">
@@ -95,11 +91,8 @@
 
                         <div id="footer-tarjeta">
                             <span id="distancia" @click.stop>
-                                <a 
-                                    :href="`https://maps.google.com/?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
-                                    target="_blank"
-                                    style="color: blue; text-decoration: underline; cursor: pointer;"
-                                >
+                                <a :href="`https://maps.google.com/?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
+                                    target="_blank">
                                     📍 Ver Mapa
                                 </a>
                             </span>
