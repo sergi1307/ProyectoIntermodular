@@ -118,12 +118,19 @@ onMounted(obtenerDatos);
         />
       </div>
       <div id="filter">
-        <img
-          class="filter"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>Filters</p>
+        <select v-model="filtroCategoria">
+          <option value="">Todas las categorías</option>
+          <option v-for="cat in categorias" :key="cat.id" :value="cat.name">
+            {{ cat.name }}
+          </option>
+        </select>
+        
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="disponible">Disponible</option>
+          <option value="reservado">Reservado</option>
+          <option value="agotado">Agotado</option>
+        </select>
       </div>
       <div id="boton">
         <button @click="openCrear = true">+ Añadir producto</button>
@@ -152,7 +159,7 @@ onMounted(obtenerDatos);
         </thead>
         <tbody>
           <tr
-            v-for="producto in productosConCategoria"
+            v-for="producto in productosFiltrados"
             :key="producto.id_product"
           >
             <td>{{ producto.name }}</td>
