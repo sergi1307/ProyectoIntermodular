@@ -10,8 +10,8 @@
       
       <input v-model="form.name" placeholder="Nombre" class="campo">
       <input v-model="form.direction" placeholder="Dirección" class="campo">
-      <input v-model.number="form.latitude" type="number" step="any" placeholder="Latitud (ej: 39.4699)" class="campo">
-      <input v-model.number="form.length" type="number" step="any" placeholder="Longitud (ej: -0.3763)" class="campo">
+      <input v-model="form.latitude" type="text" inputmode="decimal" lang="en" placeholder="Latitud (ej: 39.4699)" class="campo">
+      <input v-model="form.length" type="text" inputmode="decimal" lang="en" placeholder="Longitud (ej: -0.3763)" class="campo">
       
       <button @click="guardar" class="boton-guardar">Guardar</button>
       <button @click="cancelar" class="boton-cancelar">Cancelar</button>
@@ -131,8 +131,8 @@ export default {
               id_user: userId,
               name: this.form.name,
               direction: this.form.direction,
-              latitude: this.form.latitude,
-              length: this.form.length
+              latitude: parseFloat(this.form.latitude),
+              length: parseFloat(this.form.length)
             }, 
             { headers: { 'Authorization': 'Bearer ' + token } }
           );
