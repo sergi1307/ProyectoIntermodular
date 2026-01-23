@@ -30,6 +30,11 @@ class AuthController extends Controller
                     // Xifra la contrasenya per a que no siga una contrasenya en texet pla
                     'password' => Hash::make($request->password),
                 ]);
+
+            $user->profile()->create([
+            // inicialitzem les variables de pefil buides
+            'profile_img' => null, 
+            ]);
             
             // Creem el token a partir de les dades de l'usuari
             $token = $user->createToken('api-token')->plainTextToken;
@@ -42,7 +47,7 @@ class AuthController extends Controller
                 'status' => 'true',
                 'message' => 'Usuari creat correctament',
                 'token' => $token,
-                'user' => $user,
+                'user' => $user->load('profile'),
             ], 200)->withCookie($cookie);
         } catch(Exception $e) {
             return response()->json([
@@ -94,7 +99,34 @@ class AuthController extends Controller
                 'message' => 'Error al autenticar el usuari',
                 'error' => $e,
             ], 500);
-        }
-        
+        }  
     }
+/**
+ * Funció per a tancar la sessió dels usuaris
+ *
+ * @param Request $request
+ * @return json
+ */
+public function logoutUser(Request $request)
+{
+    try {
+        // Revoca el token actual
+        $request->user()->currentAccessToken()->delete();
+
+        // Elimina la cookie
+        $cookie = cookie()->forget('auth_token');
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Sessió tancada correctament'
+        ])->withCookie($cookie);
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'false',
+            'message' => 'Error al tancar la sessió',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 }

@@ -6,6 +6,8 @@ use App\Http\Requests\UserRequest;
 use App\Models\Delivery_Point;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
+
 
 class UserController extends Controller
 {
@@ -97,13 +99,99 @@ class UserController extends Controller
             return response()->json(['message' => 'Usuari no trobat'], 404);
         }
 
+        if ($user->profile) {
+            $user->profile->delete();
+        }
+
         // Eliminem l'usuari
         $user->delete();
 
         // Retornem una resposta afirmativa de que ha anat tot bé
-        return response()->json(['message' => 'Usuari eliminat'],200);
+        return response()->json(['message' => 'Usuari i perfil eliminats correctament'],200);
     }
-    
+
+    /**
+     * Funció per a obtindre la pantalla del perfil
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function myProfile(Request $request)
+    {
+        // Obtindre l'usuari autenticat
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'No autorizado'
+            ], 401);
+        }
+
+        // Carrega el perfil relacionat
+        $user->load('profile');
+
+        // Retornar datos
+        return response()->json([
+            'message' => 'Perfil obtingut correctament',
+            'user' => $user
+        ], 200);
+    }
+
+    /**
+     * Funció per a actualitzar el perfil
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function updateMyProfile(Request $request)
+    {
+        $user = $request->user();
+
+        // Agafem les dades del usuari
+        $userData = $request->input('user');
+
+        // Fem la validació de les dades
+        $data = validator($userData, [
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'password' => 'required|string',
+            'phone' => 'nullable|string',
+            'profile.profile_img' => 'nullable|string',
+        ])->validate();
+
+        // Actualitzem les dades del usuari
+        $user->update([
+            'name' => $data['name'],
+            'password' => Hash::make($data['password']),
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? $user->phone,
+        ]);
+
+        // Actualizem les dades del perfil
+        if (isset($data['profile']['profile_img'])) {
+            $user->profile()->updateOrCreate(
+                ['id_user' => $user->id_user],
+                ['profile_img' => $data['profile']['profile_img']]
+            );
+        }
+
+        // Refresca els atributs del usuari
+        $user->refresh(); 
+        // Carrega el perfil actualitzat
+        $user->load('profile'); 
+
+        return response()->json([
+            'message' => 'Perfil actualizat',
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Funció per a mostrar el mapa
+     *
+     * @param Request $request
+     * @return json
+     */
     public function mostrarMapa(Request $request)
     {
         $user = $request->user();

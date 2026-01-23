@@ -1,5 +1,5 @@
 @url = http://localhost:8080/api
-@token = 22|O7kAu0V7Yy1NfwKm7OkzORrkFDQm2jsRy5kUZ2z4988b30f7
+@token = 9|KpMy71gziFAKyVpRZfqQxfLJ0FLPhTNsB0eGmO9H167a5f34
 ### ------------------------------------------------------------------------
 ### 1. AUTENTICACIÓN
 ### ------------------------------------------------------------------------
@@ -23,10 +23,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "usuario_sin_token@test.com",
+  "email": "usuario2@test.com",
   "password": "password123"
 }
 
+### Cerrar sesión
+POST {{url}}/auth/logout
+Authorization: Bearer 6|pJgKg40zj6ad2NiXqxRHZNkycjurWPHwtABKCXEV57703ba4
 
 ### ------------------------------------------------------------------------
 ### 2. CATEGORÍAS
@@ -151,12 +154,42 @@ Accept: application/json
 }
 
 ### ------------------------------------------------------------------------
-### 7. USUARIOS
+### 7. USUARIOS I PERFILES
 ### ------------------------------------------------------------------------
 
 ### Listar usuarios
 GET {{url}}/users
 Accept: application/json
+
+### Obtener los datos del usuario y del perfil
+GET {{url}}/users/my-profile
+Authorization: Bearer {{ token }}
+Accept: application/json
+
+### Actualizar los datos del usuario y del perfil
+PUT {{url}}/users/update-my-profile
+Authorization: Bearer {{ token }}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "user": {
+    "id_user": 4,
+    "name": "Joey",
+    "password": "1234",
+    "email": "joey@mail.com",
+    "phone": "+34 12345678",
+    "profile": {
+      "profile_img": "ruta.jpg"
+    }
+  }
+}
+
+###
+DELETE {{url}}/users/destroy/4
+Authorization: Bearer {{ token }}
+Accept: application/json
+
 
 ### ------------------------------------------------------------------------
 ### 8. CARRITO (Cart)

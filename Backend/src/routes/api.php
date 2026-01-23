@@ -15,6 +15,7 @@ use App\Http\Controllers\CartController;
 Route::prefix('auth')->name('auth.')->group(function (){
     Route::post('/register', [AuthController::class, 'createUser'])->name('register');
     Route::post('/login', [AuthController::class, 'loginUser'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout')->middleware('auth:sanctum');
 });
 
 // 2. Catálogo
@@ -48,7 +49,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/me', [UserController::class, 'show'])->name('me');
         Route::put('/update', [UserController::class, 'update'])->name('update');
-        Route::delete('/destroy', [UserController::class, 'destroy'])->name('destroy');
+        Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
+        // Endpoints del perfil en el UserController
+        Route::get('/my-profile', [UserController::class, 'myProfile'])->name('myProfile');
+        Route::put('/update-my-profile', [UserController::class, 'updateMyProfile'])->name('updateMyProfile');
     });
     //MAPA ESPECIFICO
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
