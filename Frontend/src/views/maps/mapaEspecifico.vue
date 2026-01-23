@@ -1,53 +1,3 @@
-<template>
-  <div class="contenedor-especifico">
-    <h2>Mis Puntos de Venta</h2>
-    <p>Gestiona tus ubicaciones activas.</p>
-
-    <button @click="abrirFormulario" class="boton-nuevo">Añadir Punto de Venta</button>
-
-    <div v-if="mostrarFormulario" class="formulario">
-      <h3>Nueva Tienda</h3>
-      
-      <input v-model="form.name" placeholder="Nombre" class="campo">
-      <input v-model="form.direction" placeholder="Dirección" class="campo">
-      <input v-model="form.latitude" placeholder="Latitud (ej: 39.4699)" class="campo">
-      <input v-model="form.length" placeholder="Longitud (ej: -0.3763)" class="campo">
-      
-      <button @click="guardar" class="boton-guardar">Guardar</button>
-      <button @click="cancelar" class="boton-cancelar">Cancelar</button>
-    </div>
-
-    <div class="area-mapa">
-      <mapa-tiendas 
-          v-if="cargado && misTiendas.length > 0"
-          titulo="Mis Tiendas"
-          :puntos="misTiendas"
-          map-id="mapaEspecifico"
-      ></mapa-tiendas>
-      
-      <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
-    </div>
-
-    <div v-if="cargado && misTiendas.length > 0" class="lista">
-      <h3>Mis Tiendas</h3>
-      <div v-for="tienda in misTiendas" :key="tienda.id" class="item">
-        <div>
-          <strong>{{ tienda.name }}</strong>
-          <span>{{ tienda.direction }}</span>
-        </div>
-        <div>
-          <button @click="editar(tienda)" class="boton-editar">Editar</button>
-          <button @click="eliminar(tienda.id)" class="boton-eliminar">Eliminar</button>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
-        <p>No tienes tiendas creadas todavía.</p>
-    </div>
-  </div>
-</template>
-
 <script>
 import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
 import axios from 'axios';
@@ -177,6 +127,56 @@ export default {
   }
 }
 </script>
+
+<template>
+  <div class="contenedor-especifico">
+    <h2>Mis Puntos de Venta</h2>
+    <p>Gestiona tus ubicaciones activas.</p>
+
+    <button @click="abrirFormulario" class="boton-nuevo">Añadir Punto de Venta</button>
+
+    <div v-if="mostrarFormulario" class="formulario">
+      <h3>Nueva Tienda</h3>
+      
+      <input v-model="form.name" placeholder="Nombre" class="campo">
+      <input v-model="form.direction" placeholder="Dirección" class="campo">
+      <input v-model="form.latitude" placeholder="Latitud (ej: 39.4699)" class="campo">
+      <input v-model="form.length" placeholder="Longitud (ej: -0.3763)" class="campo">
+      
+      <button @click="guardar" class="boton-guardar">Guardar</button>
+      <button @click="cancelar" class="boton-cancelar">Cancelar</button>
+    </div>
+
+    <div class="area-mapa">
+      <mapa-tiendas 
+          v-if="cargado && misTiendas.length > 0"
+          titulo="Mis Tiendas"
+          :puntos="misTiendas"
+          map-id="mapaEspecifico"
+      ></mapa-tiendas>
+      
+      <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
+    </div>
+
+    <div v-if="cargado && misTiendas.length > 0" class="lista">
+      <h3>Mis Tiendas</h3>
+      <div v-for="tienda in misTiendas" :key="tienda.id" class="item">
+        <div>
+          <strong>{{ tienda.name }}</strong>
+          <span>{{ tienda.direction }}</span>
+        </div>
+        <div>
+          <button @click="editar(tienda)" class="boton-editar">Editar</button>
+          <button @click="eliminar(tienda.id)" class="boton-eliminar">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
+        <p>No tienes tiendas creadas todavía.</p>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .contenedor-especifico { 

@@ -313,4 +313,94 @@ td button {
   color: #15803d;
   border: 1px solid #dcfce7;
 }
+
+@media (max-width: 1024px) {
+  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
+  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3)
+  {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  
+  #menu_producto {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #busqueda, #filtro {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  #listaProductos table, 
+  #listaProductos thead, 
+  #listaProductos tbody, 
+  #listaProductos th, 
+  #listaProductos td, 
+  #listaProductos tr {
+    display: block;
+  }
+
+  #listaProductos thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #listaProductos tr {
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+  }
+
+  #listaProductos td {
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    position: relative;
+    padding-left: 50%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #listaProductos td:last-child {
+    border-bottom: none;
+    padding-top: 20px;
+    justify-content: flex-end;
+  }
+
+  #listaProductos td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  .action-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .acciones-wrapper {
+    display: flex;
+    gap: 20px;
+  }
+
+  #precio {
+    font-size: 1.2em;
+    color: #1c5537;
+  }
+}
 </style>

@@ -1,32 +1,12 @@
-<template>
-  <div class="contenedor-especifico">
-    <h2>Mis Puntos de Venta</h2>
-    <p>Gestiona tus ubicaciones activas.</p>
-
-    <div class="area-mapa">
-      <mapa-tiendas 
-          v-if="cargado && misTiendas.length > 0"
-          titulo="Mis Tiendas"
-          :puntos="misTiendas"
-          map-id="mapaEspecifico"
-      ></mapa-tiendas>
-      
-      <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
-    </div>
-
-    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
-        <p>No tienes tiendas creadas todavía.</p>
-    </div>
-  </div>
-</template>
-
 <script>
-import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
+import mapaEspecifico from '../../views/maps/mapaEspecifico.vue';
 import axios from 'axios';
 
 export default {
-  name: 'MapaEspecifico',
-  components: { MapaTiendas },
+  name: 'SellerMapWrapper',
+  components: { 
+    mapaEspecifico
+  },
   data() {
     return {
       misTiendas: [],
@@ -40,16 +20,13 @@ export default {
       async cargarMisTiendas() {
         try {
             const token = localStorage.getItem('token');
-            
             if (!token) {
                  this.$router.push('/login');
                  return;
             }
 
             const response = await axios.get('http://localhost:8080/api/map', {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                headers: { 'Authorization': 'Bearer ' + token }
             });
 
             this.misTiendas = response.data.map(punto => ({
@@ -70,6 +47,22 @@ export default {
   }
 }
 </script>
+
+<template>
+
+    <div class="area-mapa">
+      <mapa-especifico 
+        v-if="cargado" 
+        :puntos="misTiendas" 
+      />
+      
+      <div v-else class="cargando">Cargando mapa...</div>
+    </div>
+
+    <div v-if="cargado && misTiendas.length === 0" class="aviso-vacio">
+        <p>No tienes tiendas creadas todavía.</p>
+    </div>
+</template>
 
 <style scoped>
 .contenedor-especifico { 

@@ -32,6 +32,7 @@ Route::prefix('categories')->name('categories.')->group(function (){
 // 4. Mapa y Puntos de Entrega
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
+    Route::get('/myPoints', [Delivery_pointController::class, 'myPoints'])->name('myPoints');
 });
 
 // 5. Reviews

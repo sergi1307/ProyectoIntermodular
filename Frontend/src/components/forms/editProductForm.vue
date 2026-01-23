@@ -1,27 +1,27 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
-const categorias = ref([])
+const props = defineProps({
+  producto: { type: Object, required: true }
+})
 
-// Camps del formulari
+const emit = defineEmits(['updated', 'close'])
+
+const categorias = ref([])
+const puntosEntrega = ref([]) 
+
+// Campos del formulario
 const name = ref('')
 const description = ref('')
 const price = ref(null)
 const stock = ref(null)
 const type_stock = ref('')
-// const state = ref('') // Ya no lo necesitamos manual
 const category_id = ref('')
+const id_delivery_point = ref('') 
+const imagen = ref(null)
 
-// Props del producte (rebem el producte seleccionat)
-const props = defineProps({
-  producto: { type: Object, required: true }
-})
-
-// Emitim la senyal d'actualitzat al pare
-const emit = defineEmits(['updated'])
-
-// Carreguem les categories per al select
+// 1. Cargar Categorías
 const cargarCategorias = async () => {
   try {
     const res = await axios.get('http://localhost:8080/api/categories')
@@ -31,46 +31,111 @@ const cargarCategorias = async () => {
   }
 }
 
-// Guardar canvis
+// 2. Cargar Puntos de Entrega
+const cargarPuntosEntrega = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(!user) return;
+
+    const res = await axios.get(`http://localhost:8080/api/delivery_points?id_user=${user.id_user}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    puntosEntrega.value = res.data;
+  } catch (error) {
+    console.error('Error cargando puntos de entrega:', error)
+  }
+}
+
+const subirImagen = (event) => {
+  imagen.value = event.target.files[0];
+}
+
+// 3. Rellenar formulario al abrir
+watch(
+  [() => props.producto, categorias],
+  ([p, listaCategorias]) => {
+    if (!p) return
+
+    name.value = p.name
+    description.value = p.description
+    price.value = p.price
+    stock.value = p.stock
+    
+    // --- CORRECCIÓN AQUÍ PARA EL PUNTO DE ENTREGA ---
+    // Buscamos si viene como ID directo o dentro de un objeto
+    if (p.id_delivery_point) {
+        id_delivery_point.value = p.id_delivery_point;
+    } else if (p.delivery_point && p.delivery_point.id_delivery_point) {
+        // A veces el backend devuelve el objeto entero { id_delivery_point: 1, name: ... }
+        id_delivery_point.value = p.delivery_point.id_delivery_point;
+    } else {
+        id_delivery_point.value = '';
+    }
+
+    // Tipo de stock
+    if (p.type_stock && p.type_stock.toLowerCase() === 'kg') {
+       type_stock.value = 'Kg'
+    } else {
+       type_stock.value = 'Unidad'
+    }
+
+    // Categoría
+    if (p.category && listaCategorias.length > 0) {
+       const categoriaEncontrada = listaCategorias.find(cat => cat.name === p.category)
+       if (categoriaEncontrada) {
+          category_id.value = categoriaEncontrada.id_category
+       }
+    } else if (p.category_id) {
+       category_id.value = p.category_id
+    }
+  },
+  { immediate: true }
+)
+
+// 4. Guardar cambios
 const guardar = async () => {
-  // Cálculo automático del estado (Igual que en crear)
+  if (!category_id.value) {
+    alert("Por favor selecciona una categoría.");
+    return;
+  }
+  if (!id_delivery_point.value) {
+    alert("Por favor selecciona un punto de entrega.");
+    return;
+  }
+
   const estadoCalculado = stock.value > 0 ? 'Disponible' : 'Agotado';
 
-  // Preparamos los datos
-  const payload = {
-    name: name.value,
-    description: description.value,
-    price: price.value,
-    stock: stock.value,
-    type_stock: type_stock.value,
-    state: estadoCalculado,       // Automático
-    id_category: category_id.value // Nombre correcto para la BD
+  const formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('description', description.value);
+  formData.append('price', price.value);
+  formData.append('stock', stock.value);
+  formData.append('type_stock', type_stock.value);
+  formData.append('state', estadoCalculado);
+  formData.append('id_category', category_id.value);
+  formData.append('id_delivery_point', id_delivery_point.value);
+
+  if (imagen.value) {
+    formData.append('image', imagen.value);
   }
 
   try {
-    // 1. Enviem les dades al backend
-    // CORRECCIÓN 403: AÑADIMOS EL HEADER CON EL TOKEN
-    const res = await axios.put(
+    await axios.put(
       `http://localhost:8080/api/products/update/${props.producto.id_product}`,
-      payload,
+      formData, 
       {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+        headers: { 
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data' 
         }
       }
     )
 
-    // 2. Avisem al component pare
-    emit('updated', {
-      ...res.data.product, 
-      id_product: props.producto.id_product, // Aseguramos mantener el ID
-      category_id: category_id.value
-    })
+    emit('updated'); 
     alert('Producto actualizado correctamente');
 
   } catch (error) {
     console.error('Error al actualizar:', error.response?.data || error)
-    // Mostramos mensaje de error más claro si el backend lo envía
     if (error.response?.status === 403) {
        alert('No tienes permiso para editar este producto.');
     } else {
@@ -79,142 +144,218 @@ const guardar = async () => {
   }
 }
 
-// Mirem si canvia el producte seleccionat per omplir el formulari
-watch(
-  () => props.producto,
-  (p) => {
-    if (!p) return
-    name.value = p.name
-    description.value = p.description
-    price.value = p.price
-    stock.value = p.stock
-    type_stock.value = p.type_stock
-    // state.value = p.state // Ya no hace falta
-    
-    // Intentamos coger id_category o category_id, lo que venga
-    category_id.value = p.id_category || p.category_id || ''
-  },
-  { immediate: true }
-)
-
-onMounted(cargarCategorias)
+onMounted(() => {
+  cargarCategorias();
+  cargarPuntosEntrega();
+})
 </script>
 
 <template>
-  <div id="form-container">
+  <div class="contenedor-formulario">
     <form @submit.prevent="guardar">
-
-      <label>Nombre del producto</label>
-      <input type="text" v-model="name" placeholder="Nombre del producto"/>
-
-      <label>Descripción</label>
-      <textarea v-model="description" placeholder="Descripción del producto"></textarea>
-
-      <label>Precio</label>
-      <input type="number" step="0.01" v-model="price" placeholder="Precio"/>
       
-      <label>Stock</label>
-      <input type="number" v-model="stock" placeholder="Stock"/>
-      
-      <label>Tipo de stock</label>
-      <select v-model="type_stock">
-        <option disabled value="">Selecciona tipo de stock</option>
-        <option value="Unidad">Unidad</option>
-        <option value="Kg">Kg</option>
-      </select>
-      
-      <label>Categoría</label>
-      <select v-model="category_id">
-        <option disabled value="">Selecciona categoría</option>
-        <option 
-          v-for="categoria in categorias" 
-          :key="categoria.id_category" 
-          :value="categoria.id_category"
-        >
-          {{ categoria.name }}
-        </option>
-      </select>
+      <h3>Editar Producto</h3>
 
-      <div class="actions">
-          <button id="submit" type="submit">Actualizar producto</button>
+      <div class="campo">
+        <label>Nombre del producto</label>
+        <input 
+          type="text" 
+          v-model="name" 
+          placeholder="Ej. Manzanas"
+        />
       </div>
+
+      <div class="campo">
+        <label>Descripción</label>
+        <textarea 
+          v-model="description" 
+          placeholder="Detalles del producto"
+        ></textarea>
+      </div>
+
+      <div class="fila">
+        <div class="campo">
+          <label>Precio (€)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            v-model="price" 
+            placeholder="0.00"
+          />
+        </div>
+        
+        <div class="campo">
+          <label>Stock</label>
+          <input 
+            type="number" 
+            v-model="stock" 
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <div class="fila">
+        <div class="campo">
+          <label>
+            Categoría 
+            <small v-if="categorias.length === 0" style="color:orange">(Cargando...)</small>
+          </label>
+          <select v-model="category_id">
+            <option disabled value="">Seleccionar...</option>
+            <option 
+              v-for="cat in categorias" 
+              :key="cat.id_category" 
+              :value="cat.id_category"
+            >
+              {{ cat.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Unidad de medida</label>
+          <select v-model="type_stock">
+            <option disabled value="">Seleccionar...</option>
+            <option value="Unidad">Unidad</option>
+            <option value="Kg">Kg</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fila">
+        <div class="campo">
+          <label>Punto de Entrega</label>
+          <select v-model="id_delivery_point">
+            <option disabled value="">Selecciona punto...</option>
+            <option 
+              v-for="punto in puntosEntrega" 
+              :key="punto.id_delivery_point" 
+              :value="punto.id_delivery_point"
+            >
+              {{ punto.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Imagen del producto</label>
+          <input 
+            type="file" 
+            @change="subirImagen"
+            accept="image/*"
+          />
+        </div>
+      </div>
+
+      <div class="botones">
+        <button type="submit" class="btn-guardar">
+          ✎ Guardar Cambios
+        </button>
+      </div>
+
     </form>
   </div>
 </template>
 
 <style scoped>
-#form-container {
+.contenedor-formulario {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  padding-right: 5px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: 'Inter', sans-serif;
+}
+
+h3 {
+  margin: 0 0 5px 0;
+  color: #1c5537;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 10px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fila {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
 
 label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  color: #374151;
-  margin-bottom: -8px; 
+  color: #4b5563;
 }
 
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   font-size: 14px;
   background-color: #fff;
-  box-sizing: border-box; 
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+input[type="file"] {
+  padding: 7px;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af;
+}
+
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #1c5537;
-  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.15);
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
 }
 
 textarea {
   resize: vertical;
-  min-height: 90px;
+  min-height: 80px;
   font-family: inherit;
 }
 
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 14px center;
+  background-position: right 10px center;
   background-size: 16px;
-  padding-right: 40px;
-}
-
-.actions {
-    margin-top: 10px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-button {
-  background-color: #1c5537;
-  border-radius: 99px;
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
-button:hover {
-    background-color: #14412a;
+.botones {
+  margin-top: 10px;
 }
-</style> 
+
+.btn-guardar {
+  width: 100%;
+  background-color: #1c5537;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-guardar:hover {
+  background-color: #15422a;
+}
+</style>
