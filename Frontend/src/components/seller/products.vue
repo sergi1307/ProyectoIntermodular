@@ -67,6 +67,14 @@ const productosConCategoria = computed(() => {
     };
   });
 });
+const productosFiltrados = computed(() => {
+  return productosConCategoria.value.filter(p => {
+    const coincideNombre = p.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideCategoria = !filtroCategoria.value || p.category === filtroCategoria.value;
+    const coincideEstado = !filtroEstado.value || p.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideCategoria && coincideEstado;
+  });
+});
 
 const agregarProducto = async () => {
   await obtenerDatos();
