@@ -15,21 +15,59 @@ const volver = () => {
 
 const obtenerDetalleProducto = async () => {
     const id = route.params.id; 
-    console.log("Buscando producto con ID:", id);
-
     try {
         const response = await axios.get(`http://localhost:8080/api/products/show/${id}`, {
             withCredentials: true
         });
-
         producto.value = response.data.data || response.data; 
-        console.log("Producto cargado:", producto.value);
         cargando.value = false;
-
     } catch (err) {
         console.error("Error al cargar:", err);
         error.value = "No se pudo cargar el producto.";
         cargando.value = false;
+    }
+};
+
+const realizarCompra = async () => {
+    const usuarioStored = localStorage.getItem('user');
+    const token = localStorage.getItem('token'); 
+
+    if (!usuarioStored || !token) {
+        alert("Debes iniciar sesión para realizar una compra.");
+        return;
+    }
+    const usuario = JSON.parse(usuarioStored);
+
+    if (producto.value.stock <= 0) {
+        alert("Lo sentimos, este producto no tiene stock disponible.");
+        return;
+    }
+
+    const datosVenta = {
+        id_product: producto.value.id_product,
+        id_buyer: usuario.id_user,
+        id_seller: producto.value.id_user, 
+        id_delivery_point: producto.value.id_delivery_point || producto.value.delivery_point?.id_delivery_point,
+        total: producto.value.price,
+        quantity: 1 
+    };
+
+    try {
+        const response = await axios.post("http://localhost:8080/api/sales/store", datosVenta, {
+            withCredentials: true,
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+
+        if (response.data.status === 'true' || response.status === 200) {
+            alert("¡Compra realizada con éxito!");
+            obtenerDetalleProducto(); 
+        }
+    } catch (err) {
+        console.error("Error en la venta:", err);
+        const mensaje = err.response?.data?.message || "Error al procesar la compra";
+        alert(mensaje);
     }
 };
 
@@ -89,7 +127,14 @@ onMounted(() => {
             </div>
 
             <div class="acciones-compra">
-                <button class="btn-comprar">Comprar Ahora</button>
+                <button 
+                    @click="realizarCompra" 
+                    class="btn-comprar"
+                    :disabled="producto.stock <= 0"
+                    :class="{ 'agotado': producto.stock <= 0 }"
+                >
+                    {{ producto.stock > 0 ? 'Comprar Ahora' : 'Sin Stock Disponible' }}
+                </button>
             </div>
         </div>
     </div>
@@ -197,9 +242,14 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     width: 100%;
     margin-top: 20px;
     font-weight: bold;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
-.btn-comprar:hover { background-color: #143a22; }
+.btn-comprar:hover:not(:disabled) { background-color: #143a22; }
+
+.btn-comprar.agotado {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
 @media (max-width: 768px) {
     .detalle-grid { grid-template-columns: 1fr; }
