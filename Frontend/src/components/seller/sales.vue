@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Modal from "../modals/Modal.vue";
 
 const ventas = ref([]);
 const mostrarModal = ref(false);
 const ventaSeleccionada = ref(null);
-
+const busqueda = ref('');
+const filtroEstado = ref('');
 // Función para obtener las ventas del backend
 const obtenerVentas = async () => {
   console.log(localStorage.getItem("token"));
