@@ -1,3 +1,26 @@
+<script setup>
+import axios from 'axios';
+import router from '../../routes/routes';
+
+const cerrarSesion = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`http://localhost:8080/api/auth/logout`, {}, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log("Cuenta cerrada correctamente");
+    router.push('/');
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+  }
+  
+}
+</script>
+
 <template>
   <nav class="nav">
     
@@ -17,11 +40,16 @@
         <button class="iconos">
           <img src="../../assets/icons/campana.png" alt="foto campana"/> </button>
 
-        <router-link to="/"><button class="iconos"><img src="../../assets/icons/carrito.png" alt="foto carrito" /></button></router-link>
+        <button class="iconos"><img src="../../assets/icons/carrito.png" alt="foto carrito" /></button>
 
-        <button class="iconos">
-          <img src="../../assets/icons/usuario.png" alt="foto usuario" />
-        </button>
+        <div class="listaDesplegable">
+          <button class="iconos">
+            <img src="../../assets/icons/usuario.png" alt="foto usuario" />
+          </button>
+          <div class="subMenu">
+            <button @click="cerrarSesion">Cerrar Sesión</button>
+          </div>
+        </div>
 
         
       </div>
@@ -63,6 +91,34 @@ font-weight: bold;
   background: none;
   border: none;
   position: relative;
+}
+
+.listaDesplegable {
+  position: relative;
+  display: inline-block;
+}
+
+.subMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  min-width: 140px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.subMenu a {
+  color: #333;
+  display: block;
+  font-size: 14px;
+}
+
+.listaDesplegable:hover .subMenu {
+  display: block;
 }
 
 .logo img{
