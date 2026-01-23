@@ -19,8 +19,9 @@ const obtenerDetalleProducto = async () => {
         const response = await axios.get(`http://localhost:8080/api/products/show/${id}`, {
             withCredentials: true
         });
-        producto.value = response.data.data || response.data; 
+        producto.value = response.data; 
         cargando.value = false;
+        console.log(producto.value);
     } catch (err) {
         console.error("Error al cargar:", err);
         error.value = "No se pudo cargar el producto.";
@@ -46,17 +47,19 @@ const realizarCompra = async () => {
     const datosVenta = {
         id_product: producto.value.id_product,
         id_buyer: usuario.id_user,
-        id_seller: producto.value.id_user, 
+        id_seller: producto.value.user.id_user, 
         id_delivery_point: producto.value.id_delivery_point || producto.value.delivery_point?.id_delivery_point,
         total: producto.value.price,
         quantity: 1 
     };
 
+    console.log(datosVenta);
+
     try {
         const response = await axios.post("http://localhost:8080/api/sales/store", datosVenta, {
             withCredentials: true,
             headers: {
-                'Authorization': `Bearer ${token}` 
+                'Authorization': `Bearer ${token}`
             }
         });
 
