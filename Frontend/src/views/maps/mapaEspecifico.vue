@@ -10,8 +10,8 @@
       
       <input v-model="form.name" placeholder="Nombre" class="campo">
       <input v-model="form.direction" placeholder="Dirección" class="campo">
-      <input v-model="form.latitude" placeholder="Latitud (ej: 39.4699)" class="campo">
-      <input v-model="form.length" placeholder="Longitud (ej: -0.3763)" class="campo">
+      <input v-model.number="form.latitude" type="number" step="any" placeholder="Latitud (ej: 39.4699)" class="campo">
+      <input v-model.number="form.length" type="number" step="any" placeholder="Longitud (ej: -0.3763)" class="campo">
       
       <button @click="guardar" class="boton-guardar">Guardar</button>
       <button @click="cancelar" class="boton-cancelar">Cancelar</button>
