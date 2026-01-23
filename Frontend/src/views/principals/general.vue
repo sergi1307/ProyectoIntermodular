@@ -1,11 +1,49 @@
 <script setup>
     import axios from 'axios';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, watch, computed } from 'vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
     const productos = ref([]);
+    const categorias = ref([]);
     const vistaActual = ref('grid'); 
+
+    const precioMin = ref(0)
+    const precioMax = ref(100)
+    const precioMaximo = 100 
+
+    const items = ref([
+      { id: 1, nombre: 'Manzana' },
+      { id: 2, nombre: 'Banana' },
+      { id: 3, nombre: 'Naranja' },
+      { id: 4, nombre: 'Uva' }
+    ])
+
+    const busqueda = ref('')
+
+    const productosFiltrados = computed(() => {
+        const texto = busqueda.value.trim().toLowerCase()
+        
+        // Si no n'hi ha text no mostra ningun element de la llista
+        if (!texto) return []
+
+        return items.value.filter(item =>
+          item.nombre.toLowerCase().includes(texto)
+        )
+    })
+    
+    watch(precioMin, (nuevoMin) => {
+      if (nuevoMin > precioMax.value) {
+        precioMin.value = precioMax.value
+      }
+    })
+
+    watch(precioMax, (nuevoMax) => {
+      if (nuevoMax < precioMin.value) {
+        precioMax.value = precioMin.value
+      }
+    })
+
 
     const irAlDetalle = (id) => {
         router.push({ name: 'product-details', params: { id: id } });
@@ -24,15 +62,48 @@
         }
     }
 
-    onMounted(obtenerProductos);
+    const obtenerCategorias = async () =>{
+        try{
+            const resCategorias = await axios.get("http://localhost:8080/api/categories/", {
+                withCredentials: true
+            });
+
+            categorias.value = resCategorias.data;
+            console.log("Categorias cargadas")
+        } catch(error){
+            console.error("Error cargando las categorias")
+        }
+    }
+
+    onMounted(() =>{
+        obtenerProductos();
+
+        obtenerCategorias();
+    });
 </script>
 
 <template>
     <div id="cabecera">
         <div id="titulos">
-            <h1>Descubre Productos Locales</h1>
+            <h1>Descubre Productos Locales</h1> 
             <p>Productos Frescos de Granjas Cercanas a Ti</p>
         </div>
+        <div id="busqueda">
+                <img
+                    class="search"
+                    src="../../assets/icons/search_icon.png"
+                    alt="Buscar"
+                />
+                <input v-model="busqueda"
+                    type="text"
+                    placeholder="Buscar...">
+                </input>
+                <ul>
+      <li v-for="item in productosFiltrados" :key="item.id">
+        {{ item.nombre }}
+      </li>
+    </ul>
+            </div>
         <div id="selector">
             <div id="borde">
                 <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
@@ -47,16 +118,50 @@
             <div id="filtro-barraLateral"><h3>Filtros</h3></div>
             <div class="grupo-filtro">
                 <h4>Categoría</h4>
-                <ul>
-                    <li>Todas</li>
-                    <li>Verduras</li>
-                    <li>Frutas</li>
-                </ul>
+                <select categorias.id_category>
+            <option>Todas</option>
+            <option 
+              v-for="categoria in categorias" 
+              :key="categoria.id_category" 
+              :value="categoria.id_category"
+            >
+              {{ categoria.name }}
+            </option>
+          </select>
             </div>
+            <h4>Rango de Precios</h4>
             <div class="grupo-filtro">
-                <h4>Rango de Precios</h4>
-                <input type="range">
-                <div id="rango-precios"><span>$0</span><span>$20</span></div>
+              <div class="sliders_control">
+                <input
+                  type="range"
+                  min="0"
+                  :max="precioMaximo"
+                  v-model="precioMin"
+                />
+
+                <input
+                  type="range"
+                  min="0"
+                  :max="precioMaximo"
+                  v-model="precioMax"
+                />
+              </div>
+              <div id="rango-precios">
+                <span>{{ precioMin }}€</span>
+                <span>{{ precioMax }}€</span>
+              </div>
+            
+              <div class="form_control">
+                <div class="form_control_container">
+                  <div>Min</div>
+                  <input type="number" v-model.number="precioMin" />
+                </div>
+
+                <div class="form_control_container">
+                  <div>Max</div>
+                  <input type="number" v-model.number="precioMax" />
+                </div>
+              </div>
             </div>
         </aside>
 
