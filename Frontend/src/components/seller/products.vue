@@ -12,7 +12,9 @@ const categorias = ref([]);
 const openCrear = ref(false);
 const openEditar = ref(false);
 const productoSeleccionado = ref(null);
-
+const busqueda = ref('');
+const filtroCategoria = ref('');
+const filtroEstado = ref('');
 const obtenerDatos = async () => {
   // 1. OBTENEMOS EL USUARIO Y EL TOKEN DEL LOCALSTORAGE
   const userStr = localStorage.getItem('user');
