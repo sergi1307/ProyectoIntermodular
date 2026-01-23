@@ -96,7 +96,13 @@ const verDetalles = (venta) => {
   ventaSeleccionada.value = venta;
   mostrarModal.value = true;
 };
-
+const ventasFiltradas = computed(() => {
+  return ventas.value.filter(v => {
+    const coincideNombre = v.product.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideEstado = !filtroEstado.value || v.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideEstado;
+  });
+});
 onMounted(obtenerVentas);
 </script>
 
