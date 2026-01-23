@@ -83,7 +83,7 @@
 
                     <div id="info-producto">
                         <div id="cabecera-info">
-                            <h3>{{ producto.nombre }}</h3>
+                            <h3>{{ producto.name }}</h3>
                             <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
                         </div>
                         
