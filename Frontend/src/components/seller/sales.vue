@@ -110,20 +110,20 @@ onMounted(obtenerVentas);
   <div>
     <div id="menu_producto">
       <div id="busqueda">
-        <img
-          class="busqueda"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
+        <img class="busqueda" src="../../assets/icons/search_icon.png" alt="Buscar" />
+        <input 
+          v-model="busqueda" 
+          type="text" 
+          placeholder="Buscar por producto..." 
         />
-        <p>Buscar orden...</p>
       </div>
       <div id="filtro">
-        <img
-          class="filtro"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>filtros</p>
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="en curso">En Curso</option>
+          <option value="aceptado">Aceptado</option>
+          <option value="rechazado">Rechazado</option>
+        </select>
       </div>
     </div>
 
