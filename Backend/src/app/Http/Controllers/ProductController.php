@@ -84,7 +84,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:51200',
             'type_stock' => 'required|in:Kg,Unidad',
             'state' => 'required|in:Agotado,Reservado,Disponible'    
         ]);
@@ -144,7 +144,7 @@ class ProductController extends Controller
             'description' => 'string',
             'price' => 'numeric',
             'stock' => 'integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:51200',
             'type_stock' => 'in:Kg,Unidad',
             'state' => 'in:Agotado,Reservado,Disponible'
         ]);

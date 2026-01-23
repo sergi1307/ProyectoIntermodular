@@ -18,7 +18,6 @@ const obtenerDetalleProducto = async () => {
     console.log("Buscando producto con ID:", id);
 
     try {
-        // Petición al backend
         const response = await axios.get(`http://localhost:8080/api/products/show/${id}`, {
             withCredentials: true
         });
@@ -31,19 +30,6 @@ const obtenerDetalleProducto = async () => {
         console.error("Error al cargar:", err);
         error.value = "No se pudo cargar el producto.";
         cargando.value = false;
-        
-        // --- MODO FALLO (Para que veas el diseño aunque falle la API) ---
-        if (!producto.value) {
-             producto.value = {
-                nombre: "Producto Simulado",
-                price: 0,
-                type_stock: "Kg",
-                img: "https://via.placeholder.com/500",
-                delivery_point: { name: "Sin ubicación" },
-                category: { name: "Verduras" }, // Ejemplo de categoría simulada
-                description: "Hubo un error conectando con el servidor."
-            };
-        }
     }
 };
 
@@ -63,7 +49,7 @@ onMounted(() => {
 
     <div v-else-if="producto" class="detalle-grid">
         <div class="detalle-imagen">
-            <img :src="producto.img" :alt="producto.nombre">
+            <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.nombre">
         </div>
 
         <div class="detalle-info">
@@ -72,11 +58,9 @@ onMounted(() => {
                 <span v-if="producto.category && producto.category.name" class="tag">
                     {{ producto.category.name }}
                 </span>
-                
                 <span v-else-if="producto.categoria && producto.categoria.nombre" class="tag">
                     {{ producto.categoria.nombre }}
                 </span>
-
                 <span v-else-if="producto.category_name" class="tag">
                     {{ producto.category_name }}
                 </span>
@@ -99,7 +83,7 @@ onMounted(() => {
                     </div>
                      <div>
                         <strong>📦 Stock:</strong><br>
-                        {{ producto.stock > 0 ? 'Disponible' : 'Consultar' }}
+                        {{ producto.stock }} {{ producto.type_stock }}
                     </div>
                 </div>
             </div>
@@ -119,7 +103,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* ESTILOS */
 .detalle-container {
     max-width: 1200px;
     margin: 20px auto;

@@ -2,10 +2,10 @@
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
     import { useRouter } from 'vue-router';
-    const router = useRouter();
 
+    const router = useRouter();
     const productos = ref([]);
-    
+
     const irAlDetalle = (id) => {
         router.push({ name: 'product-details', params: { id: id } });
     };
@@ -17,24 +17,27 @@
             });
 
             productos.value = resProductos.data.data; 
-
-            console.log("Datos limpios JSON:", JSON.parse(JSON.stringify(productos.value)));
+            console.log("Productos cargados:", productos.value);
         } catch (error) {
             console.error("Error cargando los productos:", error);
         }
     }
-
-    const vistaActual = ref('grid');
 
     onMounted(obtenerProductos);
 </script>
 
 <template>
   <div id="productos">
-    <div v-for="producto in productos" :key="producto.id_product" class="tarjeta-producto" @click="irAlDetalle(producto.id_product)">
+    <div 
+      v-for="producto in productos" 
+      :key="producto.id_product" 
+      class="tarjeta-producto"
+      @click="irAlDetalle(producto.id_product)"
+      style="cursor: pointer;"
+    >
 
-    <div id="imagen-producto">
-        <img :src="producto.imagen" :alt="producto.nombre">
+     <div id="imagen-producto">
+        <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.nombre">
     </div>
 
       <div id="info-producto">
@@ -48,8 +51,10 @@
         <div id="footer-tarjeta">
           <span id="distancia" @click.stop>
             <a 
-              :href="`https://www.google.com/maps/search/?api=1&query=${producto.delivery_point.latitude},${producto.delivery_point.longitude}`" 
-              target="_blank">
+              :href="`https://maps.google.com/?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
+              target="_blank"
+              style="color: blue; text-decoration: underline; cursor: pointer;"
+            >
               📍 Ver Mapa
             </a>
           </span>
@@ -63,165 +68,19 @@
 </template>
 
 <style scoped>
-    *{
-    text-decoration: none;
-    }
-    #cabecera {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        #titulos {
-            padding: 2%;
-        
-            h1 {
-                color: #143b27;
-            }
-        }
-    }
-
-    #selector {
-        padding: 2%;
-        display: flex;
-        justify-content: center;
-
-        #borde {
-            display: flex;
-            background-color: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 4px;
-            width: fit-content;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-
-            button {
-                padding: 8px 20px;
-                border: none;
-                background-color: transparent;
-                color: #555;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 0.95rem;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-
-                &:hover {
-                    background-color: #f5f5f5;
-                }
-
-                &.activo {
-                    background-color: #1c5537;
-                    color: white;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
-            }
-        }
-    }
-
-    .barraLateral {
-        width: 250px;
-        padding: 20px;
-        background-color: white;
-        border-radius: 12px;
-        border: 1px solid #e0e0e0;
-        
-        position: sticky;
-        top: 20px;
-        height: fit-content;
-        margin: 2%;
-        
-        #filtro-barraLateral {
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-
-            h3 {
-                color: #1c5537;
-                font-size: 1.2rem;
-                margin: 0;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-        }
-
-        .grupo-filtro {
-            margin-bottom: 30px;
-
-            h4 {
-                font-size: 0.95rem;
-                color: #333;
-                margin-bottom: 15px;
-                font-weight: 600;
-            }
-
-            ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-
-                li {
-                    padding: 10px 12px;
-                    cursor: pointer;
-                    color: #666;
-                    border-radius: 8px;
-                    transition: background-color 0.2s, color 0.2s;
-                    font-size: 0.9rem;
-
-                    &:hover {
-                        background-color: #f0f0f0;
-                        color: #1c5537;
-                    }
-                }
-            }
-
-            input[type="range"] {
-                width: 100%;
-                cursor: pointer;
-                accent-color: #1c5537;
-            }
-
-            #rango-precios {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 5px;
-                
-                span {
-                    font-size: 0.85rem;
-                    color: #888;
-                    font-weight: 500;
-                }
-            }
-        }
-    }
-
-     #contenedor-principal {
+    *{ text-decoration: none; }
+    
+    #contenedor-principal {
         display: flex;
         align-items: flex-start;
         padding: 0 2%;
         gap: 2%;
         margin-top: 20px;
     }
-
-    main {
-        flex-grow: 1;
-
-        #resultados {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        #productos {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
+    #productos {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
     }
 
     .tarjeta-producto {
@@ -230,133 +89,90 @@
         border-radius: 12px;
         overflow: hidden;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .tarjeta-producto:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    }
 
-        &:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        }
+    #imagen-producto {
+        height: 180px;
+        width: 100%;
+        background-color: #eee;
+    }
 
-        #imagen-producto {
-            height: 180px;
-            width: 100%;
-            background-color: #eee;
+    #imagen-producto img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-        }
+    #info-producto {
+        padding: 15px;
+    }
 
-        #info-producto {
-            padding: 15px;
+    #cabecera-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 5px;
+    }
 
-            #cabecera-info {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 5px;
+    #cabecera-info h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #1c5537;
+    }
 
-                h3 {
-                    margin: 0;
-                    font-size: 1.1rem;
-                    color: #1c5537;
-                }
+    #precio {
+        font-weight: bold;
+        color: #333;
+        font-size: 1rem;
+    }
 
-                #precio {
-                    font-weight: bold;
-                    color: #333;
-                    font-size: 1rem;
-                }
-            }
+    #granja {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
 
-            #granja {
-                color: #888;
-                font-size: 0.9rem;
-                margin-bottom: 15px;
-            }
+    #footer-tarjeta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
 
-            #footer-tarjeta {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 10px;
+    #distancia a {
+        font-size: 0.85rem;
+        color: #666;
+    }
 
-                #distancia {
-                    font-size: 0.85rem;
-                    color: #666;
-                }
+    #añadir {
+        background-color: #1c5537;
+        color: white;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.2s;
+    }
 
-                #añadir {
-                    background-color: #1c5537;
-                    color: white;
-                    border: none;
-                    width: 32px;
-                    height: 32px;
-                    border-radius: 50%;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    transition: background-color 0.2s;
-
-                    &:hover {
-                        background-color: #143b27;
-                    }
-                }
-            }
-        }
+    #añadir:hover {
+        background-color: #143b27;
     }
 
     @media (max-width: 1024px) {
-    #productos {
-        grid-template-columns: 1fr 1fr !important;
+        #productos { grid-template-columns: 1fr 1fr !important; }
     }
 
-    .barraLateral {
-        width: 200px;
+    @media (max-width: 768px) {
+        #productos { grid-template-columns: 1fr !important; }
     }
-}
-
-@media (max-width: 768px) {
-
-    #cabecera {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-
-    #contenedor-principal {
-        flex-direction: column;
-        padding: 0 15px;
-    }
-
-    .barraLateral {
-        width: 100%;
-        position: static;
-        margin: 0 0 20px 0;
-        box-sizing: border-box;
-    }
-
-    .grupo-filtro ul {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    #resultados {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-
-    #productos {
-        grid-template-columns: 1fr !important;
-    }
-
-    .tarjeta-producto #imagen-producto {
-        height: 200px;
-    }
-}
 </style>

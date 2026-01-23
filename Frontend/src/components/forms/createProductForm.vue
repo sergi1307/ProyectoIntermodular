@@ -89,11 +89,11 @@ const enviarDatos = async () => {
   
     await axios.post(
       'http://localhost:8080/api/products/store',
-      formData, // Enviamos el FormData
+      formData,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'multipart/form-data' // Obligatorio para subir archivos
+          'Content-Type': 'multipart/form-data'
         }
       }
     )
