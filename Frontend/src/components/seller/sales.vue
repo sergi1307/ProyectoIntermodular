@@ -1,29 +1,99 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import Modal from "../modals/Modal.vue";
 
 const ventas = ref([]);
+const mostrarModal = ref(false);
+const ventaSeleccionada = ref(null);
 
 // Función para obtener las ventas del backend
 const obtenerVentas = async () => {
+  console.log(localStorage.getItem("token"));
   try {
-    const response = await axios.get("http://localhost:8080/api/sales", {
+    const response = await axios.get("http://localhost:8080/api/sales/my-orders", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+    console.log(response);
     ventas.value = response.data;
   } catch (error) {
     console.error("Error cargando ventas:", error);
   }
 };
 
+const rechazarVenta = async (ventas) => {
+  const url = `http://localhost:8080/api/sales/update/${ventas.id_sale}`;
+
+  try {
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+
+    const idUser = user?.id_user;
+
+    const payload = {
+      'state': 'Rechazado'
+    };
+
+    const response = await axios.put(url, payload, {
+      headers : {
+        Authorization : `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log("Producto Rechazado Éxitosamente:", response.data);
+
+    ventas.state='Rechazado';
+  } catch (error) {
+    console.error("Error al rechazar la venta:", error);
+  }
+}
+
+const aceptarVenta = async (venta) => {
+  const url = `http://localhost:8080/api/sales/update/${venta.id_sale}`;
+
+  try {
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+
+    const idUser = user?.id_user;
+
+    const payload = {
+      'state': 'Aceptado'
+    };
+
+    const response = await axios.put(url, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log("Producto Aceptado Éxitosament:", response.data);
+
+    venta.state = 'Aceptado';
+    venta.collection_date = response.data.sale.collection_date;
+  } catch (error) {
+    console.error("Error al rechazar la venta:", error);
+  }
+}
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return 'Pendiente';
+  return new Date(fecha).toLocaleDateString();
+}
+
 // Función para dar color según el estado
 const claseEstado = (estado) => {
-  if (estado === "Pendiente") return "estado-pendiente";
+  if (estado === "Rechazada") return "estado-rechazado";
   if (estado === "En Curso") return "estado-encurso";
-  if (estado === "Terminado") return "estado-terminado";
+  if (estado === "Aceptada") return "estado-aceptado";
   return "";
+};
+
+const verDetalles = (venta) => {
+  ventaSeleccionada.value = venta;
+  mostrarModal.value = true;
 };
 
 onMounted(obtenerVentas);
@@ -65,9 +135,9 @@ onMounted(obtenerVentas);
         </thead>
         <tbody>
           <tr v-for="venta in ventas" :key="venta.id_sale">
-            <td>{{ venta.id_product }}</td>
+            <td>{{ venta.product.name }}</td>
 
-            <td>{{ venta.id_buyer }}</td>
+            <td>{{ venta.buyer.name }}</td>
 
             <td>{{ formatearFecha(venta.sale_date) }}</td>
             <td>{{ formatearFecha(venta.collection_date) }}</td>
@@ -81,13 +151,31 @@ onMounted(obtenerVentas);
             </td>
 
             <td>
-              <button title="Ver detalles">
-                <img
-                  class="action-icon"
-                  src="../../assets/icons/edit_icon.png"
-                  alt="Ver"
-                />
-              </button>
+              <div  v-if="venta.state === 'En Curso'">
+                <button title="Rechazar Venta" @click="rechazarVenta(venta)">
+                  <img
+                    class="action-icon"
+                    src="../../assets/icons/rechazar.png"
+                    alt="Rechazar"
+                  />
+                </button>
+                <button title="Aceptar Venta" @click="aceptarVenta(venta)">
+                  <img
+                    class="action-icon"
+                    src="../../assets/icons/aceptar.png"
+                    alt="Aceptar"
+                  />
+                </button>
+              </div>
+              <div v-else>
+                <button title="Ver Detalles" @click="verDetalles(venta)">
+                  <img
+                    class="action-icon"
+                    src="../../assets/icons/verDetalles.png"
+                    alt="Ver Detalles"
+                  />
+                </button>
+              </div>
             </td>
           </tr>
 
@@ -102,6 +190,35 @@ onMounted(obtenerVentas);
         </tbody>
       </table>
     </div>
+    
+    <Modal v-model="mostrarModal">
+      
+      <div v-if="ventaSeleccionada">
+        <h3>Detalles de la Orden #{{ ventaSeleccionada.id_sale }}</h3>
+        
+        <div class="info-grid">
+          <p><strong>Producto:</strong> {{ ventaSeleccionada.product.name }}</p>
+          <p><strong>Comprador:</strong> {{ ventaSeleccionada.buyer.name }}</p>
+          <p><strong>Fecha Venta:</strong> {{ formatearFecha(ventaSeleccionada.sale_date) }}</p>
+          <p><strong>Fecha Recogida:</strong> {{ formatearFecha(ventaSeleccionada.collection_date) }}</p>
+          <p><strong>Lugar Recogida:</strong> {{ ventaSeleccionada.delivery_point.direction }}</p>
+          <p><strong>Precio Unidad:</strong> {{ ventaSeleccionada.product.price }}</p>
+          <p><strong>Total:</strong> {{ ventaSeleccionada.total }}€</p>
+          <p><strong>Estado actual:</strong> {{ ventaSeleccionada.state }}</p>
+        </div>
+      </div>
+
+      <template #footer>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 10px;">
+           <button 
+             @click="mostrarModal = false"
+             style="padding: 8px 16px; cursor: pointer;"
+           >
+             Cerrar
+           </button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -137,13 +254,14 @@ onMounted(obtenerVentas);
   border-collapse: collapse;
 }
 #listaProductos th {
-  text-align: left;
+  text-align: center;
   padding: 14px;
   font-size: 13px;
   color: #6b7280;
   border-bottom: 1px solid #e5e7eb;
 }
 #listaProductos td {
+  text-align: center;
   padding: 16px 14px;
   border-bottom: 1px solid #f1f5f9;
   font-size: 14px;
@@ -166,7 +284,7 @@ td button {
   margin-right: 6px;
 }
 .action-icon {
-  width: 18px;
+  width: 26px;
   opacity: 0.7;
 }
 
@@ -178,7 +296,7 @@ td button {
   display: inline-block;
 }
 
-.estado-pendiente {
+.estado-rechazado {
   background-color: #fff7ed;
   color: #c2410c;
   border: 1px solid #ffedd5;
@@ -190,9 +308,99 @@ td button {
   border: 1px solid #dbeafe;
 }
 
-.estado-terminado {
+.estado-aceptado {
   background-color: #f0fdf4;
   color: #15803d;
   border: 1px solid #dcfce7;
+}
+
+@media (max-width: 1024px) {
+  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
+  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3)
+  {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  
+  #menu_producto {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #busqueda, #filtro {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  #listaProductos table, 
+  #listaProductos thead, 
+  #listaProductos tbody, 
+  #listaProductos th, 
+  #listaProductos td, 
+  #listaProductos tr {
+    display: block;
+  }
+
+  #listaProductos thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #listaProductos tr {
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+  }
+
+  #listaProductos td {
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    position: relative;
+    padding-left: 50%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #listaProductos td:last-child {
+    border-bottom: none;
+    padding-top: 20px;
+    justify-content: flex-end;
+  }
+
+  #listaProductos td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  .action-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .acciones-wrapper {
+    display: flex;
+    gap: 20px;
+  }
+
+  #precio {
+    font-size: 1.2em;
+    color: #1c5537;
+  }
 }
 </style>

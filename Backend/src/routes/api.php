@@ -33,6 +33,7 @@ Route::prefix('categories')->name('categories.')->group(function (){
 // 4. Mapa y Puntos de Entrega
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
+    Route::get('/myPoints', [Delivery_pointController::class, 'myPoints'])->name('myPoints');
 });
 
 // 5. Reviews
@@ -67,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // VENTAS
     Route::prefix('sales')->name('sales.')->group(function (){
         Route::post('/store', [SaleController::class, 'store'])->name('store'); 
+        Route::put('/update/{id}', [SaleController::class, 'update'])->name('update');
         Route::get('/my-orders', [SaleController::class, 'myOrders'])->name('my-orders');
         Route::get('/show/{id}', [SaleController::class, 'show'])->name('show'); 
     });

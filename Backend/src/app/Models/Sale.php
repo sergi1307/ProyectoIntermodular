@@ -18,7 +18,8 @@ class Sale extends Model
         'id_delivery_point',
         'sale_date',
         'total',
-        'collection_date'
+        'collection_date',
+        'state'
     ];
 
     protected $hidden = [

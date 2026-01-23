@@ -42,11 +42,11 @@ class ProductController extends Controller
     {
         // Obtenim els productes amb els camps relacionats de les altres taules de la base de dades
         // Usem paginate per a no saturar la resposta
-        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category'])
+        $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name,direction,latitude,length', 'category'])
             ->paginate(20);
 
         // Retornme la resposta en JSON
-        return response()->json($products);
+        return response()->json($products, 200);
     }
 
     /**
@@ -84,7 +84,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:51200',
             'type_stock' => 'required|in:Kg,Unidad',
             'state' => 'required|in:Agotado,Reservado,Disponible'    
         ]);
@@ -130,9 +130,11 @@ class ProductController extends Controller
         // Busquem el producte per id
         $product = Product::findOrFail($id);
 
-        if ($product->id_user !== $request->id_user) {
+        
+
+        if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
-        }
+        }   
 
         // Validem les dades enviades del formulari
         $validated = $request->validate([
@@ -142,7 +144,7 @@ class ProductController extends Controller
             'description' => 'string',
             'price' => 'numeric',
             'stock' => 'integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:51200',
             'type_stock' => 'in:Kg,Unidad',
             'state' => 'in:Agotado,Reservado,Disponible'
         ]);
@@ -189,7 +191,7 @@ class ProductController extends Controller
         // Busquem el producte per id
         $product = Product::findOrFail($id);
 
-        if ($product->id_user !== $request->id_user) {
+        if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
         }
 

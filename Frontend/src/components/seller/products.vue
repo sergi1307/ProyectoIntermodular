@@ -14,19 +14,47 @@ const openEditar = ref(false);
 const productoSeleccionado = ref(null);
 
 const obtenerDatos = async () => {
+  // 1. OBTENEMOS EL USUARIO Y EL TOKEN DEL LOCALSTORAGE
+  const userStr = localStorage.getItem('user');
+  const token = localStorage.getItem('token');
+
+  // Si no hay usuario o token, no podemos cargar sus productos
+  if (!userStr || !token) {
+    console.error("No hay sesión iniciada.");
+    return;
+  }
+
+  const user = JSON.parse(userStr);
+  const userId = user.id_user; // Cogemos el ID
+
   try {
     const [resProductos, resCategorias] = await Promise.all([
-      axios.get("http://localhost:8080/api/products"),
+      // 2. CORRECCIÓN AQUÍ:
+      // - Usamos comillas invertidas (`) para meter la variable ${userId}
+      // - Añadimos el token en el header por seguridad
+      axios.get(`http://localhost:8080/api/products/mine?id_user=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }),
       axios.get("http://localhost:8080/api/categories"),
     ]);
-    productos.value = resProductos.data;
+
+    // Corrección para asegurar que sea un array
+    const data = resProductos.data;
+    productos.value = Array.isArray(data) ? data : (data.data || []);
+    
     categorias.value = resCategorias.data;
   } catch (error) {
     console.error("Error cargando datos:", error);
+    productos.value = [];
   }
 };
 
 const productosConCategoria = computed(() => {
+  // Protección anti-crash
+  if (!productos.value || !Array.isArray(productos.value)) {
+    return [];
+  }
+
   return productos.value.map((producto) => {
     const categoria = categorias.value.find(
       (c) => c.id === producto.category_id,
@@ -46,24 +74,20 @@ const agregarProducto = async () => {
 const eliminarProducto = async (id) => {
   if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
   try {
-    await axios.delete(`http://localhost:8080/api/products/destroy/${id}`);
+    // Añadimos también el token al borrar por si acaso
+    await axios.delete(`http://localhost:8080/api/products/destroy/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
     await obtenerDatos(); // Recarreguem la llista després d'eliminar
   } catch (error) {
     console.error("Error eliminando producto:", error);
+    alert("No se pudo eliminar el producto.");
   }
 };
 
-const actualizarProducto = (productoActualizado) => {
-  const index = productos.value.findIndex(
-    (p) => p.id_product === productoActualizado.id_product,
-  );
-  if (index !== -1) {
-    productos.value[index] = {
-      ...productos.value[index],
-      ...productoActualizado,
-      category_id: productoActualizado.category_id,
-    };
-  }
+const actualizarProducto = (datosNuevos) => {
+  obtenerDatos();
+
   openEditar.value = false;
 };
 
@@ -122,10 +146,14 @@ onMounted(obtenerDatos);
             <td>{{ producto.name }}</td>
             <td>{{ producto.description }}</td>
             <td>{{ producto.category }}</td>
-            <td id="price">{{ producto.price }}€</td>
-            <td id="stock">{{ producto.stock }}</td>
+            <td class="price">{{ producto.price }}€</td>
+            <td class="stock">{{ producto.stock }}</td>
             <td>{{ producto.type_stock }}</td>
-            <td id="status">{{ producto.state }}</td>
+
+            <td class="status-cell" :class="'status-' + producto.state.toLowerCase()">
+              {{ producto.state }}
+            </td>
+
             <td>
               <button
                 @click="
@@ -149,11 +177,10 @@ onMounted(obtenerDatos);
             </td>
           </tr>
 
-          <tr v-if="productos.length === 0">
+          <tr v-if="productosConCategoria.length === 0">
             <td
               colspan="8"
-              style="text-align: center; padding: 20px; color: #999"
-            >
+               style="text-align: center; padding: 20px; color: #999">
               No hay productos disponibles
             </td>
           </tr>
@@ -175,7 +202,6 @@ onMounted(obtenerDatos);
 </template>
 
 <style scoped>
-/* Aquí pegas SOLO los estilos de la tabla, botones y buscador */
 #menu_producto {
   display: flex;
   align-items: center;
@@ -231,22 +257,40 @@ onMounted(obtenerDatos);
   font-size: 14px;
   color: #374151;
 }
-#price {
+
+.price {
   font-weight: 700;
   color: #111827;
 }
-#status {
+
+.status-cell {
   font-weight: 600;
+  text-transform: capitalize; 
 }
-#status::before {
+
+
+.status-cell::before {
   content: "";
   display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #22c55e;
   margin-right: 8px;
+  background: #ccc; 
 }
+
+.status-disponible::before {
+  background: #22c55e;
+}
+
+.status-reservado::before {
+  background: #eab308;
+}
+
+.status-agotado::before {
+  background: #ef4444; 
+}
+
 td button {
   background: transparent;
   border: none;
@@ -256,5 +300,49 @@ td button {
 td img {
   width: 18px;
   opacity: 0.7;
+}
+
+@media (max-width: 1024px) {
+  #listaProductos th:nth-child(2), 
+  #listaProductos td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+
+  #menu_producto {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #search, #filter, #boton, #boton button {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  #listaProductos {
+    overflow-x: auto;
+  }
+
+  #listaProductos th, 
+  #listaProductos td {
+    padding: 10px 5px;
+    font-size: 13px;
+  }
+
+  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
+  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3),
+  #listaProductos th:nth-child(5), #listaProductos td:nth-child(5),
+  #listaProductos th:nth-child(6), #listaProductos td:nth-child(6) {
+    display: none;
+  }
+
+  #listaProductos td:last-child {
+    white-space: nowrap;
+    text-align: right;
+  }
 }
 </style>

@@ -96,4 +96,14 @@ watch(() => props.modelValue, (value) => {
   cursor: pointer;
 }
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
 </style>

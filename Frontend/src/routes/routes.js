@@ -2,8 +2,8 @@ import PaginaPrincipal from '../views/principals/paginaDeInicio.vue';
 import login from '../views/principals/login.vue';
 import products from '../views/products/dashboard.vue';
 import mapaGeneral from '../views/maps/mapaGeneral.vue';
-import mapaEspecifico from '../views/maps/mapaEspecifico.vue';
 import general from '../views/principals/general.vue';
+import ProductDetails from '../views/products/ProductDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -16,7 +16,6 @@ const routes = [
         path: '/login',
         name: 'login',
         component: login,
-        
     },
     {
         path: '/products',
@@ -31,22 +30,21 @@ const routes = [
         meta: { comprador: true }
     },
     {
-        path: '/mis-tiendas',
-        name: 'mapa_pruebas',
-        component: mapaEspecifico,
-        meta: { comprador: true }
-    },
-    {
         path: '/general',
         name: 'general',
         component: general,
-//      meta: { comprador: true } Esto lo pondremos en un futuro para asegurar nuestra ruta
-        component: general
+        meta: { comprador: true }
     },
     {
         path: '/my-products',
         name: 'my-products',
         component: products
+    },
+    {
+        path: '/product-details/:id', 
+        name: 'product-details',
+        component: ProductDetails,
+        props: true
     }
 ];
 
