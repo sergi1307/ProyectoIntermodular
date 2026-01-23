@@ -141,7 +141,7 @@ onMounted(obtenerVentas);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="venta in ventas" :key="venta.id_sale">
+          <tr v-for="venta in ventasFiltradas" :key="venta.id_sale">
             <td>{{ venta.product.name }}</td>
 
             <td>{{ venta.buyer.name }}</td>
