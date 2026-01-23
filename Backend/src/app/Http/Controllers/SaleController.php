@@ -57,7 +57,8 @@ class SaleController extends Controller
             'id_seller' => $request->id_seller,
             'id_delivery_point' => $request->id_delivery_point,
             'sale_date' => Carbon::now('Europe/Madrid')->format('Y-m-d'),
-            'total' => $request->total
+            'total' => $request->total,
+            'state' => 'En Curso'
         ]);
 
         // Retornem les dades definitivament en la base de dades
