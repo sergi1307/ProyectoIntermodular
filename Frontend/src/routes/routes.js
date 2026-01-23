@@ -3,6 +3,7 @@ import login from '../views/principals/login.vue';
 import products from '../views/products/dashboard.vue';
 import mapaGeneral from '../views/maps/mapaGeneral.vue';
 import general from '../views/principals/general.vue';
+import ProductDetails from '../views/products/ProductDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -15,7 +16,6 @@ const routes = [
         path: '/login',
         name: 'login',
         component: login,
-        
     },
     {
         path: '/products',
@@ -34,6 +34,17 @@ const routes = [
         name: 'general',
         component: general,
         meta: { comprador: true }
+    },
+    {
+        path: '/my-products',
+        name: 'my-products',
+        component: products
+    },
+    {
+        path: '/product-details/:id', 
+        name: 'product-details',
+        component: ProductDetails,
+        props: true
     }
 ];
 

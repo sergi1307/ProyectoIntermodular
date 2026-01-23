@@ -1,8 +1,15 @@
 <script setup>
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
+    import { useRouter } from 'vue-router';
 
+    const router = useRouter();
     const productos = ref([]);
+    const vistaActual = ref('grid'); 
+
+    const irAlDetalle = (id) => {
+        router.push({ name: 'product-details', params: { id: id } });
+    };
 
     const obtenerProductos = async () => {
         try {
@@ -11,14 +18,11 @@
             });
 
             productos.value = resProductos.data.data; 
-
-            console.log("Datos limpios JSON:", JSON.parse(JSON.stringify(productos.value)));
+            console.log("Productos cargados:", productos.value);
         } catch (error) {
             console.error("Error cargando los productos:", error);
         }
     }
-
-    const vistaActual = ref('grid');
 
     onMounted(obtenerProductos);
 </script>
@@ -49,7 +53,11 @@
                     <li>Frutas</li>
                 </ul>
             </div>
-            <div class="grupo-filtro"><h4>Rango de Precios</h4><input type="range"><div id="rango-precios"><span>$0</span><span>$20</span></div></div>
+            <div class="grupo-filtro">
+                <h4>Rango de Precios</h4>
+                <input type="range">
+                <div id="rango-precios"><span>$0</span><span>$20</span></div>
+            </div>
         </aside>
 
         <main>
@@ -61,33 +69,35 @@
             </div>
 
             <div id="productos">
-                <div v-for="producto in productos" :key="producto.id" class="tarjeta-producto">
+                <div 
+                    v-for="producto in productos" 
+                    :key="producto.id_product" 
+                    class="tarjeta-producto"
+                    @click="irAlDetalle(producto.id_product)">
 
                     <div id="imagen-producto">
-                    <img 
-                        :src="`http://localhost:8080/storage/${producto.image}`" 
-                        :alt="producto.name"
-                        >
+                        <img 
+                            :src="`http://localhost:8080/storage/${producto.image}`" 
+                            :alt="producto.nombre">
                     </div>
 
                     <div id="info-producto">
                         <div id="cabecera-info">
-                            <h3>{{ producto.name }}</h3>
+                            <h3>{{ producto.nombre }}</h3>
                             <span id="precio">${{ producto.price }} / {{ producto.type_stock }}</span>
                         </div>
+                        
                         <p id="granja">{{ producto.delivery_point.name }}</p>
 
                         <div id="footer-tarjeta">
-                            <span id="distancia">
-                                <a 
-                                :href="`https://www.google.com/maps?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
-                                target="_blank"
-                                style="color: blue; text-decoration: underline; cursor: pointer;"
-                                >
-                                📍 Ver Mapa
+                            <span id="distancia" @click.stop>
+                                <a :href="`https://maps.google.com/?q=${producto.delivery_point.latitude},${producto.delivery_point.length}`" 
+                                    target="_blank">
+                                    📍 Ver Mapa
                                 </a>
                             </span>
-                            <button id="añadir">+</button>
+
+                            <button id="añadir" @click.stop>+</button>
                         </div>
                     </div>
                 </div>

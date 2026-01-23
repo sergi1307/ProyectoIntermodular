@@ -61,12 +61,9 @@ watch(
     price.value = p.price
     stock.value = p.stock
     
-    // --- CORRECCIÓN AQUÍ PARA EL PUNTO DE ENTREGA ---
-    // Buscamos si viene como ID directo o dentro de un objeto
     if (p.id_delivery_point) {
         id_delivery_point.value = p.id_delivery_point;
     } else if (p.delivery_point && p.delivery_point.id_delivery_point) {
-        // A veces el backend devuelve el objeto entero { id_delivery_point: 1, name: ... }
         id_delivery_point.value = p.delivery_point.id_delivery_point;
     } else {
         id_delivery_point.value = '';
