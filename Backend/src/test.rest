@@ -1,5 +1,5 @@
 @url = http://localhost:8080/api
-@token = 9|KpMy71gziFAKyVpRZfqQxfLJ0FLPhTNsB0eGmO9H167a5f34
+@token = 4|61nvT1H5MsFHSh8XKaOLZVPM5fmmnBYyg9MjWd0Dfb96fbc1
 ### ------------------------------------------------------------------------
 ### 1. AUTENTICACIÓN
 ### ------------------------------------------------------------------------
@@ -240,3 +240,7 @@ Authorization: Bearer {{token}}
 {
     "id_delivery_point": 2
 }
+### prueba ordenees
+GET {{url}}/sales/my-orders
+Accept: application/json
+Authorization: Bearer {{token}}
