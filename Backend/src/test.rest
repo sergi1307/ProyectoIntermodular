@@ -1,5 +1,5 @@
 @url = http://localhost:8080/api
-@token = 4|61nvT1H5MsFHSh8XKaOLZVPM5fmmnBYyg9MjWd0Dfb96fbc1
+@token = 5|Utc4cQERhMJx2m4ZQxH4vJH80F2ekDX1l2ttjn0Y783a2a17
 ### ------------------------------------------------------------------------
 ### 1. AUTENTICACIÓN
 ### ------------------------------------------------------------------------
