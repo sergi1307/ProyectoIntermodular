@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Funció per a registrar un Usuari
+     * Función para registrar un usuario
      *
      * @param UserRequest $request
      * @return json
@@ -21,28 +21,27 @@ class AuthController extends Controller
     public function createUser(UserRequest $request)
     {
         try {
-            // Creació del usuari mitjançant les dades introduides pel formulari
+            // Creación del usuario mediante las inserciones del formulario con la contraseña encriptada 
             $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'phone' => $request->phone,
                     'registration_date' => $request->registration_date,
-                    // Xifra la contrasenya per a que no siga una contrasenya en texet pla
                     'password' => Hash::make($request->password),
                 ]);
 
             $user->profile()->create([
-            // inicialitzem les variables de pefil buides
+            // Inicializamos las variables del perfil vacías
             'profile_img' => null, 
             ]);
             
-            // Creem el token a partir de les dades de l'usuari
+            // Creamos el token a partir del usuario
             $token = $user->createToken('api-token')->plainTextToken;
 
-            // Insertem en les cookies el token creat abans
+            // Insertem el token en las cookies
             $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
 
-            // Retorna la contrasenya en JSON
+            // Respuesta en json
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari creat correctament',
@@ -60,7 +59,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Funció de login per a usuaris
+     * Función de login para usuarios
      *
      * @param LoginUserRequest $request
      * @return json
@@ -68,25 +67,26 @@ class AuthController extends Controller
     public function loginUser(LoginUserRequest $request)
     {
         try {
-            // Condicional d'error si l'usuari s'enganya al posar les credencials
+            // Comprobamos que el usuario no se equivoque al introducir las credenciales
             if (!Auth::attempt($request->only(['email', 'password']))) {
+                
                 // Resposta en JSON
                 return response()->json([
                     'status' => 'false',
                     'message' => 'Credencials incorrectes',
-                // Error 401: "Credencials incorrectes"
                 ], 401);
             }
-            // Verifica el usuari
+
+            // Verificamos el usuario
             $user = User::where('email', $request->email)->first();
 
-            // Creem el token a partir de les dades de l'usuari
+            // Creamos el token con los datos del usuario
             $token = $user->createToken('api-token')->plainTextToken;
 
-            // Insertem el token en les cookies
+            // Insertamos el token en las cookies
             $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
 
-            // Resposta en JSON
+            // Respuesta en json
             return response()->json([
                 'status' => 'true',
                 'message' => 'Usuari autenticat correctament',
@@ -102,7 +102,7 @@ class AuthController extends Controller
         }  
     }
 /**
- * Funció per a tancar la sessió dels usuaris
+ * Función para cerrar sesión
  *
  * @param Request $request
  * @return json
@@ -110,12 +110,13 @@ class AuthController extends Controller
 public function logoutUser(Request $request)
 {
     try {
-        // Revoca el token actual
+        // Elimina el token actual
         $request->user()->currentAccessToken()->delete();
 
         // Elimina la cookie
         $cookie = cookie()->forget('auth_token');
 
+        // Retornamos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'message' => 'Sessió tancada correctament'

@@ -8,9 +8,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class LoginUserRequest extends FormRequest
 {
     /**
-     * Defineix els camps a omplir per al formulari
-     * email: String obligatori màxim 255 caracters
-     * password: String obligatori
+     * Definimos los campos para rellenar el formulario
+     * email: String obligatorio maximo 255 carácteres
+     * password: String obligatorio
      */
     public function rules()
     {

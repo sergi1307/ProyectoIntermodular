@@ -10,53 +10,64 @@ use App\Http\Controllers\Delivery_pointController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 
+//----------------
+// RUTAS PÚBLICAS
+//----------------
+
 
 // 1. Autenticación
 Route::prefix('auth')->name('auth.')->group(function (){
     Route::post('/register', [AuthController::class, 'createUser'])->name('register');
     Route::post('/login', [AuthController::class, 'loginUser'])->name('login');
-    Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout')->middleware('auth:sanctum');
 });
 
-// 2. Catálogo
+// 2. Catálogo (Productos y Categorías)
 Route::prefix('products')->name('products.')->group(function (){
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/show/{id}', [ProductController::class, 'show'])->name('show');
 });
 
-// 3. Categorías
 Route::prefix('categories')->name('categories.')->group(function (){
     Route::get('/', [CategoryController::class, 'index'])->name('index');
     Route::get('/show/{id}', [CategoryController::class, 'show'])->name('show');
 });
 
-// 4. Mapa y Puntos de Entrega
+// 3. Información General (Puntos de entrega y Reviews)
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
     Route::get('/myPoints', [Delivery_pointController::class, 'myPoints'])->name('myPoints');
 });
 
-// 5. Reviews
 Route::prefix('reviews')->name('reviews.')->group(function (){
     Route::get('/', [ReviewController::class, 'index'])->name('index');
     Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
 });
 
+// --------------------
+// RUTAS PROTEGIDAS
+// --------------------
+
 Route::middleware('auth:sanctum')->group(function() {
 
-    // USUARIO
+    // 1. Logout
+    Route::post('/auth/logout', [AuthController::class, 'logoutUser'])->name('auth.logout');
+
+    // 2. Usuario y Perfil
     Route::prefix('users')->name('users.')->group(function (){
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/me', [UserController::class, 'show'])->name('me');
         Route::put('/update', [UserController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
-        // Endpoints del perfil en el UserController
+        
+        // Perfil específico
         Route::get('/my-profile', [UserController::class, 'myProfile'])->name('myProfile');
         Route::put('/update-my-profile', [UserController::class, 'updateMyProfile'])->name('updateMyProfile');
     });
-    //MAPA ESPECIFICO
+
+    // Utilidad de Mapa
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
-    // CARRITO
+
+    // 3. Compras y Carrito
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'getCart']);
         Route::post('/add', [CartController::class, 'addItem']);
@@ -65,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/clear', [CartController::class, 'clear']);
         Route::post('/checkout', [CartController::class, 'checkout']);
     });
-    // VENTAS
+
     Route::prefix('sales')->name('sales.')->group(function (){
         Route::post('/store', [SaleController::class, 'store'])->name('store'); 
         Route::put('/update/{id}', [SaleController::class, 'update'])->name('update');
@@ -74,7 +85,9 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/show/{id}', [SaleController::class, 'show'])->name('show'); 
     });
 
-    // PRODUCTOS
+    // 4. Gestión de Contenido (Crear/Editar)
+    
+    // Productos
     Route::prefix('products')->name('products.')->group(function (){
         Route::get('/mine', [ProductController::class, 'myProducts'])->name('mine');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
@@ -82,22 +95,20 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
     });
 
-    // PUNTOS DE ENTREGA
+    // Categorías
+    Route::prefix('categories')->name('categories.')->group(function (){
+        Route::post('/store', [CategoryController::class, 'store'])->name('store');
+        Route::put('/update/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    });
+
+    // Puntos de Entrega
     Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
         Route::post('/store', [Delivery_pointController::class, 'store'])->name('store');
         Route::put('/update/{id}', [Delivery_pointController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [Delivery_pointController::class, 'destroy'])->name('destroy');
     });
 
-    // REVIEWS
+    // Reviews
     Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
-    
-    // CATEGORIAS
-    Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
-    Route::put('/categories/update/{id}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    
-
-
-    
 });

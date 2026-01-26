@@ -7,19 +7,18 @@ use App\Models\Delivery_Point;
 class Delivery_pointController extends Controller
 {
     /**
-     * Funció per a obtindre els meus delivery points
+     * Función para obtener los puntos de venta de un usuario
      *
      * @return json
      */
     public function myPoints(Request $request) {
-        // Obtenim l'id de l'usuari per mig del token
+        // Obtenemos el id del usuario
         $userId = $request->user()->id_user ?? $request->id_user;
 
-        // Busquem els seus productes amb les relacions necesàries
-        // NOTA: 'category' debe coincidir con el nombre de la función en tu Modelo Product
+        // Buscamos los puntos de venta con los demás campos necesarios
         $delivery_points = Delivery_Point::where('id_user', $userId)->get();
 
-        // Retornem la resposta en format json
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'total' => count($delivery_points),
@@ -28,14 +27,14 @@ class Delivery_pointController extends Controller
     }
 
     /**
-     * Funció per a crear un punt d'entrega
+     * Función para crear un punto de venta
      *
      * @param Request $request
      * @return json
      */
     public function store(Request $request)
     {
-        // Validem les dades abans d'insertar el punt de venta
+        // Validamos los datos antes de insertarlos en la base de datos
         $validated = $request->validate([
             'id_user' => 'required|integer|exists:users,id_user',
             'name' => 'required|string',
@@ -44,7 +43,7 @@ class Delivery_pointController extends Controller
             'length' => 'required|numeric'
         ]);
 
-        // Creem definitivament el punt d'entrega
+        // Creamos definitivamente el punto de venta
         $delivery = Delivery_Point::create([
             'id_user' => $request -> id_user,            
             'name' => $request -> name,
@@ -53,44 +52,44 @@ class Delivery_pointController extends Controller
             'length' => $request -> length,
         ]);
 
-        // En cas afirmatiu, retornem la resposta en json
+        // Devolvemos la respuesta en formato json
         return response() -> json([
             'status' => 'true',
-            'message' => 'punto de venta creat correctament',
+            'message' => 'punto de venta creaedo correctament',
         ], 200);
     }
 
     /**
-     * Funció per a obtindre tots els punts d'entrega
+     * Función para obtener todos los puntos de venta
      *
      * @return json
      */
     public function index()
     {
-        // Obtenim tots els punts d'entrega amb les seues claus associades
+        // Obtenemos todos los puntos de venta con sus relaciones
         $delivery_point = Delivery_Point::with('user:id_user:name') -> get();
         
-        // Retornem la llista dels punts d'entrega
+        // Devolvemos la lista de puntos de venta
         return response() ->json($delivery_point, 200);
     }
 
     /**
-     * Funció per a obtindre un punt d'entrega
+     * Función para obtener un punto de venta
      *
      * @param numeric $id
      * @return json
      */
     public function show($id)
     {
-        // Obtenim el punt d'entrega amb el seu id i amb les seues claus associades
+        // Obtenemos el punto de venta con sus relaciones
         $delivery_point = Delivery_Point::with('user:id_user:name') -> findOrFail($id);
         
-        // Retornem el punt d'entrega en json
+        // Devolvemos la respuesta en formato json
         return response() ->json($delivery_point, 200);
     }
 
     /**
-     * Funció per a actualitzar un punt d'entrega
+     * Función para actualizar un punto de venta
      *
      * @param Request $request
      * @param numeric $id
@@ -98,10 +97,10 @@ class Delivery_pointController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Obtenim el punt d'entrega per mig del seu id
+        // Obtenemos el punto de venta por medio de su id
         $delivery_point  = Delivery_Point::findOrFail($id);
 
-        // Validem les dades abans d'insertar-les
+        // Validamos los datos antes de insertarlos
         $request->validate([
             'name' => 'required|string',
             'direction' => 'required|string',
@@ -109,7 +108,7 @@ class Delivery_pointController extends Controller
             'length' => 'required|numeric'
         ]);
 
-        // Insertem les dades si no hi ha cap error en la base de dades
+        // Insertamos los datos y actualizamos el punto de venta
         $delivery_point ->update([
             'name' => $request -> name,
             'direction' => $request -> direction,
@@ -117,28 +116,28 @@ class Delivery_pointController extends Controller
             'length' => $request -> length,
         ]);
 
-        // Retornem resposta en json en cas de que no hi haga error
+        // Devolvemos la respuesta en formato json
         return response() -> json([
-            'message' => 'punto de venta actualizada',
+            'message' => 'punto de venta actualizado',
             'Delivery_Point' => $delivery_point
         ], 200);
     }
 
     /**
-     * Funció per a eliminar un punt d'entrega
+     * Función para eliminar un punto de venta
      *
      * @param numeric $id
      * @return json
      */
     public function destroy($id)
     {
-        // Obtenim el punt d'entrega per mig del seu id
+        // Obtenemos el punto de venta por medio de su id
         $delivery_point = Delivery_Point::findOrFail($id);
 
-        // Eliminem el punt d'entrega
+        // Eliminamos el punto de venta
         $delivery_point -> delete();
 
-        // Retornem una resposta de que ha anat tot bé
+        // Devolvemos la respuesta en formato json
         return response()-> json([
             'message' => 'punto de venta eliminado'
         ], 200);
