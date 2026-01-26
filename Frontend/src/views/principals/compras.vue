@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted,computed  } from "vue";
 import axios from "axios";
 // Asegúrate de que la ruta al Modal sea correcta
 import Modal from "../../components/modals/Modal.vue";
@@ -7,7 +7,8 @@ import Modal from "../../components/modals/Modal.vue";
 const compras = ref([]);
 const mostrarModal = ref(false);
 const compraSeleccionada = ref(null); // Corregido nombre variable singular
-
+const busqueda = ref('');
+const filtroEstado = ref('');
 // 1. Funciones auxiliares necesarias para que el template no falle
 const formatearFecha = (fecha) => {
   if (!fecha) return 'Pendiente';
