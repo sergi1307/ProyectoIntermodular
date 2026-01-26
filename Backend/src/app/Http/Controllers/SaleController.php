@@ -92,6 +92,29 @@ class SaleController extends Controller
     }
 
     /**
+     * Funció per a obtindre totes les compres d'un usuari
+     * 
+     * @return json
+     */
+    public function myPurchase(Request $request)
+    {
+        // Obtenim del token el id de l'usuari
+        $userId = $request->user()->id_user;
+
+        // Obtenim les compres amb tots els seus camps associats
+        $purchases = Sale::where('id_buyer', $userId)
+            ->with([
+                'product:id_product,name,image,price',
+                'seller:id_user,name',
+                'delivery_point:id_delivery_point,name,direction'
+            ])
+            ->get();
+        
+        // Retornem la resposta amb les compres
+        return response()->json($purchases, 200);
+    }
+
+    /**
      * Funció per a obtindre una venta
      *
      * @param numeric $id

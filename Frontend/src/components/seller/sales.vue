@@ -28,11 +28,6 @@ const rechazarVenta = async (ventas) => {
   const url = `http://localhost:8080/api/sales/update/${ventas.id_sale}`;
 
   try {
-    const userString = localStorage.getItem('user');
-    const user = userString ? JSON.parse(userString) : null;
-
-    const idUser = user?.id_user;
-
     const payload = {
       'state': 'Rechazado'
     };
