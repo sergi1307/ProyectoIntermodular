@@ -61,7 +61,13 @@ const rechazarCompra = async (compra) => {
     console.error("Error rechazando la venta:", error);
   }
 }
-
+const comprasFiltradas = computed(() => {
+  return compras.value.filter(c => {
+    const coincideNombre = c.product.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideEstado = !filtroEstado.value || c.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideEstado;
+  });
+});
 onMounted(obtenerCompras);
 </script>
 
