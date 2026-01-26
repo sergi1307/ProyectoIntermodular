@@ -12,14 +12,14 @@ use function Symfony\Component\Clock\now;
 class SaleController extends Controller
 {
     /**
-     * Funció per a crear una venta
+     * Función para crear una venta
      *
      * @param Request $request
      * @return json
      */
     public function store(Request $request)
     {
-        // Validem les dades abans d'insertar-les
+        // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'id_product' => 'required|integer|exists:products,id_product',
             'id_buyer' => 'required|integer|exists:users,id_user',
@@ -28,10 +28,10 @@ class SaleController extends Controller
             'total' => 'required|numeric'
         ]);
 
-        // Obtenim el producte pel seu id
+        // Obtenemos el producto por su id
         $product = Product::findOrFail($request->id_product);
 
-        // Comprobem que el stock siga major que la quantitat sol·licitada
+        // Comprobamos que el stock sea superior a la cantidad solicitada
         if ($product->stock < $request->quantity) {
             return response()->json([
                 'status' => 'false',
@@ -39,10 +39,10 @@ class SaleController extends Controller
             ], 400);
         }
 
-        // Obtenim del token l'id del comprador
+        // Obtenemos el id del comprador
         $compradorId = $request->user()->id_user ?? $request->id_buyer;
 
-        // Comprobem que l'usuari no intenta comprar el seu mateix producte
+        // Comprobamos que el usuario no intente comprar su propio producto
         if ($product->id_user == $compradorId) {
             return response()->json([
                 'status' => 'false',
@@ -50,7 +50,7 @@ class SaleController extends Controller
             ], 403);
         }
 
-        // Insertem les dades definitivament
+        // Insertamos los datos definitivamente
         $sale = Sale::create([
             'id_product' => $request->id_product,
             'id_buyer' => $request->id_buyer,
@@ -61,7 +61,7 @@ class SaleController extends Controller
             'state' => 'En Curso'
         ]);
 
-        // Retornem les dades definitivament en la base de dades
+        // Devolvemos los datos en formato json
         return response()->json([
             'status' => 'true',
             'message' => 'Venta creada correctamente',
@@ -69,16 +69,16 @@ class SaleController extends Controller
     }
 
     /**
-     * Funció per a obtindre totes les ventes d'un usuari
+     * Función para obtener todas las ventas de un usuario
      *
      * @return json
      */
     public function myOrders(Request $request)
     {
-        // Obtenim del token el id de l'usuari
+        // Obtenemos el id del usuario
         $userId = $request->user()->id_user;
 
-        // Obtenim la venta en tots els seus camps associats
+        // Obtenemos la venta cuando el usuario sea el vendedor
         $sales = Sale::where('id_seller', $userId)
             ->with([
                 'product:id_product,name,image,price', 
@@ -87,21 +87,21 @@ class SaleController extends Controller
             ])
             ->get();
         
-        // Retornem la resposta amb les ventes
+        // Devolvemos la respuesta en formato json
         return response()->json($sales, 200);
     }
 
     /**
-     * Funció per a obtindre totes les compres d'un usuari
+     * Función para obtener todas las compras de un usuario
      * 
      * @return json
      */
     public function myPurchase(Request $request)
     {
-        // Obtenim del token el id de l'usuari
+        // Obtenemos el id del usuario
         $userId = $request->user()->id_user;
 
-        // Obtenim les compres amb tots els seus camps associats
+        // Obtenemos las compras del usuario
         $purchases = Sale::where('id_buyer', $userId)
             ->with([
                 'product:id_product,name,image,price',
@@ -110,34 +110,34 @@ class SaleController extends Controller
             ])
             ->get();
         
-        // Retornem la resposta amb les compres
+        // Devolvemos la respuesta en json
         return response()->json($purchases, 200);
     }
 
     /**
-     * Funció per a obtindre una venta
+     * Función para obtener una venta
      *
      * @param numeric $id
      * @return json
      */
     public function show($id)
     {
-        // Obtenim la venta amb totes les seues dades associades
+        // Obtenemos la venta con sus relaciones
         $sale = Sale::with([
             'product:id_product,name', 'buyer:id_user,name', 'seller:id_user,name', 'delivery_point:id_delivery_point,name'
         ])->find($id);
 
-        // Comprobem que la venta existeix
+        // Comprobamos que la venta existe
         if (!$sale) {
             return response()->json(['message' => 'No se ha encontrado la venta'], 404);
         }
 
-        // Retornem la venta en format json
+        // Devolvemos la respuesta en formato json
         return response()->json($sale, 200);
     }
 
     /**
-     * Funció per a actualitzar una venta
+     * Función para actualizar una venta
      *
      * @param request $request
      * @param numeric $id
@@ -145,45 +145,47 @@ class SaleController extends Controller
      */
     public function update(Request $request, $id_venta)
     {
+        // Comprobamos que la venta existe y la obtenemos
         $sale = Sale::findOrFail($id_venta);
 
-        if (!$sale) {
-            return response()->json(['message' => 'Venta no encontrada'], 404);
-        }
-
+        // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'collection_date' => 'nullable|date',
             'state' => 'required|string|in:Rechazado,Aceptado'
         ]);
 
+        // Cambiamos el estado de la venta al recibido por el usuario
         $sale->state = $request->state;
         
+        // Comprobamos que si es aceptado asigne ya la fecha de recogida
         if($request->state === 'Aceptado') {
             $sale->collection_date = now();
         } else {
             $sale->collection_date = null;
         }
 
+        // Guardamos los cambios
         $sale->save();
 
+        // Devolvemos la respuesta en formato json
         return response()->json(['message' => 'Venta actualizada', 'sale' => $sale], 200);
     }
 
     /**
-     * Funció per a eliminar una venta
+     * Función para eliminar una venta
      *
      * @param numeric $id
      * @return json
      */
     public function destroy($id)
     {
-        // Obtenim una venta per id
+        // Obtenemos una venta por id
         $sale = Sale::findOrFail($id);
 
-        // Eliminem la venta
+        // Eliminamos la venta
         $sale->delete();
 
-        // Retornem una resposta en format json
+        // Devolvemos la respuesta en formato json
         return response()-> json([
             'message' => 'Venta eliminada'
         ], 200);

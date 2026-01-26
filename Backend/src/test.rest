@@ -1,242 +1,158 @@
 @url = http://localhost:8080/api
-@token = 9|KpMy71gziFAKyVpRZfqQxfLJ0FLPhTNsB0eGmO9H167a5f34
+# Pega tu token aquí abajo
+@token = 3|ZXWEF6KKaV4ukuIAnGSegCV8BgVnT6nguTQu10MWe8206e31
+
 ### ------------------------------------------------------------------------
-### 1. AUTENTICACIÓN
+### 1. ARRANQUE (Auth)
 ### ------------------------------------------------------------------------
 
-### Registrar un nuevo usuario
+### Crear cuenta nueva
 POST {{url}}/auth/register
 Content-Type: application/json
 Accept: application/json
 
 {
   "name": "Usuario Test",
-  "email": "usuario2@test.com",
+  "email": "test@mail.com",
   "phone": "600123456",
-  "registration_date": "2026-01-20",
-  "password": "password123"
+  "registration_date": "2026-01-26",
+  "password": "password"
 }
 
-### Iniciar sesión
+### Loguearse (Copia el token)
 POST {{url}}/auth/login 
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "usuario2@test.com",
-  "password": "password123"
+  "email": "test@mail.com",
+  "password": "password"
 }
 
-### Cerrar sesión
-POST {{url}}/auth/logout
-Authorization: Bearer 6|pJgKg40zj6ad2NiXqxRHZNkycjurWPHwtABKCXEV57703ba4
+### ------------------------------------------------------------------------
+### 2. CONFIGURACIÓN USUARIO
+### ------------------------------------------------------------------------
+
+### Ver quién soy
+GET {{url}}/users/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Ver perfil completo
+GET {{url}}/users/my-profile
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Crear punto entrega (Necesario)
+POST {{url}}/delivery_points/store
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_user": 1,
+    "name": "Mi Casa",
+    "direction": "Calle Falsa 123",
+    "latitude": 39.4,
+    "length": -0.3
+}
 
 ### ------------------------------------------------------------------------
-### 2. CATEGORÍAS
+### 3. VENDEDOR (Crear contenido)
 ### ------------------------------------------------------------------------
 
 ### Crear una categoría
 POST {{url}}/categories/store
+Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Verdura Ecológica"
+    "name": "Fruta Fresca"
 }
 
-### Listar categorías
-GET {{url}}/categories
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### 3. PUNTOS DE ENTREGA
-### ------------------------------------------------------------------------
-
-### Crear un punto de entrega
-POST {{url}}/delivery_points/store
-Content-Type: application/json
-Accept: application/json
-
-{
-    "id_user": 1,
-    "name": "Punto Centro",
-    "direction": "Plaza Mayor 1",
-    "latitude": 39.4699,
-    "length": -0.3763
-}
-
-### ------------------------------------------------------------------------
-### 4. PRODUCTOS
-### ------------------------------------------------------------------------
-
-### CREAR PRODUCTO
-# Importante: Enviamos "id_user" manual porque no hay token
+### Publicar un producto
 POST {{url}}/products/store
+Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_user": 1,
     "id_delivery_point": 1,
     "id_category": 1,
-    "name": "Lechugas Frescas",
-    "description": "Lechugas recién cortadas",
-    "price": 1.20,
-    "stock": 30,
-    "type_stock": "Unidad",
+    "name": "Manzanas",
+    "description": "Rojas y dulces",
+    "price": 2.50,
+    "stock": 50,
+    "type_stock": "Kg",
     "state": "Disponible"
 }
 
-### Listar todos los productos
+### Ver mis productos
+GET {{url}}/products/mine
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### ------------------------------------------------------------------------
+### 4. COMPRADOR (Carrito)
+### ------------------------------------------------------------------------
+
+### Ver catálogo
 GET {{url}}/products
 Accept: application/json
 
-### Ver mis productos
-# Nota: Añadimos ?id_user=1 para que el controlador sepa de quién buscar
-GET {{url}}/products/mine?id_user=1
-Accept: application/json
-
-### Actualizar producto
-PUT {{url}}/products/update/1
-Content-Type: application/json
-Accept: application/json
-
-{
-    "id_user": 1,
-    "name": "Tomates (Precio Actualizado)",
-    "price": 6.00,
-    "state": "Reservado"
-}
-
-### Eliminar producto
-DELETE {{url}}/products/destroy/1
-Accept: application/json
-
-{
-    "id_user": 1
-}
-
-### ------------------------------------------------------------------------
-### 5. VENTAS (Sales)
-### ------------------------------------------------------------------------
-
-### Crear una venta
-POST {{url}}/sales/store
+### Añadir al carrito
+POST {{url}}/cart/add
+Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
     "id_product": 1,
-    "id_buyer": 1,
-    "id_seller": 2,
-    "id_delivery_point": 1,
-    "total": 15.50,
     "quantity": 2
 }
 
-### Ver mis compras (My Orders)
-GET {{url}}/my-orders?id_user=1
+### Ver mi carrito
+GET {{url}}/cart
+Authorization: Bearer {{token}}
 Accept: application/json
 
+### Finalizar compra (Checkout)
+POST {{url}}/cart/checkout
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_delivery_point": 1
+}
+
 ### ------------------------------------------------------------------------
-### 6. REVIEWS
+### 5. HISTORIAL Y REVIEWS
 ### ------------------------------------------------------------------------
 
-### Crear una review
+### Ver mis compras
+GET {{url}}/sales/my-purchases
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Valorar la compra
 POST {{url}}/reviews/store
+Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
     "id_sale": 1,
     "calification": 5,
-    "comment": "Todo perfecto"
+    "comment": "Muy rico todo"
 }
 
 ### ------------------------------------------------------------------------
-### 7. USUARIOS I PERFILES
+### 6. SALIDA
 ### ------------------------------------------------------------------------
 
-### Listar usuarios
-GET {{url}}/users
-Accept: application/json
-
-### Obtener los datos del usuario y del perfil
-GET {{url}}/users/my-profile
-Authorization: Bearer {{ token }}
-Accept: application/json
-
-### Actualizar los datos del usuario y del perfil
-PUT {{url}}/users/update-my-profile
-Authorization: Bearer {{ token }}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "user": {
-    "id_user": 4,
-    "name": "Joey",
-    "password": "1234",
-    "email": "joey@mail.com",
-    "phone": "+34 12345678",
-    "profile": {
-      "profile_img": "ruta.jpg"
-    }
-  }
-}
-
-###
-DELETE {{url}}/users/destroy/4
-Authorization: Bearer {{ token }}
-Accept: application/json
-
-
-### ------------------------------------------------------------------------
-### 8. CARRITO (Cart)
-### ------------------------------------------------------------------------
-
-### Ver carrito
-GET {{url}}/cart
-Accept: application/json
+### Cerrar sesión
+POST {{url}}/auth/logout
 Authorization: Bearer {{token}}
-
-### Añadir producto al carrito
-POST {{url}}/cart/add
-Content-Type: application/json
 Accept: application/json
-Authorization: Bearer {{token}}
-
-{
-    "id_product": 2,
-    "quantity": 2
-}
-
-### Actualizar cantidad de un item
-PUT {{url}}/cart/update/1
-Content-Type: application/json
-Accept: application/json
-Authorization: Bearer {{token}}
-
-{
-    "quantity": 5
-}
-
-### Eliminar item del carrito
-DELETE {{url}}/cart/remove/1
-Accept: application/json
-Authorization: Bearer {{token}}
-
-### Vaciar carrito
-DELETE {{url}}/cart/clear
-Accept: application/json
-Authorization: Bearer {{token}}
-
-### Checkout (comprar todo el carrito)
-POST {{url}}/cart/checkout
-Content-Type: application/json
-Accept: application/json
-Authorization: Bearer {{token}}
-
-{
-    "id_delivery_point": 2
-}

@@ -12,41 +12,41 @@ use Illuminate\Support\Arr;
 class UserController extends Controller
 {
     /**
-     * Funció per a obtindre tots els usuaris
+     * Función para obtener todos los usuarios
      *
      * @return json
      */
     public function index()
     {
-        // Obtenim tots els usuaris de la base de dades
+        // Obtenemos todos los usuarios de la base de datos
         $users = User::all();
 
-        // Retornem una llista en format json dels usuaris
+        // Devolvemos la respuesta en formato json
         return response()->json($users);
     }
 
     /**
-     * Funció per a obtindre un usuari
+     * Función para obtener un usuario
      *
-     * @param numeric $id
+     * @param Request $request
      * @return json
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        // Obtenim un usuari per id
-        $user = User::find($id);
+        // Obtenemos un usuario por id
+        $user = $request->user();
         
-        // Comprobem que l'usuari existeix
+        // Comprobamos que el usuario existe
         if (!$user) {
             return response()->json(['message' => 'No trobat'], 404);
         }
         
-        // Retornem la resposta amb l'usuari en format json
+        // Devolvemos la respuesta en formato json
         return response()->json($user);
     }
 
     /**
-     * Funció per a actualitzar un usuari
+     * Función para actualizar un usuario
      *
      * @param Request $request
      * @param numeric $id
@@ -54,29 +54,29 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Obtenim l'usuari per id
+        // Obtenemos el usuario por id
         $user = User::find($id);
 
-        // Comprobem que l'usuari existeix
+        // Comprobamos que el usuario existe
         if (!$user) {
             return response()->json(['message' => 'No trobat'], 404);
         }
 
-        // Validem les dades abans d'introduir-les en la base de dades
+        // Validamos los datos antes de insertarlos en la base de datos
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
             'phone' => 'required|string'
         ]);
 
-        // Actualitzem l'usuari definitivament
+        // Actualizamos el usuario definitivamente
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone
         ]);
 
-        // Retornem una resposta com que ha anat tot bé
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'message' => 'Usuari actualitzat',
             'user' => $user
@@ -84,53 +84,55 @@ class UserController extends Controller
     }
 
     /**
-     * Funció per a eliminar un usuari per id
+     * Función para eliminar un usuario por su id
      *
      * @param numeric $id
      * @return json
      */
     public function destroy($id)
     {
-        // Obtenim l'usuari per id
+        // Obtenemos el usuario por id
         $user = User::find($id);
 
-        // Comprobem que l'usuari existeix
+        // Comprobamos que el usuario existe
         if (!$user) {
             return response()->json(['message' => 'Usuari no trobat'], 404);
         }
 
+        // Si el usuario tiene un perfil, lo eliminamos
         if ($user->profile) {
             $user->profile->delete();
         }
 
-        // Eliminem l'usuari
+        // Eliminamos el usuario
         $user->delete();
 
-        // Retornem una resposta afirmativa de que ha anat tot bé
+        // Devolvemos la respuesta en formato json
         return response()->json(['message' => 'Usuari i perfil eliminats correctament'],200);
     }
 
     /**
-     * Funció per a obtindre la pantalla del perfil
+     * Función para obtener la pantalla de perfil
      *
      * @param Request $request
      * @return json
      */
     public function myProfile(Request $request)
     {
-        // Obtindre l'usuari autenticat
+        // Obtenemos el usuario
         $user = $request->user();
 
+        // Comprobamos que el usuario existe
         if (!$user) {
             return response()->json([
                 'message' => 'No autorizado'
             ], 401);
         }
 
-        // Carrega el perfil relacionat
+        // Cargamos el perfil seleccionado
         $user->load('profile');
 
-        // Retornar datos
+        // Devolvemos los datos en formato json
         return response()->json([
             'message' => 'Perfil obtingut correctament',
             'user' => $user
@@ -138,19 +140,20 @@ class UserController extends Controller
     }
 
     /**
-     * Funció per a actualitzar el perfil
+     * Función para actualizar un perfil
      *
      * @param Request $request
      * @return json
      */
     public function updateMyProfile(Request $request)
     {
+        // Obtenemos el usuario por su id
         $user = $request->user();
 
-        // Agafem les dades del usuari
+        // Cogemos los datos del usuario
         $userData = $request->input('user');
 
-        // Fem la validació de les dades
+        // Hacemos la validación de los datos
         $data = validator($userData, [
             'name' => 'required|string',
             'email' => 'required|string',
@@ -159,7 +162,7 @@ class UserController extends Controller
             'profile.profile_img' => 'nullable|string',
         ])->validate();
 
-        // Actualitzem les dades del usuari
+        // Actualizamos los datos del usuario
         $user->update([
             'name' => $data['name'],
             'password' => Hash::make($data['password']),
@@ -167,7 +170,7 @@ class UserController extends Controller
             'phone' => $data['phone'] ?? $user->phone,
         ]);
 
-        // Actualizem les dades del perfil
+        // Actualizamos los datos del perfil
         if (isset($data['profile']['profile_img'])) {
             $user->profile()->updateOrCreate(
                 ['id_user' => $user->id_user],
@@ -175,11 +178,13 @@ class UserController extends Controller
             );
         }
 
-        // Refresca els atributs del usuari
+        // Refrescamos los atributos del usuario
         $user->refresh(); 
-        // Carrega el perfil actualitzat
+
+        // Cargamos el perfil actualizado
         $user->load('profile'); 
 
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'message' => 'Perfil actualizat',
             'user' => $user
@@ -187,21 +192,25 @@ class UserController extends Controller
     }
 
     /**
-     * Funció per a mostrar el mapa
+     * Función para mostrar el mapa
      *
      * @param Request $request
      * @return json
      */
     public function mostrarMapa(Request $request)
     {
+        // Obtenemos el usuario
         $user = $request->user();
+
+        // Comprobamos que el usuario existe
         if (!$user) {
             return response()->json(['message' => 'No autorizado'], 401);
         }
         
+        // Obtenemos los puntos de venta de ese usuario
         $puntos = \App\Models\Delivery_Point::where('id_user', $user->id_user)->get();
 
+        // Devolvemos la respuesta en formato json
         return response()->json($puntos);
     }
-
 }

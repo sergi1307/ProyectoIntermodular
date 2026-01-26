@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 // Request/Petició
-// Exten de FormRequest
+// Extiende de FormRequest
 class UserRequest extends FormRequest
 {
     /**
-     * Defineix els camps a omplir en el formulari:
-     * nom: String obligatori màxim 255 caracters
-     * email: String obligatori màxim 255 caracters que no es pot tornar a repetir
-     * password: String obligatori
+     * Definimos los campos a llenar en el formulario:
+     * name: String obligatorio maximo 255 caracteres
+     * email: String obligatorio maximo 255 caracteres único
+     * password: String obligatorio
      */
     public function rules()
     {
