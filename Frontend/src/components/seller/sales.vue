@@ -226,29 +226,80 @@ onMounted(obtenerVentas);
 
 <style scoped>
 #menu_producto {
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
-#busqueda,
-#filtro {
-  background: #f3f4f6;
+
+#busqueda {
+  flex: 1;
+  min-width: 250px;
+  background-color: #f3f4f6;
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+#busqueda:focus-within {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+}
+
+#busqueda img.busqueda {
+  width: 18px;
+  opacity: 0.5;
+  margin-right: 10px;
+}
+
+#busqueda input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  color: #374151;
+}
+
+#filtro {
+  background: transparent; 
+  padding: 0;
+  border: none;
   display: flex;
   align-items: center;
 }
-#busqueda img,
-#filtro img {
-  width: 18px;
-  opacity: 0.6;
-}
-#filtro {
-  gap: 8px;
-  cursor: pointer;
-  font-weight: 500;
+
+#filtro select {
+  appearance: none;
+  background-color: #f3f4f6;
+  border: 1px solid transparent;
+  padding: 10px 34px 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
   color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#filtro select:hover {
+  background-color: #e5e7eb;
+}
+
+#filtro select:focus {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
 }
 
 #listaProductos table {
