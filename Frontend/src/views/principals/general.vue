@@ -11,25 +11,20 @@
     const precioMin = ref(0)
     const precioMax = ref(100)
     const precioMaximo = 100 
-
-    const items = ref([
-      { id: 1, nombre: 'Manzana' },
-      { id: 2, nombre: 'Banana' },
-      { id: 3, nombre: 'Naranja' },
-      { id: 4, nombre: 'Uva' }
-    ])
-
     const busqueda = ref('')
+    const categoriaSeleccionada = ref(null)
 
     const productosFiltrados = computed(() => {
         const texto = busqueda.value.trim().toLowerCase()
+        return productos.value.filter(producto => {
+          const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
+          
+          const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
         
-        // Si no n'hi ha text no mostra ningun element de la llista
-        if (!texto) return []
-
-        return items.value.filter(item =>
-          item.nombre.toLowerCase().includes(texto)
-        )
+          const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
+        
+          return pasaBusqueda && pasaCategoria && pasaPrecio
+        })
     })
     
     watch(precioMin, (nuevoMin) => {
@@ -98,11 +93,6 @@
                     type="text"
                     placeholder="Buscar...">
                 </input>
-                <ul>
-      <li v-for="item in productosFiltrados" :key="item.id">
-        {{ item.nombre }}
-      </li>
-    </ul>
             </div>
         <div id="selector">
             <div id="borde">
@@ -118,8 +108,8 @@
             <div id="filtro-barraLateral"><h3>Filtros</h3></div>
             <div class="grupo-filtro">
                 <h4>Categoría</h4>
-                <select categorias.id_category>
-            <option>Todas</option>
+                <select v-model="categoriaSeleccionada">
+            <option :value="null">Todas</option>
             <option 
               v-for="categoria in categorias" 
               :key="categoria.id_category" 
@@ -130,44 +120,39 @@
           </select>
             </div>
             <h4>Rango de Precios</h4>
+            <p>Mínimo</p>
             <div class="grupo-filtro">
-              <div class="sliders_control">
-                <input
-                  type="range"
-                  min="0"
-                  :max="precioMaximo"
-                  v-model="precioMin"
-                />
-
-                <input
-                  type="range"
-                  min="0"
-                  :max="precioMaximo"
-                  v-model="precioMax"
-                />
-              </div>
-              <div id="rango-precios">
-                <span>{{ precioMin }}€</span>
-                <span>{{ precioMax }}€</span>
-              </div>
-            
-              <div class="form_control">
-                <div class="form_control_container">
-                  <div>Min</div>
-                  <input type="number" v-model.number="precioMin" />
+                <div class="sliders_control">
+                    <input
+                      type="range"
+                      min="0"
+                      :max="precioMaximo"
+                      v-model="precioMin"
+                    />
+                    <div id="rango-precios">
+                      <span>{{ precioMin }}€</span>
+                      <span>{{ precioMax }}€</span>
+                    </div>
+                    <div class="form_control">
+                    </div>
+                    <p>Máximo</p>
+                    <input
+                      type="range"
+                      min="0"
+                      :max="precioMaximo"
+                      v-model="precioMax"
+                    />
                 </div>
-
-                <div class="form_control_container">
-                  <div>Max</div>
-                  <input type="number" v-model.number="precioMax" />
+                <div id="rango-precios">
+                  <span>{{ precioMin }}€</span>
+                  <span>{{ precioMax }}€</span>
                 </div>
-              </div>
             </div>
         </aside>
 
         <main>
             <div id="resultados">
-                <span>{{ productos.length }} Productos encontrados</span>
+                <span>{{ productosFiltrados.length }} Productos encontrados</span>
                 <select>
                     <option>Ordenar por: Cercanía</option>
                 </select>
@@ -175,7 +160,7 @@
 
             <div id="productos">
                 <div 
-                    v-for="producto in productos" 
+                    v-for="producto in productosFiltrados" 
                     :key="producto.id_product" 
                     class="tarjeta-producto"
                     @click="irAlDetalle(producto.id_product)">
