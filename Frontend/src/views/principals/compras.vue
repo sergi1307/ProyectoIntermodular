@@ -75,21 +75,17 @@ onMounted(obtenerCompras);
   <div id="contenedor-compras">
     <div id="menu_superior">
       <div id="busqueda">
-        <img
-          class="icono-ui"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
-        />
-        <p>Buscar compra...</p>
-      </div>
-      <div id="filtro">
-        <img
-          class="icono-ui"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>Filtros</p>
-      </div>
+  <img class="icono-ui" src="../../assets/icons/search_icon.png" alt="Buscar" />
+  <input v-model="busqueda" type="text" placeholder="Buscar por producto..." />
+</div>
+<div id="filtro">
+  <select v-model="filtroEstado">
+    <option value="">Todos los estados</option>
+    <option value="en curso">En Curso</option>
+    <option value="aceptado">Aceptado</option>
+    <option value="rechazado">Rechazado</option>
+  </select>
+</div>
     </div>
 
     <div id="listaCompras">
@@ -106,7 +102,7 @@ onMounted(obtenerCompras);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="compra in compras" :key="compra.id_sale">
+          <tr v-for="compra in comprasFiltradas" :key="compra.id_sale">
             <td data-label="Producto">{{ compra.product.name }}</td>
 
             <td data-label="Vendedor">
@@ -151,7 +147,7 @@ onMounted(obtenerCompras);
             </td>
           </tr>
 
-          <tr v-if="!compras || compras.length === 0">
+          <tr v-if="!comprasFiltradas || comprasFiltradas.length === 0">
             <td
               colspan="7"
               style="text-align: center; padding: 40px; color: #9ca3af"
