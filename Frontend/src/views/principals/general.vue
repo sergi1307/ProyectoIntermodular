@@ -13,18 +13,41 @@
     const precioMaximo = 100 
     const busqueda = ref('')
     const categoriaSeleccionada = ref(null)
+    const ordenSeleccionado = ref('')
 
     const productosFiltrados = computed(() => {
-        const texto = busqueda.value.trim().toLowerCase()
-        return productos.value.filter(producto => {
-          const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
-          
-          const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
-        
-          const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
-        
-          return pasaBusqueda && pasaCategoria && pasaPrecio
-        })
+      const texto = busqueda.value.trim().toLowerCase()
+
+      let resultado = [...productos.value].filter(producto => {
+        const pasaBusqueda =
+          !texto || producto.name.toLowerCase().includes(texto)
+
+        const pasaCategoria =
+          categoriaSeleccionada.value === null ||
+          producto.category?.id_category === categoriaSeleccionada.value
+
+        const pasaPrecio =
+          producto.price >= precioMin.value &&
+          producto.price <= precioMax.value
+
+        return pasaBusqueda && pasaCategoria && pasaPrecio
+      })
+
+      switch (ordenSeleccionado.value) {
+        case 'precio-asc':
+          resultado.sort((a, b) => a.price - b.price)
+          break
+        case 'precio-desc':
+          resultado.sort((a, b) => b.price - a.price)
+          break
+        case 'nombre-asc':
+          resultado.sort((a, b) => a.name.localeCompare(b.name))
+          break
+        case 'nombre-desc':
+          resultado.sort((a, b) => b.name.localeCompare(a.name))
+          break
+      }
+      return resultado
     })
     
     watch(precioMin, (nuevoMin) => {
@@ -38,7 +61,6 @@
         precioMax.value = precioMin.value
       }
     })
-
 
     const irAlDetalle = (id) => {
         router.push({ name: 'product-details', params: { id: id } });
@@ -153,8 +175,12 @@
         <main>
             <div id="resultados">
                 <span>{{ productosFiltrados.length }} Productos encontrados</span>
-                <select>
-                    <option>Ordenar por: Cercanía</option>
+                <select v-model="ordenSeleccionado">
+                  <option value="">Ordenar por</option>
+                  <option value="precio-desc">Precio: mayor a menor</option>
+                  <option value="precio-asc">Precio: menor a mayor</option>
+                  <option value="nombre-asc">Nombre: A -> Z</option>
+                  <option value="nombre-desc">Nombre: Z -> A</option>
                 </select>
             </div>
 
