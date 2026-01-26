@@ -12,7 +12,9 @@ const categorias = ref([]);
 const openCrear = ref(false);
 const openEditar = ref(false);
 const productoSeleccionado = ref(null);
-
+const busqueda = ref('');
+const filtroCategoria = ref('');
+const filtroEstado = ref('');
 const obtenerDatos = async () => {
   // 1. OBTENEMOS EL USUARIO Y EL TOKEN DEL LOCALSTORAGE
   const userStr = localStorage.getItem('user');
@@ -65,6 +67,15 @@ const productosConCategoria = computed(() => {
     };
   });
 });
+const productosFiltrados = computed(() => {
+  return productosConCategoria.value.filter(p => {
+    const coincideNombre = p.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideCategoria = !filtroCategoria.value || p.category === filtroCategoria.value;
+    const coincideEstado = !filtroEstado.value || p.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideCategoria && coincideEstado;
+  });
+});
+
 
 const agregarProducto = async () => {
   await obtenerDatos();
@@ -98,20 +109,27 @@ onMounted(obtenerDatos);
   <div>
     <div id="menu_producto">
       <div id="search">
-        <img
-          class="search"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
+        <img class="search" src="../../assets/icons/search_icon.png" alt="Buscar" />
+        <input 
+          v-model="busqueda" 
+          type="text" 
+          placeholder="Buscar por nombre..." 
+          class="input-busqueda"
         />
-        <p>Buscar</p>
       </div>
       <div id="filter">
-        <img
-          class="filter"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>Filters</p>
+        <select v-model="filtroCategoria">
+          <option value="">Todas las categorías</option>
+          <option v-for="cat in categorias" :key="cat.id" :value="cat.name">
+            {{ cat.name }}
+          </option>
+        </select>
+        
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="disponible">Disponible</option>
+          <option value="agotado">Agotado</option>
+        </select>
       </div>
       <div id="boton">
         <button @click="openCrear = true">+ Añadir producto</button>
@@ -140,7 +158,7 @@ onMounted(obtenerDatos);
         </thead>
         <tbody>
           <tr
-            v-for="producto in productosConCategoria"
+            v-for="producto in productosFiltrados"
             :key="producto.id_product"
           >
             <td>{{ producto.name }}</td>

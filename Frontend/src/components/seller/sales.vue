@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Modal from "../modals/Modal.vue";
 
 const ventas = ref([]);
 const mostrarModal = ref(false);
 const ventaSeleccionada = ref(null);
-
+const busqueda = ref('');
+const filtroEstado = ref('');
 // Función para obtener las ventas del backend
 const obtenerVentas = async () => {
   console.log(localStorage.getItem("token"));
@@ -90,7 +91,13 @@ const verDetalles = (venta) => {
   ventaSeleccionada.value = venta;
   mostrarModal.value = true;
 };
-
+const ventasFiltradas = computed(() => {
+  return ventas.value.filter(v => {
+    const coincideNombre = v.product.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideEstado = !filtroEstado.value || v.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideEstado;
+  });
+});
 onMounted(obtenerVentas);
 </script>
 
@@ -98,20 +105,20 @@ onMounted(obtenerVentas);
   <div>
     <div id="menu_producto">
       <div id="busqueda">
-        <img
-          class="busqueda"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
+        <img class="busqueda" src="../../assets/icons/search_icon.png" alt="Buscar" />
+        <input 
+          v-model="busqueda" 
+          type="text" 
+          placeholder="Buscar por producto..." 
         />
-        <p>Buscar orden...</p>
       </div>
       <div id="filtro">
-        <img
-          class="filtro"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>filtros</p>
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="en curso">En Curso</option>
+          <option value="aceptado">Aceptado</option>
+          <option value="rechazado">Rechazado</option>
+        </select>
       </div>
     </div>
 
@@ -129,7 +136,7 @@ onMounted(obtenerVentas);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="venta in ventas" :key="venta.id_sale">
+          <tr v-for="venta in ventasFiltradas" :key="venta.id_sale">
             <td>{{ venta.product.name }}</td>
 
             <td>{{ venta.buyer.name }}</td>
