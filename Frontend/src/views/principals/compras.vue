@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted,computed  } from "vue";
 import axios from "axios";
 // Asegúrate de que la ruta al Modal sea correcta
 import Modal from "../../components/modals/Modal.vue";
@@ -7,7 +7,8 @@ import Modal from "../../components/modals/Modal.vue";
 const compras = ref([]);
 const mostrarModal = ref(false);
 const compraSeleccionada = ref(null); // Corregido nombre variable singular
-
+const busqueda = ref('');
+const filtroEstado = ref('');
 // 1. Funciones auxiliares necesarias para que el template no falle
 const formatearFecha = (fecha) => {
   if (!fecha) return 'Pendiente';
@@ -45,9 +46,12 @@ const rechazarCompra = async (compra) => {
   console.log(url);
   try {
     const payload = {
-      'state': 'Rechazado'
+      'id_product': compra.product.id_product,
+      'state': 'Rechazado',
+      'quantity':compra.quantity
     };
 
+    console.log(payload);
     const response = await axios.put(url, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -60,7 +64,13 @@ const rechazarCompra = async (compra) => {
     console.error("Error rechazando la venta:", error);
   }
 }
-
+const comprasFiltradas = computed(() => {
+  return compras.value.filter(c => {
+    const coincideNombre = c.product.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideEstado = !filtroEstado.value || c.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideEstado;
+  });
+});
 onMounted(obtenerCompras);
 </script>
 
@@ -68,21 +78,17 @@ onMounted(obtenerCompras);
   <div id="contenedor-compras">
     <div id="menu_superior">
       <div id="busqueda">
-        <img
-          class="icono-ui"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
-        />
-        <p>Buscar compra...</p>
-      </div>
-      <div id="filtro">
-        <img
-          class="icono-ui"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>Filtros</p>
-      </div>
+  <img class="icono-ui" src="../../assets/icons/search_icon.png" alt="Buscar" />
+  <input v-model="busqueda" type="text" placeholder="Buscar por producto..." />
+</div>
+<div id="filtro">
+  <select v-model="filtroEstado">
+    <option value="">Todos los estados</option>
+    <option value="en curso">En Curso</option>
+    <option value="aceptado">Aceptado</option>
+    <option value="rechazado">Rechazado</option>
+  </select>
+</div>
     </div>
 
     <div id="listaCompras">
@@ -99,7 +105,7 @@ onMounted(obtenerCompras);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="compra in compras" :key="compra.id_sale">
+          <tr v-for="compra in comprasFiltradas" :key="compra.id_sale">
             <td data-label="Producto">{{ compra.product.name }}</td>
 
             <td data-label="Vendedor">
@@ -144,7 +150,7 @@ onMounted(obtenerCompras);
             </td>
           </tr>
 
-          <tr v-if="!compras || compras.length === 0">
+          <tr v-if="!comprasFiltradas || comprasFiltradas.length === 0">
             <td
               colspan="7"
               style="text-align: center; padding: 40px; color: #9ca3af"

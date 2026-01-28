@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router'; 
 import axios from 'axios';
 
@@ -9,9 +9,16 @@ const producto = ref(null);
 const cargando = ref(true);
 const error = ref(null);
 
+const cantidadSeleccionada = ref(1);
+
 const volver = () => {
     router.go(-1);
 };
+
+const precioTotal = computed(() => {
+    if (!producto.value) return 0;
+    return (producto.value.price * cantidadSeleccionada.value).toFixed(2);
+});
 
 const obtenerDetalleProducto = async () => {
     const id = route.params.id; 
@@ -21,11 +28,19 @@ const obtenerDetalleProducto = async () => {
         });
         producto.value = response.data; 
         cargando.value = false;
-        console.log(producto.value);
+        
+        cantidadSeleccionada.value = 1;
     } catch (err) {
         console.error("Error al cargar:", err);
         error.value = "No se pudo cargar el producto.";
         cargando.value = false;
+    }
+};
+
+const validarCantidad = () => {
+    if (producto.value) {
+        if (cantidadSeleccionada.value < 1) cantidadSeleccionada.value = 1;
+        if (cantidadSeleccionada.value > producto.value.stock) cantidadSeleccionada.value = producto.value.stock;
     }
 };
 
@@ -49,11 +64,11 @@ const realizarCompra = async () => {
         id_buyer: usuario.id_user,
         id_seller: producto.value.user.id_user, 
         id_delivery_point: producto.value.id_delivery_point || producto.value.delivery_point?.id_delivery_point,
-        total: producto.value.price,
-        quantity: 1 
+        total: parseFloat(precioTotal.value), 
+        quantity: cantidadSeleccionada.value,
     };
 
-    console.log(datosVenta);
+    console.log("Enviando compra:", datosVenta);
 
     try {
         const response = await axios.post("http://localhost:8080/api/sales/store", datosVenta, {
@@ -64,7 +79,7 @@ const realizarCompra = async () => {
         });
 
         if (response.data.status === 'true' || response.status === 200) {
-            alert("¡Compra realizada con éxito!");
+            alert(`¡Compra realizada con éxito! Has comprado ${cantidadSeleccionada.value} unidad(es) por $${precioTotal.value}`);
             obtenerDetalleProducto(); 
         }
     } catch (err) {
@@ -110,7 +125,10 @@ onMounted(() => {
             <h1>{{ producto.nombre }}</h1>
 
             <div class="precio-grande">
-                {{ producto.price }}€ <span class="unidad">/ {{ producto.type_stock }}</span>
+                ${{ precioTotal }} 
+                <span class="unidad">
+                    ({{ cantidadSeleccionada }} x ${{ producto.price }})
+                </span>
             </div>
 
             <div class="descripcion-box">
@@ -123,20 +141,37 @@ onMounted(() => {
                         {{ producto.delivery_point ? producto.delivery_point.name : 'Ubicación desconocida' }}
                     </div>
                      <div>
-                        <strong>📦 Stock:</strong><br>
+                        <strong>📦 Stock Disponible:</strong><br>
                         {{ producto.stock }} {{ producto.type_stock }}
                     </div>
                 </div>
             </div>
 
             <div class="acciones-compra">
+                
+                <div class="selector-cantidad" v-if="producto.stock > 0">
+                    <label for="cantidad">Cantidad a comprar:</label>
+                    <div class="input-wrapper">
+                        <input 
+                            id="cantidad"
+                            type="number" 
+                            v-model.number="cantidadSeleccionada" 
+                            min="1" 
+                            :max="producto.stock"
+                            @change="validarCantidad"
+                            class="input-cantidad"
+                        >
+                    </div>
+                    <small class="stock-hint">Máximo {{ producto.stock }} unidades</small>
+                </div>
+
                 <button 
                     @click="realizarCompra" 
                     class="btn-comprar"
                     :disabled="producto.stock <= 0"
                     :class="{ 'agotado': producto.stock <= 0 }"
                 >
-                    {{ producto.stock > 0 ? 'Comprar Ahora' : 'Sin Stock Disponible' }}
+                    {{ producto.stock > 0 ? `Comprar por $${precioTotal}` : 'Sin Stock Disponible' }}
                 </button>
             </div>
         </div>
@@ -234,6 +269,38 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     border-top: 1px solid #e0e0e0;
 }
 
+.selector-cantidad {
+    margin-bottom: 15px;
+}
+
+.selector-cantidad label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input-cantidad {
+    padding: 10px;
+    font-size: 1.1em;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 80px;
+    text-align: center;
+}
+
+.input-cantidad:focus {
+    border-color: #1a4d2e;
+    outline: none;
+}
+
+.stock-hint {
+    display: block;
+    color: #888;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
 .btn-comprar {
     background-color: #1a4d2e;
     color: white;
@@ -243,7 +310,7 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 10px;
     font-weight: bold;
     transition: all 0.2s;
 }
