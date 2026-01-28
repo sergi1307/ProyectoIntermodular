@@ -223,7 +223,7 @@
 </template>
 
 <style scoped>
-    * {
+* {
     text-decoration: none;
 }
 
@@ -396,7 +396,6 @@
                 gap: 10px;
 
                 input[type="range"] {
-                    -webkit-appearance: none;
                     width: 100%;
                     height: 6px;
                     background: #e0e0e0;
