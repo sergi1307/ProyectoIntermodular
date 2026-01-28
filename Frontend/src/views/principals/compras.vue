@@ -46,9 +46,12 @@ const rechazarCompra = async (compra) => {
   console.log(url);
   try {
     const payload = {
-      'state': 'Rechazado'
+      'id_product': compra.product.id_product,
+      'state': 'Rechazado',
+      'quantity':compra.quantity
     };
 
+    console.log(payload);
     const response = await axios.put(url, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

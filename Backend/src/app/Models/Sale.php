@@ -23,6 +23,7 @@ class Sale extends Model
         'id_seller',
         'id_delivery_point',
         'sale_date',
+        'quantity',
         'total',
         'collection_date',
         'state'

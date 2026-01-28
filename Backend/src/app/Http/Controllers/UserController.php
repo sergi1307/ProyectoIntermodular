@@ -208,7 +208,7 @@ class UserController extends Controller
         }
         
         // Obtenemos los puntos de venta de ese usuario
-        $puntos = \App\Models\Delivery_Point::where('id_user', $user->id_user)->get();
+        $puntos = Delivery_Point::where('id_user', $user->id_user)->get();
 
         // Devolvemos la respuesta en formato json
         return response()->json($puntos);

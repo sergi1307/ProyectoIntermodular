@@ -87,7 +87,7 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:51200',
             'type_stock' => 'required|in:Kg,Unidad',
-            'state' => 'required|in:Agotado,Reservado,Disponible'    
+            'state' => 'required|in:Agotado,Reservado,Disponible'
         ]);
 
         // Inicializamos la variable de la ruta de la imagen
