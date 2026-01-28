@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Modal from "../modals/Modal.vue";
 
 const ventas = ref([]);
 const mostrarModal = ref(false);
 const ventaSeleccionada = ref(null);
-
+const busqueda = ref('');
+const filtroEstado = ref('');
 // Función para obtener las ventas del backend
 const obtenerVentas = async () => {
   console.log(localStorage.getItem("token"));
@@ -27,11 +28,6 @@ const rechazarVenta = async (ventas) => {
   const url = `http://localhost:8080/api/sales/update/${ventas.id_sale}`;
 
   try {
-    const userString = localStorage.getItem('user');
-    const user = userString ? JSON.parse(userString) : null;
-
-    const idUser = user?.id_user;
-
     const payload = {
       'state': 'Rechazado'
     };
@@ -95,7 +91,13 @@ const verDetalles = (venta) => {
   ventaSeleccionada.value = venta;
   mostrarModal.value = true;
 };
-
+const ventasFiltradas = computed(() => {
+  return ventas.value.filter(v => {
+    const coincideNombre = v.product.name.toLowerCase().includes(busqueda.value.toLowerCase());
+    const coincideEstado = !filtroEstado.value || v.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideEstado;
+  });
+});
 onMounted(obtenerVentas);
 </script>
 
@@ -103,20 +105,20 @@ onMounted(obtenerVentas);
   <div>
     <div id="menu_producto">
       <div id="busqueda">
-        <img
-          class="busqueda"
-          src="../../assets/icons/search_icon.png"
-          alt="Buscar"
+        <img class="busqueda" src="../../assets/icons/search_icon.png" alt="Buscar" />
+        <input 
+          v-model="busqueda" 
+          type="text" 
+          placeholder="Buscar por producto..." 
         />
-        <p>Buscar orden...</p>
       </div>
       <div id="filtro">
-        <img
-          class="filtro"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>filtros</p>
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="en curso">En Curso</option>
+          <option value="aceptado">Aceptado</option>
+          <option value="rechazado">Rechazado</option>
+        </select>
       </div>
     </div>
 
@@ -134,7 +136,7 @@ onMounted(obtenerVentas);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="venta in ventas" :key="venta.id_sale">
+          <tr v-for="venta in ventasFiltradas" :key="venta.id_sale">
             <td>{{ venta.product.name }}</td>
 
             <td>{{ venta.buyer.name }}</td>
@@ -224,29 +226,80 @@ onMounted(obtenerVentas);
 
 <style scoped>
 #menu_producto {
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
-#busqueda,
-#filtro {
-  background: #f3f4f6;
+
+#busqueda {
+  flex: 1;
+  min-width: 250px;
+  background-color: #f3f4f6;
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+#busqueda:focus-within {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+}
+
+#busqueda img.busqueda {
+  width: 18px;
+  opacity: 0.5;
+  margin-right: 10px;
+}
+
+#busqueda input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  color: #374151;
+}
+
+#filtro {
+  background: transparent; 
+  padding: 0;
+  border: none;
   display: flex;
   align-items: center;
 }
-#busqueda img,
-#filtro img {
-  width: 18px;
-  opacity: 0.6;
-}
-#filtro {
-  gap: 8px;
-  cursor: pointer;
-  font-weight: 500;
+
+#filtro select {
+  appearance: none;
+  background-color: #f3f4f6;
+  border: 1px solid transparent;
+  padding: 10px 34px 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
   color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#filtro select:hover {
+  background-color: #e5e7eb;
+}
+
+#filtro select:focus {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
 }
 
 #listaProductos table {

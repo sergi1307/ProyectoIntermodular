@@ -12,11 +12,13 @@ const categorias = ref([]);
 const openCrear = ref(false);
 const openEditar = ref(false);
 const productoSeleccionado = ref(null);
-
+const busqueda = ref("");
+const filtroCategoria = ref("");
+const filtroEstado = ref("");
 const obtenerDatos = async () => {
   // 1. OBTENEMOS EL USUARIO Y EL TOKEN DEL LOCALSTORAGE
-  const userStr = localStorage.getItem('user');
-  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem("user");
+  const token = localStorage.getItem("token");
 
   // Si no hay usuario o token, no podemos cargar sus productos
   if (!userStr || !token) {
@@ -33,15 +35,15 @@ const obtenerDatos = async () => {
       // - Usamos comillas invertidas (`) para meter la variable ${userId}
       // - Añadimos el token en el header por seguridad
       axios.get(`http://localhost:8080/api/products/mine?id_user=${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       }),
       axios.get("http://localhost:8080/api/categories"),
     ]);
 
     // Corrección para asegurar que sea un array
     const data = resProductos.data;
-    productos.value = Array.isArray(data) ? data : (data.data || []);
-    
+    productos.value = Array.isArray(data) ? data : data.data || [];
+
     categorias.value = resCategorias.data;
   } catch (error) {
     console.error("Error cargando datos:", error);
@@ -65,6 +67,19 @@ const productosConCategoria = computed(() => {
     };
   });
 });
+const productosFiltrados = computed(() => {
+  return productosConCategoria.value.filter((p) => {
+    const coincideNombre = p.name
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase());
+    const coincideCategoria =
+      !filtroCategoria.value || p.category === filtroCategoria.value;
+    const coincideEstado =
+      !filtroEstado.value ||
+      p.state.toLowerCase() === filtroEstado.value.toLowerCase();
+    return coincideNombre && coincideCategoria && coincideEstado;
+  });
+});
 
 const agregarProducto = async () => {
   await obtenerDatos();
@@ -76,7 +91,7 @@ const eliminarProducto = async (id) => {
   try {
     // Añadimos también el token al borrar por si acaso
     await axios.delete(`http://localhost:8080/api/products/destroy/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     await obtenerDatos(); // Recarreguem la llista després d'eliminar
   } catch (error) {
@@ -103,15 +118,26 @@ onMounted(obtenerDatos);
           src="../../assets/icons/search_icon.png"
           alt="Buscar"
         />
-        <p>Buscar</p>
+        <input
+          v-model="busqueda"
+          type="text"
+          placeholder="Buscar por nombre..."
+          class="input-busqueda"
+        />
       </div>
       <div id="filter">
-        <img
-          class="filter"
-          src="../../assets/icons/filter_icon.png"
-          alt="Filtrar"
-        />
-        <p>Filters</p>
+        <select v-model="filtroCategoria">
+          <option value="">Todas las categorías</option>
+          <option v-for="cat in categorias" :key="cat.id" :value="cat.name">
+            {{ cat.name }}
+          </option>
+        </select>
+
+        <select v-model="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="disponible">Disponible</option>
+          <option value="agotado">Agotado</option>
+        </select>
       </div>
       <div id="boton">
         <button @click="openCrear = true">+ Añadir producto</button>
@@ -139,10 +165,7 @@ onMounted(obtenerDatos);
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="producto in productosConCategoria"
-            :key="producto.id_product"
-          >
+          <tr v-for="producto in productosFiltrados" :key="producto.id_product">
             <td>{{ producto.name }}</td>
             <td>{{ producto.description }}</td>
             <td>{{ producto.category }}</td>
@@ -150,7 +173,10 @@ onMounted(obtenerDatos);
             <td class="stock">{{ producto.stock }}</td>
             <td>{{ producto.type_stock }}</td>
 
-            <td class="status-cell" :class="'status-' + producto.state.toLowerCase()">
+            <td
+              class="status-cell"
+              :class="'status-' + producto.state.toLowerCase()"
+            >
               {{ producto.state }}
             </td>
 
@@ -180,7 +206,8 @@ onMounted(obtenerDatos);
           <tr v-if="productosConCategoria.length === 0">
             <td
               colspan="8"
-               style="text-align: center; padding: 20px; color: #999">
+              style="text-align: center; padding: 20px; color: #999"
+            >
               No hay productos disponibles
             </td>
           </tr>
@@ -203,30 +230,81 @@ onMounted(obtenerDatos);
 
 <style scoped>
 #menu_producto {
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
-#search,
-#filter {
-  background: #f3f4f6;
-  border-radius: 999px;
-  padding: 10px 14px;
+
+#search {
+  flex: 1;
+  min-width: 250px;
+  background-color: #f3f4f6;
+  border-radius: 500px;
+  padding: 8px 18px;
   display: flex;
   align-items: center;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
 }
-#search img,
-#filter img {
+
+#search:focus-within {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+}
+
+#search img.search {
   width: 18px;
-  opacity: 0.6;
+  opacity: 0.5;
+  margin-right: 10px;
 }
-#filter {
-  gap: 8px;
-  cursor: pointer;
-  font-weight: 500;
+
+#search input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
   color: #374151;
 }
+#filter {
+  background: transparent;
+  padding: 0;
+  border: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#filter select {
+  background-color: #f3f4f6;
+  border: 1px solid transparent;
+  padding: 10px 34px 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#filter select:hover {
+  background-color: #e5e7eb;
+}
+
+#filter select:focus {
+  background-color: #ffffff;
+  border-color: #1c5537;
+  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+}
+
 #boton button {
   background-color: #1c5537;
   padding: 12px 20px;
@@ -265,9 +343,8 @@ onMounted(obtenerDatos);
 
 .status-cell {
   font-weight: 600;
-  text-transform: capitalize; 
+  text-transform: capitalize;
 }
-
 
 .status-cell::before {
   content: "";
@@ -276,7 +353,7 @@ onMounted(obtenerDatos);
   height: 8px;
   border-radius: 50%;
   margin-right: 8px;
-  background: #ccc; 
+  background: #ccc;
 }
 
 .status-disponible::before {
@@ -288,7 +365,7 @@ onMounted(obtenerDatos);
 }
 
 .status-agotado::before {
-  background: #ef4444; 
+  background: #ef4444;
 }
 
 td button {
@@ -303,21 +380,23 @@ td img {
 }
 
 @media (max-width: 1024px) {
-  #listaProductos th:nth-child(2), 
+  #listaProductos th:nth-child(2),
   #listaProductos td:nth-child(2) {
     display: none;
   }
 }
 
 @media (max-width: 768px) {
-
   #menu_producto {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
   }
 
-  #search, #filter, #boton, #boton button {
+  #search,
+  #filter,
+  #boton,
+  #boton button {
     width: 100%;
     justify-content: center;
     box-sizing: border-box;
@@ -327,16 +406,20 @@ td img {
     overflow-x: auto;
   }
 
-  #listaProductos th, 
+  #listaProductos th,
   #listaProductos td {
     padding: 10px 5px;
     font-size: 13px;
   }
 
-  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
-  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3),
-  #listaProductos th:nth-child(5), #listaProductos td:nth-child(5),
-  #listaProductos th:nth-child(6), #listaProductos td:nth-child(6) {
+  #listaProductos th:nth-child(2),
+  #listaProductos td:nth-child(2),
+  #listaProductos th:nth-child(3),
+  #listaProductos td:nth-child(3),
+  #listaProductos th:nth-child(5),
+  #listaProductos td:nth-child(5),
+  #listaProductos th:nth-child(6),
+  #listaProductos td:nth-child(6) {
     display: none;
   }
 

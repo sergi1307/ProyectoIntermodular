@@ -10,24 +10,23 @@ use Illuminate\Support\Carbon;
 class ProductController extends Controller
 {
     /**
-     * Funció per a obtindre els productes d'un usuari
+     * Función para obtener los productos de un usuario
      *
      * @param Request $request
      * @return json
      */
     public function myProducts(Request $request)
     {
-        // Obtenim l'id de l'usuari per mig del token
+        // Obtenemos el id del usuario
         $userId = $request->user()->id_user ?? $request->id_user;
 
-        // Busquem els seus productes amb les relacions necesàries
-        // NOTA: 'category' debe coincidir con el nombre de la función en tu Modelo Product
+        // Buscamos los productos con los demás campos necesarios
         $products = Product::where('id_user', $userId)
             ->with(['category', 'delivery_point:id_delivery_point,name'])
             ->orderBy('publication_date', 'desc')
             ->get();
 
-        // Retornem la resposta en format json
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'data' => $products
@@ -35,37 +34,39 @@ class ProductController extends Controller
     }
 
     /**
-     * Funció que retorna tots els productes
+     * Función que devuelve todos los productos
+     * 
      * * @return json
      */
     public function index()
     {
-        // Obtenim els productes amb els camps relacionats de les altres taules de la base de dades
-        // Usem paginate per a no saturar la resposta
+        // Obtenemos los productos con sus campos relacionados
         $products = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name,direction,latitude,length', 'category'])
             ->paginate(20);
 
-        // Retornme la resposta en JSON
+        // Devolvemos la respuesta en formato json
         return response()->json($products, 200);
     }
 
     /**
-     * Funció que retorna un producte
-     * * @param int $id
+     * Función que devuelve un producto
+     * 
+     * @param int $id
      * @return json
      */
     public function show($id)
     {
-        // Obtenim el producte amb els camps relacionats de les altres taules de la base de dades buscat per id
+        // Obtenemos el producto con sus campos relacionados
         $product = Product::with(['user:id_user,name', 'delivery_point:id_delivery_point,name', 'category'])->findOrFail($id);
 
-        // Retornem la resposta en JSON
+        // Devolvemos la respuesta en formato json
         return response()->json($product);
     }
 
     /**
-     * Funció per a crear un producte
-     * * @param Request $request
+     * Función para crear un producto
+     * 
+     * @param Request $request
      * @return json
      */
     public function store(Request $request)
@@ -73,13 +74,13 @@ class ProductController extends Controller
         // Seleccionamos la fecha de hoy
         $fecha = Carbon::now('Europe/Madrid')->format('Y-m-d');
 
-        // SEGURIDAD: Obtenim l'id de l'usuari per mig del token (no del request directo)
+        // Obtenemos el id del usuario
         $userId = $request->user()->id_user ?? $request->id_user;
 
-        // Validem les dades abans d'insertar el producte en la base de dades 
+        // Validamos los datos antes de enviarlos
         $validated = $request->validate([
             'id_delivery_point'  => 'required|integer|exists:delivery_points,id_delivery_point',
-            'id_category' => 'nullable|exists:categories,id_category', // Corregido a plural 'categories'
+            'id_category' => 'nullable|exists:categories,id_category',
             'name' => 'required|string',
             'description' => 'required|string',
             'price' => 'required|numeric',
@@ -89,16 +90,16 @@ class ProductController extends Controller
             'state' => 'required|in:Agotado,Reservado,Disponible'    
         ]);
 
-        // Inicialitzem la variable de la ruta de la imatge
+        // Inicializamos la variable de la ruta de la imagen
         $rutaImagen = null;
 
-        // Comprobem que la imatge haja sigut enviada
+        // Comprobamos si se ha enviado alguna imagen
         if ($request->hasFile('image')) {
-            // Guardem l'imatge en la carpeta Storage i guardem la ruta en la base de dades
+            // Guardamos la imagen en la carpeta storage, y la ruta en la base de datos
             $rutaImagen = $request->file('image')->store('products', 'public');
         }
 
-        // Creem el producte amb els camps
+        // Creamos el producto con sus campos relacionados
         $product = Product::create([
             'id_user' => $userId,
             'id_delivery_point' => $request->id_delivery_point,
@@ -113,7 +114,7 @@ class ProductController extends Controller
             'publication_date' => $fecha
         ]);
 
-        // Retornem la resposta en JSON en cas de que no done error
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'message' => 'Producte creat correctament'
@@ -121,22 +122,22 @@ class ProductController extends Controller
     }
 
     /**
-     * Funció per a actualitzar un producte
-     * * @param Request $request
+     * Función para actualizar un producto
+     * 
+     * @param Request $request
      * @param int $id
      */
     public function update(Request $request, $id)
     {
-        // Busquem el producte per id
+        // Buscamos el producto por id
         $product = Product::findOrFail($id);
-
         
-
+        // Comprobamos que el producto pertenenzca realmente al usuario
         if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
         }   
 
-        // Validem les dades enviades del formulari
+        // Validamos los datos
         $validated = $request->validate([
             'id_delivery_point'  => 'integer|exists:delivery_points,id_delivery_point',
             'id_category' => 'nullable|exists:categories,id_category',
@@ -149,20 +150,20 @@ class ProductController extends Controller
             'state' => 'in:Agotado,Reservado,Disponible'
         ]);
 
-        // Assignem la ruta a la imatge que ja teniem abans
+        // Asignamos la ruta antigua de la imagen a la variable
         $rutaImagen = $product->image;
 
-        // Comprobem si s'ha enviat una imatge nova
+        // Comprobamos si hay alguna imagen nueva
         if ($request->hasFile('image')) {
-            // Eliminem la imatge anterior per a reservar espai
+            // Si la hay, eliminamos la imagen anterior de la carpeta storage
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
-            // Guardem la nova imatge
+            // Guardamos la nueva imagen
             $rutaImagen = $request->file('image')->store('products', 'public');
         }
 
-        // Actualitzem les dades del producte
+        // Actualizamos los datos del producto
         $product->update([
             'id_delivery_point' => $request->input('id_delivery_point', $product->id_delivery_point),
             'id_category' => $request->input('id_category', $product->id_category),
@@ -175,35 +176,37 @@ class ProductController extends Controller
             'state' => $request->input('state', $product->state)
         ]);
 
-        // Retornem en cas afirmatiu un json
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'message' => 'Producte actualitzat correctament.'
         ], 200);
     }
 
     /**
-     * Funció per a eliminar un producte per id
-     * * @param int $id
+     * Función para eliminar un producto
+     * 
+     * @param int $id
      * @return json
      */
     public function destroy(Request $request, $id)
     {
-        // Busquem el producte per id
+        // Buscamos el producto por id
         $product = Product::findOrFail($id);
 
+        // Comprobamos que el producto pertenezca a ese usuario
         if ($product->id_user !== $request->user()->id_user) {
             return response()->json(['message' => 'No autorizat'], 403);
         }
 
-        // Eliminem l'imatge que ja existía
+        // Eliminamos la imagen que ya existía
         if ($product->image && Storage::disk('public')->exists($product->image)) {
              Storage::disk('public')->delete($product->image);
         }
 
-        // Eliminem el producte de la base de dades
+        // Eliminamos el producto
         $product->delete();
 
-        // En cas de que no done error retornem una resposta json
+        // Devolvemos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'message' => 'Producte eliminat correctament'

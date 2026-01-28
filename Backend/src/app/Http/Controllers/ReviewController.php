@@ -8,24 +8,24 @@ use Illuminate\Http\Request;
 class ReviewController extends Controller
 {
     /**
-     * Funció per a crear una review
+     * Función para crear una review
      *
      * @param Request $request
      * @return json
      */
     public function store(Request $request)
     {
-        // Obtenim la data de hui per a la review_date
+        // Obtenemos la fecha de hoy
         $fecha = Carbon::now('Europe/Madrid')->format('Y-m-d');
 
-        // Validem les dades abans d'introduir-les en la base de dades
+        // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'id_sale' => 'required|integer|exists:sales,id_sale',
             'calification' => 'required|integer',
             'comment' => 'required'
         ]);
 
-        // Insertem les dades definitivament en la base de dades
+        // Insertamos definitivamente los datos
         $review = Review::create([
             'id_sale' => $request -> id_sale,
             'calification' => $request -> calification,
@@ -33,7 +33,7 @@ class ReviewController extends Controller
             'review_date' => $fecha
         ]);
 
-        // Retornem una resposta com que ha anat tot be
+        // Devolvemos la respuesta en formato json
         return response() ->json([
             'status' => 'true',
             'message' => 'review creat correctament',
@@ -41,36 +41,36 @@ class ReviewController extends Controller
     }
 
     /**
-     * Funció per a obtindre totes les reviews
+     * Función para obtener todas las reviews
      *
      * @return json
      */
     public function index()
     {
-        // Obtenim totes les reviews
+        // Obtenemos todas las reviews
         $review = Review::all();
 
-        // Retornem la llista de reviews
+        // Devolvemos la lista en formato json
         return response() ->json($review, 200);
     }
 
     /**
-     * Funció per a obtindre només una review
+     * Función para obtener una review
      *
      * @param numeric $id
      * @return json
      */
     public function show($id)
     {
-        // Obtenim la review per el seu id
+        // Obtenemos la review por id
         $review = Review::findOrFail($id);
 
-        // Retornem la review en format json
+        // Devolvemos la respuesta en formato json
         return response() -> json($review, 200);
     }
 
     /**
-     * Funció per a actualitzar una review
+     * Función para actualizar una review
      *
      * @param Request $request
      * @param numeric $id
@@ -78,44 +78,44 @@ class ReviewController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Obtenim la review per el seu id
+        // Obtenemos la review por id
         $review = Review::findOrFail($id);
 
-        // Validem les dades abans d'introduir-les en la base de dades
+        // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'id_sale' => 'required|exists:sales,id_sale',
             'calification' => 'required|integer',
             'comment' => 'required'
         ]);
 
-        // Insertem les dades definitivament en la base de dades
+        // Insertamos los datos definitivamente en la base de datos
         $review ->update([
             'id_sale' => $request -> id_sale,
             'calification' => $request -> calification,
             'comment' => $request -> comment
         ]);
 
-        // Retornem la resposta afirmativa en format json
+        // Devolvemos la respuesta en formato json
         return response() -> json([
             'message' => 'review actualizada'
         ], 200);
     }
 
     /**
-     * Funció per a eliminar una review
+     * Función para eliminar una review
      *
      * @param numeric $id
      * @return json
      */
     public function destroy($id)
     {
-        // Obtenim la review pel seu id
+        // Obtenemos la review por id
         $review = Review::findOrFail($id);
 
-        // Borrem definitivament la review
+        // Borramos definitivamente la review
         $review->delete();
 
-        // Retornem la resposta afirmativa en format json
+        // Devolvemos la respuesta en formato json
         return response()-> json([
             'message' => 'Venta eliminada'
         ], 200);
