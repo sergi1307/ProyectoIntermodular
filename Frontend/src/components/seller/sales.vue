@@ -29,7 +29,8 @@ const rechazarVenta = async (ventas) => {
 
   try {
     const payload = {
-      'state': 'Rechazado'
+      'state': 'Rechazado',
+      
     };
 
     const response = await axios.put(url, payload, {
