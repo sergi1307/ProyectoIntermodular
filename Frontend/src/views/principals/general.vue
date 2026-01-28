@@ -1,11 +1,66 @@
 <script setup>
     import axios from 'axios';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, watch, computed } from 'vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
     const productos = ref([]);
+    const categorias = ref([]);
     const vistaActual = ref('grid'); 
+
+    const precioMin = ref(0)
+    const precioMax = ref(100)
+    const precioMaximo = 100 
+    const busqueda = ref('')
+    const categoriaSeleccionada = ref(null)
+    const ordenSeleccionado = ref('')
+
+    const productosFiltrados = computed(() => {
+      const texto = busqueda.value.trim().toLowerCase()
+
+      let resultado = [...productos.value].filter(producto => {
+        const pasaBusqueda =
+          !texto || producto.name.toLowerCase().includes(texto)
+
+        const pasaCategoria =
+          categoriaSeleccionada.value === null ||
+          producto.category?.id_category === categoriaSeleccionada.value
+
+        const pasaPrecio =
+          producto.price >= precioMin.value &&
+          producto.price <= precioMax.value
+
+        return pasaBusqueda && pasaCategoria && pasaPrecio
+      })
+
+      switch (ordenSeleccionado.value) {
+        case 'precio-asc':
+          resultado.sort((a, b) => a.price - b.price)
+          break
+        case 'precio-desc':
+          resultado.sort((a, b) => b.price - a.price)
+          break
+        case 'nombre-asc':
+          resultado.sort((a, b) => a.name.localeCompare(b.name))
+          break
+        case 'nombre-desc':
+          resultado.sort((a, b) => b.name.localeCompare(a.name))
+          break
+      }
+      return resultado
+    })
+    
+    watch(precioMin, (nuevoMin) => {
+      if (nuevoMin > precioMax.value) {
+        precioMin.value = precioMax.value
+      }
+    })
+
+    watch(precioMax, (nuevoMax) => {
+      if (nuevoMax < precioMin.value) {
+        precioMax.value = precioMin.value
+      }
+    })
 
     const irAlDetalle = (id) => {
         router.push({ name: 'product-details', params: { id: id } });
@@ -24,15 +79,43 @@
         }
     }
 
-    onMounted(obtenerProductos);
+    const obtenerCategorias = async () =>{
+        try{
+            const resCategorias = await axios.get("http://localhost:8080/api/categories/", {
+                withCredentials: true
+            });
+
+            categorias.value = resCategorias.data;
+            console.log("Categorias cargadas")
+        } catch(error){
+            console.error("Error cargando las categorias")
+        }
+    }
+
+    onMounted(() =>{
+        obtenerProductos();
+
+        obtenerCategorias();
+    });
 </script>
 
 <template>
     <div id="cabecera">
         <div id="titulos">
-            <h1>Descubre Productos Locales</h1>
+            <h1>Descubre Productos Locales</h1> 
             <p>Productos Frescos de Granjas Cercanas a Ti</p>
         </div>
+        <div id="busqueda">
+                <img
+                    class="search"
+                    src="../../assets/icons/search_icon.png"
+                    alt="Buscar"
+                />
+                <input v-model="busqueda"
+                    type="text"
+                    placeholder="Buscar...">
+                </input>
+            </div>
         <div id="selector">
             <div id="borde">
                 <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
@@ -47,30 +130,63 @@
             <div id="filtro-barraLateral"><h3>Filtros</h3></div>
             <div class="grupo-filtro">
                 <h4>Categoría</h4>
-                <ul>
-                    <li>Todas</li>
-                    <li>Verduras</li>
-                    <li>Frutas</li>
-                </ul>
+                <select v-model="categoriaSeleccionada">
+            <option :value="null">Todas</option>
+            <option 
+              v-for="categoria in categorias" 
+              :key="categoria.id_category" 
+              :value="categoria.id_category"
+            >
+              {{ categoria.name }}
+            </option>
+          </select>
             </div>
+            <h4>Rango de Precios</h4>
+            <p>Mínimo</p>
             <div class="grupo-filtro">
-                <h4>Rango de Precios</h4>
-                <input type="range">
-                <div id="rango-precios"><span>$0</span><span>$20</span></div>
+                <div class="sliders_control">
+                    <input
+                      type="range"
+                      min="0"
+                      :max="precioMaximo"
+                      v-model="precioMin"
+                    />
+                    <div id="rango-precios">
+                      <span>{{ precioMin }}€</span>
+                      <span>{{ precioMax }}€</span>
+                    </div>
+                    <div class="form_control">
+                    </div>
+                    <p>Máximo</p>
+                    <input
+                      type="range"
+                      min="0"
+                      :max="precioMaximo"
+                      v-model="precioMax"
+                    />
+                </div>
+                <div id="rango-precios">
+                  <span>{{ precioMin }}€</span>
+                  <span>{{ precioMax }}€</span>
+                </div>
             </div>
         </aside>
 
         <main>
             <div id="resultados">
-                <span>{{ productos.length }} Productos encontrados</span>
-                <select>
-                    <option>Ordenar por: Cercanía</option>
+                <span>{{ productosFiltrados.length }} Productos encontrados</span>
+                <select v-model="ordenSeleccionado">
+                  <option value="">Ordenar por</option>
+                  <option value="precio-desc">Precio: mayor a menor</option>
+                  <option value="precio-asc">Precio: menor a mayor</option>
+                  <option value="nombre-asc">Nombre: A -> Z</option>
+                  <option value="nombre-desc">Nombre: Z -> A</option>
                 </select>
             </div>
 
             <div id="productos">
                 <div 
-                    v-for="producto in productos" 
+                    v-for="producto in productosFiltrados" 
                     :key="producto.id_product" 
                     class="tarjeta-producto"
                     @click="irAlDetalle(producto.id_product)">

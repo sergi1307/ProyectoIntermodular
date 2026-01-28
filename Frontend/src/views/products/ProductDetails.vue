@@ -110,7 +110,7 @@ onMounted(() => {
             <h1>{{ producto.nombre }}</h1>
 
             <div class="precio-grande">
-                ${{ producto.price }} <span class="unidad">/ {{ producto.type_stock }}</span>
+                {{ producto.price }}€ <span class="unidad">/ {{ producto.type_stock }}</span>
             </div>
 
             <div class="descripcion-box">
