@@ -52,18 +52,14 @@ const obtenerDatos = async () => {
 };
 
 const productosConCategoria = computed(() => {
-  // Protección anti-crash
   if (!productos.value || !Array.isArray(productos.value)) {
     return [];
   }
 
   return productos.value.map((producto) => {
-    const categoria = categorias.value.find(
-      (c) => c.id === producto.category_id,
-    );
     return {
       ...producto,
-      category: categoria ? categoria.name : "Sin categoría",
+      category: producto.category?.name || "Sin categoría",
     };
   });
 });

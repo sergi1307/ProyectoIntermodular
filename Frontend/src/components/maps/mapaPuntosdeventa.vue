@@ -68,7 +68,7 @@
                 center: [40.4167, -3.70325],
                 zoom: 6,
                 minZoom: 5,
-                maxZoom: 19,
+                maxZoom: 18,
                 maxBounds: limitesEspaña,
         });
         
