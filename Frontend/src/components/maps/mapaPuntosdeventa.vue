@@ -78,6 +78,13 @@
 
             this.layerGroup = L.layerGroup().addTo(this.map);
 
+            this.map.on('click', (e) => {
+                this.$emit('mapa-clickeado', {
+                    latitude: e.latlng.lat,
+                    length: e.latlng.lng
+                });
+            });
+
             if (this.puntos.length > 0) {
                 this.dibujarMarcadores();
             }

@@ -1,9 +1,7 @@
 <template>
   <div class="contenedor-especifico">
     <h2>Mis Puntos de Venta</h2>
-    <p>Gestiona tus ubicaciones activas.</p>
-
-    <button @click="abrirFormulario" class="boton-nuevo">Añadir Punto de Venta</button>
+    <p>Gestiona tus ubicaciones activas. Haz click en el mapa para añadir un nuevo punto.</p>
 
     <div v-if="mostrarFormulario" class="formulario">
       <h3>Nueva Tienda</h3>
@@ -23,6 +21,7 @@
           titulo="Mis Tiendas"
           :puntos="misTiendas"
           map-id="mapaEspecifico"
+          @mapa-clickeado="clickEnMapa"
       ></mapa-tiendas>
       
       <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
@@ -95,6 +94,18 @@ export default {
             this.cargado = true;
             console.error('Error cargando tiendas:', error);
         }
+    },
+
+    clickEnMapa(coordenadas) {
+        this.modoEdicion = false;
+        this.form = {
+            id: null,
+            name: '',
+            direction: '',
+            latitude: coordenadas.latitude.toFixed(6),
+            length: coordenadas.length.toFixed(6)
+        };
+        this.mostrarFormulario = true;
     },
 
     abrirFormulario() {
