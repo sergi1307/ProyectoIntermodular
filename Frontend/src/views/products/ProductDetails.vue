@@ -125,9 +125,9 @@ onMounted(() => {
             <h1>{{ producto.nombre }}</h1>
 
             <div class="precio-grande">
-                ${{ precioTotal }} 
+                {{ precioTotal }}€ 
                 <span class="unidad">
-                    ({{ cantidadSeleccionada }} x ${{ producto.price }})
+                    ({{ cantidadSeleccionada }} x {{ producto.price }}€)
                 </span>
             </div>
 

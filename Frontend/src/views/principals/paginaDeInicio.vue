@@ -30,22 +30,22 @@
     </div>
     <div id="grid">
       <div>
-        <img src="../assets/imgs/logos/LogoUbicacion.png" alt="Logo Ubicación" width="60px">
+        <img src="../../assets/imgs/logos/LogoUbicacion.png" alt="Logo Ubicación" width="60px">
         <h4>Hiperlocal</h4>
         <p>Encuentra productos de tu vecindario. Reduce tu huella de carbono.</p>
       </div>
       <div>
-        <img src="../assets/imgs/logos/LogoSeguridad.png" alt="Logo Ubicación" width="60px">
+        <img src="../../assets/imgs/logos/LogoSeguridad.png" alt="Logo Seguridad" width="60px">
         <h4>Vendedores de Confianza</h4>
         <p>Agricultores y productores locales verificados en los que puedes confiar.</p>
       </div>
       <div>
-        <img src="../assets/imgs/logos/LogoPlanta.png" alt="Logo Ubicación" width="60px">
+        <img src="../../assets/imgs/logos/LogoPlanta.png" alt="Logo Planta" width="60px">
         <h4>Fresco y Orgánico</h4>
         <p>Productos de granja recién cosechados en su punto óptimo de maduración.</p>
       </div>
       <div>
-        <img src="../assets/imgs/logos/LogoComunidad.png" alt="Logo Ubicación" width="60px">
+        <img src="../../assets/imgs/logos/LogoComunidad.png" alt="Logo Comunidad" width="60px">
         <h4>Comunidad Primero</h4>
         <p>Apoya la economía local y construye relaciones duraderas.</p>
       </div>
@@ -64,7 +64,7 @@
     <div id="contenido">
       <div>
         <div class="empresa">
-          <img src="../assets/imgs/logoEmpresa.png" alt="Logo de empresa" width="80px">
+          <img src="../../assets/imgs/logoEmpresa.png" alt="Logo de empresa" width="80px">
           <p>ProxiMarkt</p>
         </div>
         <div>
