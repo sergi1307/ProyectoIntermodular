@@ -21,6 +21,7 @@ return new class extends Migration
         $table->unsignedInteger('id_seller');
         $table->unsignedInteger('id_delivery_point');
         $table->date('sale_date');
+        $table->integer('quantity');
         $table->double('total');
         $table->date('collection_date')->nullable();
         $table->enum('state', ['Rechazado', 'En Curso', 'Aceptado']);
