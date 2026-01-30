@@ -34,7 +34,8 @@
       data() {
           return {
               map: null,       
-              layerGroup: null 
+              layerGroup: null,
+              marcadorTemporal: null
           }
       },
       mounted() {
@@ -56,9 +57,7 @@
           }
       },
       methods: {
-        /**
-         * Inicializa el mapa de Leaflet con límites restringidos a España
-         */
+        // Inicializa el mapa con límites de España
         iniciarMapa() {
             var surOeste = L.latLng(33.0, -12.0); 
             var norteEste = L.latLng(45.0, 6.0);
@@ -78,13 +77,37 @@
 
             this.layerGroup = L.layerGroup().addTo(this.map);
 
+            // Click en el mapa para añadir nuevo punto
+            this.map.on('click', (e) => {
+                // Eliminar marcador temporal anterior si existe
+                if (this.marcadorTemporal) {
+                    this.map.removeLayer(this.marcadorTemporal);
+                }
+                
+                // Crear nuevo marcador temporal con color distintivo
+                const iconoTemporal = L.icon({
+                    iconUrl: icon,
+                    shadowUrl: iconShadow,
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    className: 'marcador-nuevo'
+                });
+                
+                this.marcadorTemporal = L.marker([e.latlng.lat, e.latlng.lng], { icon: iconoTemporal })
+                    .addTo(this.map);
+                
+                // Emitir coordenadas para abrir el formulario
+                this.$emit('mapa-clickeado', {
+                    latitude: e.latlng.lat,
+                    length: e.latlng.lng
+                });
+            });
+
             if (this.puntos.length > 0) {
                 this.dibujarMarcadores();
             }
         },
-          /**
-           * Dibuja todos los marcadores en el mapa y ajusta el zoom
-           */
+          // Dibuja marcadores en el mapa y ajusta zoom
           dibujarMarcadores() {
               this.layerGroup.clearLayers();
               const limites = [];
@@ -137,4 +160,8 @@
         z-index: 1; 
     }
     .error { color: grey; font-style: italic; padding: 10px; }
+    
+    .marcador-nuevo {
+        filter: hue-rotate(100deg) brightness(1.3);
+    }
     </style>

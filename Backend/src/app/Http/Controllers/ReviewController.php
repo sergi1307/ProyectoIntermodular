@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Sale;
 
 class ReviewController extends Controller
 {
@@ -119,5 +120,22 @@ class ReviewController extends Controller
         return response()-> json([
             'message' => 'Venta eliminada'
         ], 200);
+    }
+    /**
+     * Función para obtener las reviews de un producto
+     *
+     * @param numeric $productId
+     * @return json
+     */
+    public function obtenerPorProducto($productId)
+    {
+        $ventasIds = Sale::where('id_product', $productId)->pluck('id_sale');
+    
+        $reviews = Review::whereIn('id_sale', $ventasIds)
+        ->with('sales.buyer:id_user,name')
+        ->orderBy('review_date', 'desc')
+        ->get();
+    
+    return response()->json($reviews, 200);
     }
 }
