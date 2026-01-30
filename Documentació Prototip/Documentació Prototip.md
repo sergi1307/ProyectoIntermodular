@@ -2,8 +2,6 @@
 ## Index
 - [Prototip](#prototip)
     + [Index](#index)
-    + [Tecnologies utilitzades per al prototip](#tecnologies-utilitzades-per-al-prototip)
-        * [Figma](#figma)
     + [Resum](#resum)
         * [Pantalla principal](#pantalla-principal)
         * [Pantalla de login](#pantalla-de-login)
@@ -13,16 +11,6 @@
                 + [Control de l'inventari](#control-dinventari)
                 + [Ordres](#ordres)
     + [Conclusio](#conclusió)
-    
-## Tecnologies utilitzades per al prototip
-### Figma
-<p align= "center">
-    <img src="./img/Logos/Figma.png" alt="Figma" width="300"/>
- </p>
-<p align="center"><em>Fig 1: Logo de Figma</em></p> 
-Figma, desenvolupat per Dylan Field i Evan Wallace començaren a treballar en Figma en 2012 i el van llançar el 27 de setembre de 2016 és un editor de gràfics vectorial i una ferramenta de generació de prototips, principalment basada en la web, amb característiques “off-line” addicionals habilitades per aplicacions d’escriptori en macOS i Windows.
-
-Hem utilitzat Figma únicament per a fer el prototip de l'aplicació. Ens va servir per a planificar el disseny visual abans de començar a programar l’aplicació, i assegurar-mon que l’estructura i els estils quedaren clars.
 
 ## Resum
 Este document es tracta de documentar sobre el prototip de l'aplicació de `ProxiMarkt`, la qual consta dels següents apartats:
