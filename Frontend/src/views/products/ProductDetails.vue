@@ -122,7 +122,7 @@ onMounted(() => {
                 </span>
             </div>
 
-            <h1>{{ producto.nombre }}</h1>
+            <h1>{{ producto.name }}</h1>
 
             <div class="precio-grande">
                 {{ precioTotal }}€ 
