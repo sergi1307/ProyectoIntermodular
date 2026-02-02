@@ -132,7 +132,7 @@ class ReviewController extends Controller
         $ventasIds = Sale::where('id_product', $productId)->pluck('id_sale');
     
         $reviews = Review::whereIn('id_sale', $ventasIds)
-        ->with('sales.buyer:id_user,name')
+        ->with('sale.buyer:id_user,name')
         ->orderBy('review_date', 'desc')
         ->get();
     
