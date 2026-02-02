@@ -125,6 +125,12 @@
                               this.$emit('tienda-elegida', punto.id);
                               marcador.openPopup();
                           });
+                      } else if (!this.esEditable) {
+                          // Modo visualización: emitir evento para mostrar productos
+                          marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}<br><em>Click para ver productos</em>`);
+                          marcador.on('click', () => {
+                              this.$emit('punto-seleccionado', punto);
+                          });
                       } else {
                           marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}`);
                       }

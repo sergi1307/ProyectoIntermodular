@@ -36,6 +36,7 @@ Route::prefix('categories')->name('categories.')->group(function (){
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/', [Delivery_pointController::class, 'index'])->name('index');
     Route::get('/myPoints', [Delivery_pointController::class, 'myPoints'])->name('myPoints');
+    Route::get('/{id}/products', [Delivery_pointController::class, 'getProducts'])->name('products');
 });
 
 Route::prefix('reviews')->name('reviews.')->group(function (){
