@@ -43,6 +43,7 @@ class Product extends Model
     // Definimos los campos que no son texto
     protected $casts = [
         'price' => 'double',
+        'publication_date' => 'date'
     ];
 
     // Función para obtener el usuario al que pertenece el producto
@@ -67,5 +68,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'id_category', 'id_category');
+    }
+
+    // Función para obtener los mensajes del producto
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'id_product');
     }
 }
