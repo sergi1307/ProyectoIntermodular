@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Delivery_Point;
+use App\Models\Product;
 
 class Delivery_pointController extends Controller
 {
@@ -141,5 +142,23 @@ class Delivery_pointController extends Controller
         return response()-> json([
             'message' => 'punto de venta eliminado'
         ], 200);
+    }
+
+    /**
+     * Función para obtener los productos de un punto de venta
+     *
+     * @param numeric $id
+     * @return json
+     */
+    public function getProducts($id)
+    {
+        // Obtenemos todos los productos del delivery point que están disponibles
+        $products = Product::where('id_delivery_point', $id)
+                          ->where('state', 'Disponible')
+                          ->with(['category:id_category,name', 'user:id_user,name'])
+                          ->get();
+
+        // Devolvemos la respuesta en formato json
+        return response()->json($products, 200);
     }
 }
