@@ -22,7 +22,7 @@ class ReviewController extends Controller
         // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'id_sale' => 'required|integer|exists:sales,id_sale',
-            'calification' => 'required|integer',
+            'calification' => 'required|numeric|min:0|max:5|regex:/^[0-5](\.[05])?$/',
             'comment' => 'required'
         ]);
 
@@ -85,7 +85,7 @@ class ReviewController extends Controller
         // Validamos los datos antes de introducirlos en la base de datos
         $validated = $request->validate([
             'id_sale' => 'required|exists:sales,id_sale',
-            'calification' => 'required|integer',
+            'calification' => 'required|numeric|min:0|max:5|regex:/^[0-5](\.[05])?$/',
             'comment' => 'required'
         ]);
 

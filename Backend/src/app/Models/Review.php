@@ -29,6 +29,11 @@ class Review extends Model
         'id_sale',
     ];
 
+    // Convertir calification a float automáticamente
+    protected $casts = [
+        'calification' => 'float',
+    ];
+
     // Función para obtener la venta de la review
     public function sale()
     {
