@@ -1,6 +1,6 @@
 @url = http://localhost:8080/api
 # Pega tu token aquí abajo
-@token = 3|ZXWEF6KKaV4ukuIAnGSegCV8BgVnT6nguTQu10MWe8206e31
+@token = 9|8lw7QFxqGQL4tGKfJBr881CzKK6nuPzjxKQ5h6vz107ee172
 
 ### ------------------------------------------------------------------------
 ### 1. ARRANQUE (Auth)
@@ -50,7 +50,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "id_user": 1,
+    "id_user": 3,
     "name": "Mi Casa",
     "direction": "Calle Falsa 123",
     "latitude": 39.4,
@@ -149,7 +149,41 @@ Accept: application/json
 }
 
 ### ------------------------------------------------------------------------
-### 6. SALIDA
+### 6. MENSAJERÍA (Nuevo)
+### ------------------------------------------------------------------------
+
+### Enviar Mensaje
+# Nota: id_receiver debe ser otro usuario. Si eres el usuario 1, pon 2.
+POST {{url}}/messages
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_product": 1,
+    "id_receiver": 2, 
+    "content": "Hola, ¿sigue disponible la manzana?"
+}
+
+### Ver Bandeja de Entrada (Inbox)
+GET {{url}}/messages/inbox
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Ver Conversación Específica
+# Debes pasar el id_product y el id del otro usuario
+GET {{url}}/messages/conversation?id_product=1&id_user_chat=2
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Borrar un mensaje
+# Cambia el ID (10) por el ID real del mensaje que creaste
+DELETE {{url}}/messages/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### ------------------------------------------------------------------------
+### 7. SALIDA
 ### ------------------------------------------------------------------------
 
 ### Cerrar sesión
