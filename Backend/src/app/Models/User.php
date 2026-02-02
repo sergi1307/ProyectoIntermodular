@@ -70,4 +70,16 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class, 'id_user', 'id_user');
     }
 
+    // Mensajes que el usuario ha vendido
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'id_transmitter');
+    }
+
+    // Mensajes que ha recibido el usuario
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'id_receiver');
+    }
+
 }
