@@ -2,9 +2,6 @@
     <div class="contenedor-mapa tarjeta-mapa">
       <h3>{{ titulo }}</h3>
       <div :id="mapId"></div>
-      <p v-if="puntos.length === 0" class="error">
-          Esperando datos de ubicación...
-      </p>
     </div>
   </template>
   
@@ -29,6 +26,7 @@
           puntos: { type: Array, required: true },
           titulo: { type: String, default: 'Mapa' },
           esSeleccionable: { type: Boolean, default: false },
+          esEditable: { type: Boolean, default: false },
           mapId: { type: String, default: 'mapa-leaflet' }
       },
       data() {
@@ -77,33 +75,36 @@
 
             this.layerGroup = L.layerGroup().addTo(this.map);
 
-            // Click en el mapa para añadir nuevo punto
-            this.map.on('click', (e) => {
-                // Eliminar marcador temporal anterior si existe
-                if (this.marcadorTemporal) {
-                    this.map.removeLayer(this.marcadorTemporal);
-                }
-                
-                // Crear nuevo marcador temporal con color distintivo
-                const iconoTemporal = L.icon({
-                    iconUrl: icon,
-                    shadowUrl: iconShadow,
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    className: 'marcador-nuevo'
+            // Click en el mapa para añadir nuevo punto (solo si es editable)
+            if (this.esEditable) {
+                this.map.on('click', (e) => {
+                    // Eliminar marcador temporal anterior si existe
+                    if (this.marcadorTemporal) {
+                        this.map.removeLayer(this.marcadorTemporal);
+                    }
+                    
+                    // Crear nuevo marcador temporal con color distintivo
+                    const iconoTemporal = L.icon({
+                        iconUrl: icon,
+                        shadowUrl: iconShadow,
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        className: 'marcador-nuevo'
+                    });
+                    
+                    this.marcadorTemporal = L.marker([e.latlng.lat, e.latlng.lng], { icon: iconoTemporal })
+                        .addTo(this.map);
+                    
+                    // Emitir coordenadas para abrir el formulario
+                    this.$emit('mapa-clickeado', {
+                        latitude: e.latlng.lat,
+                        length: e.latlng.lng
+                    });
                 });
-                
-                this.marcadorTemporal = L.marker([e.latlng.lat, e.latlng.lng], { icon: iconoTemporal })
-                    .addTo(this.map);
-                
-                // Emitir coordenadas para abrir el formulario
-                this.$emit('mapa-clickeado', {
-                    latitude: e.latlng.lat,
-                    length: e.latlng.lng
-                });
-            });
+            }
 
-            if (this.puntos.length > 0) {
+            // Dibujar marcadores si existen
+            if (this.puntos && this.puntos.length > 0) {
                 this.dibujarMarcadores();
             }
         },

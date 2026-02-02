@@ -48,6 +48,7 @@ const cerrarSesion = async () => {
         <div class="subMenu">
           <button @click="cerrarSesion">Cerrar Sesión</button>
           <router-link to="/mis-compras">Mis Compras</router-link>
+          <router-link to="/mis-tiendas">Mis Tiendas</router-link>
         </div>
       </div>
 
