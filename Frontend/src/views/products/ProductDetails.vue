@@ -44,6 +44,24 @@ const validarCantidad = () => {
     }
 };
 
+const contactarVendedor = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("Debes iniciar sesión para chatear.");
+        return;
+    }
+
+    router.push({
+        path: '/chat', 
+        query: {
+            prodId: producto.value.id_product,
+            prodName: producto.value.name,
+            userId: producto.value.user.id_user,
+            userName: producto.value.user.name
+        }
+    });
+};
+
 const realizarCompra = async () => {
     const usuarioStored = localStorage.getItem('user');
     const token = localStorage.getItem('token'); 
@@ -165,14 +183,26 @@ onMounted(() => {
                     <small class="stock-hint">Máximo {{ producto.stock }} unidades</small>
                 </div>
 
-                <button 
-                    @click="realizarCompra" 
-                    class="btn-comprar"
-                    :disabled="producto.stock <= 0"
-                    :class="{ 'agotado': producto.stock <= 0 }"
-                >
-                    {{ producto.stock > 0 ? `Comprar por $${precioTotal}` : 'Sin Stock Disponible' }}
-                </button>
+                <div class="botones-grupo">
+                    
+                    <button 
+                        @click="contactarVendedor" 
+                        class="btn-chat"
+                        title="Contactar con el vendedor"
+                    >
+                        💬 Chat
+                    </button>
+
+                    <button 
+                        @click="realizarCompra" 
+                        class="btn-comprar"
+                        :disabled="producto.stock <= 0"
+                        :class="{ 'agotado': producto.stock <= 0 }"
+                    >
+                        {{ producto.stock > 0 ? `Comprar` : 'Sin Stock' }}
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -186,6 +216,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 .detalle-container {
     max-width: 1200px;
     margin: 20px auto;
@@ -301,20 +332,45 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     margin-top: 5px;
 }
 
+
+.botones-grupo {
+    display: flex; 
+    gap: 10px;     
+    margin-top: 10px;
+}
+
 .btn-comprar {
     background-color: #1a4d2e;
     color: white;
     border: none;
-    padding: 18px 30px;
+    padding: 15px 20px;
     font-size: 1.1em;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
+    flex-grow: 2; 
     font-weight: bold;
     transition: all 0.2s;
 }
 .btn-comprar:hover:not(:disabled) { background-color: #143a22; }
+
+.btn-chat {
+    background-color: #007bff; 
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-grow: 1; 
+    font-weight: bold;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.btn-chat:hover { background-color: #0056b3; }
+
 
 .btn-comprar.agotado {
     background-color: #ccc;

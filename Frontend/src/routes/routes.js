@@ -5,6 +5,7 @@ import mapaGeneral from '../views/maps/mapaGeneral.vue';
 import general from '../views/principals/general.vue';
 import compras from '../views/principals/compras.vue';
 import ProductDetails from '../views/products/ProductDetails.vue';
+import message from '../views/message/message.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -52,7 +53,12 @@ const routes = [
         name: 'mis-compras',
         component: compras,
         meta: { comprador: true }
-    }
+    },
+     {
+        path: '/message',
+        name: 'message',
+        component: message
+    },
 ];
 
 const router = createRouter({
