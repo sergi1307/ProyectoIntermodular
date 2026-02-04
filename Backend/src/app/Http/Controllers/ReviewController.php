@@ -134,7 +134,7 @@ class ReviewController extends Controller
         $reviews = Review::whereIn('id_sale', $ventasIds)
         ->with('sale.buyer:id_user,name')
         ->orderBy('review_date', 'desc')
-        ->get();
+        ->paginate(10);
     
     return response()->json($reviews, 200);
     }
