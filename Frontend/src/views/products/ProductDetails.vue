@@ -9,9 +9,12 @@ const route = useRoute();
 const router = useRouter();
 const producto = ref(null);
 const review = ref(null);
+const ventasUsuario = ref([]);
 const cargando = ref(true);
 const error = ref(null);
+const ReviewsProducto = ref([]);
 const rating = ref(0);
+const reviewComment = ref('');
 
 const cantidadSeleccionada = ref(1);
 
@@ -92,23 +95,81 @@ const realizarCompra = async () => {
         alert(mensaje);
     }
 };
-const realizarReview = async () =>{
-    const usuarioStored = localStorage.getItem('user');
-    const token = localStorage.getItem('token'); 
+const obtenerVentasUsuario = async () => {
+    const token = localStorage.getItem('token')
 
-    if (!usuarioStored || !token) {
-        alert("Debes iniciar sesión para realizar una compra.");
-        return;
+    const response = await axios.get(
+        'http://localhost:8080/api/sales/my-purchases',
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    ventasUsuario.value = response.data
+}
+
+const obtenerVentaDelProducto = () => {
+    return ventasUsuario.value.find(
+        sale =>
+            Number(sale.product?.id_product) === Number(producto.value.id_product)
+    )
+}
+
+const obtenerReviewsProducto = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/reviews/producto/${producto.value.id_product}`
+    );
+    ReviewsProducto.value = response.data; // <-- Esto debe ser todo el paginador
+    console.log("ReviewsProducto:", ReviewsProducto.value)
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+const realizarReview = async () => {
+    const usuario = JSON.parse(localStorage.getItem('user'))
+    const token = localStorage.getItem('token')
+
+    if (!usuario || !token) {
+        alert('Debes iniciar sesión')
+        return
+    }
+
+    const venta = obtenerVentaDelProducto()
+
+    if (!venta) {
+        alert('Debes haber comprado este producto para dejar una review')
+        return
     }
 
     const datosReview = {
-        id_sale: review.value.id_sale,
-        calification: review.value.calificacion,
-        comment: review.value.comment,
-    };
+        id_sale: venta.id_sale,
+        calification: rating.value,
+        comment: reviewComment.value
+    }
+
+    await axios.post(
+        'http://localhost:8080/api/reviews/store',
+        datosReview,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    alert('Review enviada correctamente')
 }
 onMounted(() => {
     obtenerDetalleProducto();
+    obtenerVentasUsuario();
+    watch(producto, (newVal) => {
+        if(newVal) obtenerReviewsProducto();
+    });
 });
 </script>
 
@@ -198,13 +259,17 @@ onMounted(() => {
                 <p>Valoración: {{ rating }}</p>
                 <form>
                     <label for="comment">Escribe un comentario sobre el producto:</label><br>
-                    <textarea name="comment" rows="10" cols="30" ></textarea required><br>
-                    <button type="submit" class="btn-review">Enviar Valoracion</button>
+                    <textarea 
+                    id="comment"
+                    v-model="reviewComment"
+                    rows="5"
+                    placeholder="Opinion del producto..."  
+                    ></textarea><br>
+                    <button type="button" @click="realizarReview" class="btn-review">Enviar Valoracion</button>
                 </form>
         </div>
-        <Review></Review>
+        <Review :reviewsData="ReviewsProducto" :productId="producto.id_product" />
     </div>
-
     <div v-else class="error-msg">
         <h3>Error</h3>
         <p>{{ error }}</p>
