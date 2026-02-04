@@ -204,6 +204,10 @@
                         </div>
                         
                         <p id="granja">{{ producto.delivery_point.name }}</p>
+                        <div class="rating">
+                            <span class="rating-number">4.5</span>
+                            <span class="star">★</span>
+                        </div>
 
                         <div id="footer-tarjeta">
                             <span id="distancia" @click.stop>
@@ -515,6 +519,23 @@
                         color: #888;
                         font-size: 0.9rem;
                         margin-bottom: 15px;
+                    }
+                    .rating {
+                      display: flex;
+                      align-items: center;
+                      gap: 4px;        
+                      font-size: 0.95rem;
+                    }
+
+                    .star {
+                        font-size: 1.2rem;
+                        color: gold;
+                    }
+
+                    .rating-number {
+                        font-size: 1.2rem;
+                        color: #555;    
+                        font-weight: 500;
                     }
 
                     #footer-tarjeta {

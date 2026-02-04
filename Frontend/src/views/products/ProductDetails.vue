@@ -1,13 +1,17 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, Comment } from 'vue';
 import { useRoute, useRouter } from 'vue-router'; 
+import starRating from "../../components/ratings/starRating.vue";
 import axios from 'axios';
+import Review from '@/components/reviews/Review.vue';
 
 const route = useRoute();
 const router = useRouter();
 const producto = ref(null);
+const review = ref(null);
 const cargando = ref(true);
 const error = ref(null);
+const rating = ref(0);
 
 const cantidadSeleccionada = ref(1);
 
@@ -79,7 +83,7 @@ const realizarCompra = async () => {
         });
 
         if (response.data.status === 'true' || response.status === 200) {
-            alert(`¡Compra realizada con éxito! Has comprado ${cantidadSeleccionada.value} unidad(es) por $${precioTotal.value}`);
+            alert(`¡Compra realizada con éxito! Has comprado ${cantidadSeleccionada.value} unidad(es) por ${precioTotal.value}€`);
             obtenerDetalleProducto(); 
         }
     } catch (err) {
@@ -88,7 +92,21 @@ const realizarCompra = async () => {
         alert(mensaje);
     }
 };
+const realizarReview = async () =>{
+    const usuarioStored = localStorage.getItem('user');
+    const token = localStorage.getItem('token'); 
 
+    if (!usuarioStored || !token) {
+        alert("Debes iniciar sesión para realizar una compra.");
+        return;
+    }
+
+    const datosReview = {
+        id_sale: review.value.id_sale,
+        calification: review.value.calificacion,
+        comment: review.value.comment,
+    };
+}
 onMounted(() => {
     obtenerDetalleProducto();
 });
@@ -98,7 +116,7 @@ onMounted(() => {
   <div class="detalle-container">
     
     <button @click="volver" class="btn-volver">
-        ← Volver al listado
+        &larr; Volver al listado
     </button>
     
     <div v-if="cargando" class="loading">Cargando datos del producto...</div>
@@ -114,9 +132,6 @@ onMounted(() => {
                 <span v-if="producto.category && producto.category.name" class="tag">
                     {{ producto.category.name }}
                 </span>
-                <span v-else-if="producto.categoria && producto.categoria.nombre" class="tag">
-                    {{ producto.categoria.nombre }}
-                </span>
                 <span v-else-if="producto.category_name" class="tag">
                     {{ producto.category_name }}
                 </span>
@@ -129,6 +144,11 @@ onMounted(() => {
                 <span class="unidad">
                     ({{ cantidadSeleccionada }} x {{ producto.price }}€)
                 </span>
+            </div>
+
+            <div class="calificacion">
+                <span class="rating-number">4.5</span>
+                <starRating :modelValue="4.5" readonly />
             </div>
 
             <div class="descripcion-box">
@@ -171,10 +191,18 @@ onMounted(() => {
                     :disabled="producto.stock <= 0"
                     :class="{ 'agotado': producto.stock <= 0 }"
                 >
-                    {{ producto.stock > 0 ? `Comprar por $${precioTotal}` : 'Sin Stock Disponible' }}
+                    {{ producto.stock > 0 ? `Comprar por ${precioTotal}€` : 'Sin Stock Disponible' }}
                 </button>
             </div>
+                <starRating v-model="rating" />
+                <p>Valoración: {{ rating }}</p>
+                <form>
+                    <label for="comment">Escribe un comentario sobre el producto:</label><br>
+                    <textarea name="comment" rows="10" cols="30" ></textarea required><br>
+                    <button type="submit" class="btn-review">Enviar Valoracion</button>
+                </form>
         </div>
+        <Review></Review>
     </div>
 
     <div v-else class="error-msg">
@@ -201,6 +229,19 @@ onMounted(() => {
     margin-bottom: 20px;
 }
 .btn-volver:hover { text-decoration: underline; }
+
+.btn-review{
+    background-color: #1a4d2e;
+    color: white;
+    border: none;
+    padding: 18px 30px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
 
 .loading, .error-msg {
     text-align: center;
@@ -252,6 +293,18 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
 
 .precio-grande { font-size: 2.2em; color: #1a4d2e; font-weight: bold; }
 .unidad { font-size: 0.5em; color: #666; font-weight: normal; }
+
+.calificacion {
+    display: flex;
+    align-items: center;
+    gap: 4px;        
+    font-size: 0.95rem;
+}
+.rating-number {
+    font-size: 1.5em;
+    color: #1a4d2e;  
+    font-weight: 500;
+}
 
 .descripcion-box {
     background-color: #f9f7f2;
