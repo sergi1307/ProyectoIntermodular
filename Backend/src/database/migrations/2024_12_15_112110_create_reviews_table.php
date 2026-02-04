@@ -17,7 +17,7 @@ return new class extends Migration
     Schema::create('reviews', function (Blueprint $table) {
         $table->increments('id_review');
         $table->unsignedInteger('id_sale');
-        $table->enum('calification', [1,2,3,4,5]);
+        $table->decimal('calification', 2, 1)->unsigned();
         $table->text('comment');
         $table->date('review_date');
 

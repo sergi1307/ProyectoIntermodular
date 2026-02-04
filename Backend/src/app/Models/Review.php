@@ -29,9 +29,14 @@ class Review extends Model
         'id_sale',
     ];
 
-    // Función para obtener las ventas de la review
-    public function sales()
+    // Convertir calification a float automáticamente
+    protected $casts = [
+        'calification' => 'float',
+    ];
+
+    // Función para obtener la venta de la review
+    public function sale()
     {
-        return $this->hasMany(Sale::class, 'id_review', 'id_review');
+        return $this->belongsTo(Sale::class, 'id_sale', 'id_sale');
     }
 }

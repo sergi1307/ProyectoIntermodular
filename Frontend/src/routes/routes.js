@@ -2,6 +2,7 @@ import PaginaPrincipal from '../views/principals/paginaDeInicio.vue';
 import login from '../views/principals/login.vue';
 import products from '../views/products/dashboard.vue';
 import mapaGeneral from '../views/maps/mapaGeneral.vue';
+import mapaEspecifico from '../views/maps/mapaEspecifico.vue';
 import general from '../views/principals/general.vue';
 import compras from '../views/principals/compras.vue';
 import ProductDetails from '../views/products/ProductDetails.vue';
@@ -32,6 +33,12 @@ const routes = [
         meta: { comprador: true }
     },
     {
+        path: '/mis-tiendas',
+        name: 'mis-tiendas',
+        component: mapaEspecifico,
+        meta: { vendedor: true }
+    },
+    {
         path: '/general',
         name: 'general',
         component: general,
@@ -43,7 +50,7 @@ const routes = [
         component: products
     },
     {
-        path: '/product-details/:id', 
+        path: '/product-details/:id',
         name: 'product-details',
         component: ProductDetails,
         props: true

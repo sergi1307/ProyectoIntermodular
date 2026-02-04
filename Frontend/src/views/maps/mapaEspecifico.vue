@@ -17,14 +17,15 @@
 
     <div class="area-mapa">
       <mapa-tiendas 
-          v-if="cargado && misTiendas.length > 0"
-          titulo="Mis Tiendas"
+          v-if="cargado"
+          titulo="Mis Tiendas - Haz click en el mapa para añadir un punto"
           :puntos="misTiendas"
+          :es-editable="true"
           map-id="mapaEspecifico"
           @mapa-clickeado="clickEnMapa"
       ></mapa-tiendas>
       
-      <div v-else-if="!cargado" class="cargando">Cargando mapa...</div>
+      <div v-else class="cargando">Cargando mapa...</div>
     </div>
 
     <div v-if="cargado && misTiendas.length > 0" class="lista">
