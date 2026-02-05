@@ -39,10 +39,12 @@ Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
     Route::get('/{id}/products', [Delivery_pointController::class, 'getProducts'])->name('products');
 });
 
+
 Route::prefix('reviews')->name('reviews.')->group(function (){
     Route::get('/', [ReviewController::class, 'index'])->name('index');
     Route::get('/show/{id}', [ReviewController::class, 'show'])->name('show');
     Route::get('/producto/{productId}', [ReviewController::class, 'obtenerPorProducto'])->name('producto');
+    Route::get('/producto/{productId}/media', [ReviewController::class, 'obtenerMediaPorProducto'])->name('media');
 });
 
 
