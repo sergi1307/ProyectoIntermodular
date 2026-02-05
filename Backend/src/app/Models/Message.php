@@ -13,6 +13,8 @@ class Message extends Model
     // Obtenemos la table messages
     protected $table = 'messages';
 
+    protected $primaryKey = 'id_message';
+
     // Definimos la tabla que se pueden llenar
     protected $fillable = [
         'id_product',
@@ -22,12 +24,6 @@ class Message extends Model
         'shipping_date'
     ];
 
-    // Definimos los campos ocultos
-    protected $hidden = [
-        'id_product',
-        'id_transmitter',
-        'id_receiver'
-    ];
 
     // Definimos los campos que no son textos
     protected $casts = [

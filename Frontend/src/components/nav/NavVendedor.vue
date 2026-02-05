@@ -32,9 +32,9 @@ const cerrarSesion = async () => {
       
       <router-link to="/general" class="link-modo">&larr; Volver</router-link>
 
-      <button class="icono-btn">
+      <router-link to="message"><button class="icono-btn">
         <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
-      </button>
+      </button></router-link>
 
       <button class="icono-btn">
         <img src="../../assets/icons/carrito.png" alt="Carrito" />
