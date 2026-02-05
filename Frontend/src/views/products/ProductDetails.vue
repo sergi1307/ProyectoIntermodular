@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router'; 
 import axios from 'axios';
 
@@ -31,7 +31,7 @@ const obtenerDetalleProducto = async () => {
         
         cantidadSeleccionada.value = 1;
     } catch (err) {
-        console.error("Error al cargar:", err);
+        console.error(err);
         error.value = "No se pudo cargar el producto.";
         cargando.value = false;
     }
@@ -41,6 +41,50 @@ const validarCantidad = () => {
     if (producto.value) {
         if (cantidadSeleccionada.value < 1) cantidadSeleccionada.value = 1;
         if (cantidadSeleccionada.value > producto.value.stock) cantidadSeleccionada.value = producto.value.stock;
+    }
+};
+
+const contactarVendedor = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("Debes iniciar sesión para chatear.");
+        return;
+    }
+
+    console.log("Iniciando chat con:", producto.value.user.name);
+
+    const primerMensaje = {
+        id_product: producto.value.id_product,
+        id_receiver: producto.value.user.id_user,
+        content: `Hola, estoy interesado en tu producto: ${producto.value.name}`
+    };
+
+    try {
+        await axios.post("http://localhost:8080/api/messages/", primerMensaje, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        console.log("Chat creado con éxito. Redirigiendo...");
+
+        router.push({
+            path: '/message', 
+            query: {
+                prodId: producto.value.id_product,
+                userId: producto.value.user.id_user,
+                prodName: producto.value.name,
+                userName: producto.value.user.name
+            }
+        });
+
+    } catch (error) {
+        console.error("Error al crear chat:", error);
+        if (error.response) {
+             alert(`Error del servidor: ${JSON.stringify(error.response.data)}`);
+        } else {
+             alert("No se pudo conectar con el servidor.");
+        }
     }
 };
 
@@ -68,8 +112,6 @@ const realizarCompra = async () => {
         quantity: cantidadSeleccionada.value,
     };
 
-    console.log("Enviando compra:", datosVenta);
-
     try {
         const response = await axios.post("http://localhost:8080/api/sales/store", datosVenta, {
             withCredentials: true,
@@ -83,7 +125,7 @@ const realizarCompra = async () => {
             obtenerDetalleProducto(); 
         }
     } catch (err) {
-        console.error("Error en la venta:", err);
+        console.error(err);
         const mensaje = err.response?.data?.message || "Error al procesar la compra";
         alert(mensaje);
     }
@@ -165,14 +207,25 @@ onMounted(() => {
                     <small class="stock-hint">Máximo {{ producto.stock }} unidades</small>
                 </div>
 
-                <button 
-                    @click="realizarCompra" 
-                    class="btn-comprar"
-                    :disabled="producto.stock <= 0"
-                    :class="{ 'agotado': producto.stock <= 0 }"
-                >
-                    {{ producto.stock > 0 ? `Comprar por $${precioTotal}` : 'Sin Stock Disponible' }}
-                </button>
+                <div class="botones-grupo">
+                    <button 
+                        @click="contactarVendedor" 
+                        class="btn-chat"
+                        title="Contactar con el vendedor"
+                    >
+                        💬 Chat
+                    </button>
+
+                    <button 
+                        @click="realizarCompra" 
+                        class="btn-comprar"
+                        :disabled="producto.stock <= 0"
+                        :class="{ 'agotado': producto.stock <= 0 }"
+                    >
+                        {{ producto.stock > 0 ? `Comprar` : 'Sin Stock' }}
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -301,20 +354,43 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     margin-top: 5px;
 }
 
+.botones-grupo {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .btn-comprar {
     background-color: #1a4d2e;
     color: white;
     border: none;
-    padding: 18px 30px;
+    padding: 15px 20px;
     font-size: 1.1em;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
+    flex-grow: 2;
     font-weight: bold;
     transition: all 0.2s;
 }
 .btn-comprar:hover:not(:disabled) { background-color: #143a22; }
+
+.btn-chat {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-grow: 1;
+    font-weight: bold;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.btn-chat:hover { background-color: #0056b3; }
 
 .btn-comprar.agotado {
     background-color: #ccc;

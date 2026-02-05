@@ -122,4 +122,4 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
 
-});
+}); 
