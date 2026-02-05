@@ -3,174 +3,216 @@ import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
 
-const bandeja = ref([]);
-const mensajesChat = ref([]);
-const chatActivo = ref(null);
-const nuevoMensaje = ref("");
-const route = useRoute();
-const intervalId = ref(null);
 
-const getMyId = () => {
+// Almacena la lista de todas las conversaciones abiertas
+const listaDeConversaciones = ref([]);
+
+// Almacena los mensajes específicos del chat que se está viendo ahora mismo
+const mensajesDelChatActual = ref([]);
+
+// Guarda la información de la conversación seleccionada 
+const conversacionActiva = ref(null);
+
+// El texto que el usuario está escribiendo en el input
+const textoNuevoMensaje = ref("");
+
+// Identificador para el temporizador que actualiza los mensajes automáticamente
+const idIntervaloActualizacion = ref(null);
+
+const route = useRoute();
+
+
+// Obtiene el ID numérico del usuario actual
+const obtenerMiIdDeUsuario = () => {
     try {
         const userStr = localStorage.getItem('user');
         if (!userStr) return 0;
         const user = JSON.parse(userStr);
+        // Devuelve el id_user asegurándose de que sea un número
         return Number(user.id_user || user.id);
     } catch (e) {
         return 0;
     }
 };
 
-const getSenderId = (msg) => {
-    if (msg.id_transmitter) return Number(msg.id_transmitter);
-    if (msg.transmitter && msg.transmitter.id_user) return Number(msg.transmitter.id_user);
+// Determina quién envió un mensaje específico
+const obtenerIdDelRemitente = (mensaje) => {
+    if (mensaje.id_transmitter) return Number(mensaje.id_transmitter);
+    if (mensaje.transmitter && mensaje.transmitter.id_user) return Number(mensaje.transmitter.id_user);
     return 0;
 };
 
-const getToken = () => localStorage.getItem("token");
+// Recupera el token de seguridad para las peticiones API
+const obtenerTokenAuth = () => localStorage.getItem("token");
 
-const getPartnerInfo = (chat) => {
-    const myId = getMyId();
-    const senderId = getSenderId(chat);
+// Analiza un objeto de chat y devuelve los datos de la otra persona
+// Esto sirve para mostrar el nombre correcto en la lista lateral
+const obtenerDatosDelInterlocutor = (chat) => {
+    const miId = obtenerMiIdDeUsuario();
+    const idRemitente = obtenerIdDelRemitente(chat);
     
-    const receiverId = chat.receiver ? chat.receiver.id_user : chat.id_receiver;
-    const transmitterId = chat.transmitter ? chat.transmitter.id_user : chat.id_transmitter;
+    // Extraemos posibles IDs y Nombres dependiendo de la estructura de la respuesta
+    const idReceptor = chat.receiver ? chat.receiver.id_user : chat.id_receiver;
+    const idTransmisor = chat.transmitter ? chat.transmitter.id_user : chat.id_transmitter;
     
-    const receiverName = chat.receiver ? chat.receiver.name : (chat.receiver_name || 'Usuario');
-    const transmitterName = chat.transmitter ? chat.transmitter.name : (chat.transmitter_name || 'Usuario');
+    const nombreReceptor = chat.receiver ? chat.receiver.name : (chat.receiver_name || 'Usuario');
+    const nombreTransmisor = chat.transmitter ? chat.transmitter.name : (chat.transmitter_name || 'Usuario');
 
-    if (senderId === myId) {
-        return { id: Number(receiverId), name: receiverName };
+    // Si yo fui el que envió el último mensaje, el interlocutor es el Receptor.
+    // Si no, el interlocutor es el Transmisor.
+    if (idRemitente === miId) {
+        return { id: Number(idReceptor), name: nombreReceptor };
     } else {
-        return { id: Number(transmitterId), name: transmitterName };
+        return { id: Number(idTransmisor), name: nombreTransmisor };
     }
 };
 
-const scrollToBottom = () => {
+// Fuerza el scroll de la ventana de chat hacia abajo para ver el último mensaje
+const desplazarScrollAlFinal = () => {
     nextTick(() => {
-        const el = document.querySelector('.msgs-body');
-        if (el) el.scrollTop = el.scrollHeight;
+        const elementoChat = document.querySelector('.msgs-body');
+        if (elementoChat) elementoChat.scrollTop = elementoChat.scrollHeight;
     });
 };
 
-const fetchBandeja = async () => {
+// Pide al servidor la lista general de chats (Bandeja de entrada)
+const cargarBandejaDeEntrada = async () => {
     try {
-        const res = await axios.get("http://localhost:8080/api/messages/inbox", {
-            headers: { Authorization: `Bearer ${getToken()}` }
+        const respuesta = await axios.get("http://localhost:8080/api/messages/inbox", {
+            headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
         
-        if (res.data.bandeja) {
-            bandeja.value = res.data.bandeja;
+        if (respuesta.data.bandeja) {
+            listaDeConversaciones.value = respuesta.data.bandeja;
         }
-    } catch (e) {
-        console.error(e);
+    } catch (error) {
+        console.error("Error al cargar la bandeja:", error);
     }
 };
 
-const fetchConversacion = async (prodId, otherUserId) => {
+// Pide al servidor todos los mensajes de una conversación específica
+const cargarHistorialDeMensajes = async (idProducto, idOtroUsuario) => {
     try {
-        const res = await axios.get("http://localhost:8080/api/messages/conversation", {
-            headers: { Authorization: `Bearer ${getToken()}` },
+        const respuesta = await axios.get("http://localhost:8080/api/messages/conversation", {
+            headers: { Authorization: `Bearer ${obtenerTokenAuth()}` },
             params: {
-                id_product: prodId,
-                id_user_chat: otherUserId
+                id_product: idProducto,
+                id_user_chat: idOtroUsuario
             }
         });
 
-        if (res.data.messages) {
-            mensajesChat.value = res.data.messages;
-            scrollToBottom();
+        if (respuesta.data.messages) {
+            mensajesDelChatActual.value = respuesta.data.messages;
+            desplazarScrollAlFinal(); // Bajar el scroll al cargar
         }
-    } catch (e) {
-        console.error(e);
+    } catch (error) {
+        console.error("Error al cargar historial:", error);
     }
 };
 
-const seleccionarChat = async (item, esFantasma = false) => {
-    const myId = getMyId();
-    let partner;
+// Se ejecuta cuando el usuario hace clic en un chat de la lista o viene redirigido de un producto
+const abrirConversacion = async (itemChat, esChatNuevoTemporal = false) => {
+    const miId = obtenerMiIdDeUsuario();
+    let interlocutor;
 
-    if (esFantasma) {
-        partner = { id: Number(item.otherUserId), name: item.otherUserName };
+    // comprobamos si el chat aún no existe en backend, venimos de ver un producto
+    if (esChatNuevoTemporal) {
+        interlocutor = { id: Number(itemChat.otherUserId), name: itemChat.otherUserName };
     } else {
-        partner = getPartnerInfo(item);
+        // Si es un chat existente en la bandeja
+        interlocutor = obtenerDatosDelInterlocutor(itemChat);
     }
 
-    if (partner.id === myId) return; 
+    // Evitar abrir chat con uno mismo
+    if (interlocutor.id === miId) return; 
 
-    chatActivo.value = {
-        productId: esFantasma ? item.productId : item.product.id_product,
-        productName: esFantasma ? item.productName : item.product.name,
-        otherUserId: partner.id,
-        otherUserName: partner.name
+    // Establecemos este chat como el activo
+    conversacionActiva.value = {
+        productId: esChatNuevoTemporal ? itemChat.productId : itemChat.product.id_product,
+        productName: esChatNuevoTemporal ? itemChat.productName : itemChat.product.name,
+        otherUserId: interlocutor.id,
+        otherUserName: interlocutor.name
     };
 
-    mensajesChat.value = [];
-    await fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
+    // Limpiamos mensajes anteriores y cargamos los nuevos
+    mensajesDelChatActual.value = [];
+    await cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
 };
 
-const enviar = async () => {
-    if (!nuevoMensaje.value.trim() || !chatActivo.value) return;
+// Envía el mensaje al servidor y actualiza la vista
+const enviarMensaje = async () => {
+    // Validar que no esté vacío y que haya un chat seleccionado
+    if (!textoNuevoMensaje.value.trim() || !conversacionActiva.value) return;
 
-    const payload = {
-        content: nuevoMensaje.value,
-        id_product: chatActivo.value.productId,
-        id_receiver: chatActivo.value.otherUserId
+    const datosMensaje = {
+        content: textoNuevoMensaje.value,
+        id_product: conversacionActiva.value.productId,
+        id_receiver: conversacionActiva.value.otherUserId
     };
 
     try {
-        await axios.post("http://localhost:8080/api/messages", payload, {
-            headers: { Authorization: `Bearer ${getToken()}` }
+        await axios.post("http://localhost:8080/api/messages", datosMensaje, {
+            headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
 
-        nuevoMensaje.value = "";
+        // Limpiar el input
+        textoNuevoMensaje.value = "";
         
-        await fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
-        await fetchBandeja();
+        // Recargar los mensajes para ver el nuestro y actualizar la bandeja lateral
+        await cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
+        await cargarBandejaDeEntrada();
 
-    } catch (e) {
+    } catch (error) {
         alert("Error al enviar mensaje");
     }
 };
 
 onMounted(async () => {
-    await fetchBandeja();
+    //  Cargar la lista de chats al iniciar
+    await cargarBandejaDeEntrada();
 
+    // Comprobar si venimos redirigidos de un producto
     if (route.query.prodId) {
-        const pId = Number(route.query.prodId);
-        const uId = Number(route.query.userId); 
-        const myId = getMyId();
+        const prodIdParam = Number(route.query.prodId);
+        const userIdParam = Number(route.query.userId); 
+        const miId = obtenerMiIdDeUsuario();
 
-        if (uId !== myId) {
-            const existe = bandeja.value.find(c => {
-                const partner = getPartnerInfo(c);
-                return c.product.id_product === pId && partner.id === uId;
+        if (userIdParam !== miId) {
+            // Buscamos si ya existe una conversación con ese usuario para ese producto
+            const chatExistente = listaDeConversaciones.value.find(c => {
+                const infoInterlocutor = obtenerDatosDelInterlocutor(c);
+                return c.product.id_product === prodIdParam && infoInterlocutor.id === userIdParam;
             });
 
-            if (existe) {
-                seleccionarChat(existe, false);
+            if (chatExistente) {
+                // Si existe, lo abrimos normalmente
+                abrirConversacion(chatExistente, false);
             } else {
-                const fantasma = {
-                    productId: pId,
+                // Si no existe, creamos un objeto temporal ("fantasma") para mostrar la interfaz vacía
+                const chatFantasma = {
+                    productId: prodIdParam,
                     productName: route.query.prodName,
-                    otherUserId: uId,
+                    otherUserId: userIdParam,
                     otherUserName: route.query.userName
                 };
-                seleccionarChat(fantasma, true);
+                abrirConversacion(chatFantasma, true);
             }
         }
     }
 
-    intervalId.value = setInterval(() => {
-        fetchBandeja();
-        if (chatActivo.value) {
-            fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
+    // Configurar actualización automática cada 3 segundos (Polling)
+    idIntervaloActualizacion.value = setInterval(() => {
+        cargarBandejaDeEntrada(); // Refrescar lista lateral
+        if (conversacionActiva.value) {
+            // Refrescar mensajes del chat abierto
+            cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
         }
     }, 3000);
 });
 
+// Limpiar el intervalo cuando se cierra el componente para evitar fugas de memoria
 onUnmounted(() => {
-    if (intervalId.value) clearInterval(intervalId.value);
+    if (idIntervaloActualizacion.value) clearInterval(idIntervaloActualizacion.value);
 });
 </script>
 
@@ -181,46 +223,46 @@ onUnmounted(() => {
             <div class="header"><h3>Mis Chats</h3></div>
             <ul class="chat-list">
                 <li 
-                    v-for="(chat, index) in bandeja" 
+                    v-for="(chat, index) in listaDeConversaciones" 
                     :key="chat.id_message || index"
-                    @click="seleccionarChat(chat, false)"
-                    :class="{ 'active': chatActivo && chatActivo.productId === chat.product.id_product && chatActivo.otherUserId === getPartnerInfo(chat).id }"
+                    @click="abrirConversacion(chat, false)"
+                    :class="{ 'active': conversacionActiva && conversacionActiva.productId === chat.product.id_product && conversacionActiva.otherUserId === obtenerDatosDelInterlocutor(chat).id }"
                 >
                     <div class="info">
-                        <span class="name">{{ getPartnerInfo(chat).name }}</span>
+                        <span class="name">{{ obtenerDatosDelInterlocutor(chat).name }}</span>
                         <span class="prod">📦 {{ chat.product.name }}</span>
                     </div>
                 </li>
 
                 <li 
-                    v-if="chatActivo && !bandeja.find(c => c.product.id_product === chatActivo.productId && getPartnerInfo(c).id === chatActivo.otherUserId)"
+                    v-if="conversacionActiva && !listaDeConversaciones.find(c => c.product.id_product === conversacionActiva.productId && obtenerDatosDelInterlocutor(c).id === conversacionActiva.otherUserId)"
                     class="active"
                 >
                     <div class="info">
-                        <span class="name">{{ chatActivo.otherUserName }} (Nuevo)</span>
-                        <span class="prod">📦 {{ chatActivo.productName }}</span>
+                        <span class="name">{{ conversacionActiva.otherUserName }} (Nuevo)</span>
+                        <span class="prod">📦 {{ conversacionActiva.productName }}</span>
                     </div>
                 </li>
             </ul>
         </div>
 
         <div class="main">
-            <div v-if="chatActivo" class="window">
+            <div v-if="conversacionActiva" class="window">
                 <div class="chat-header">
-                    <h3>{{ chatActivo.otherUserName }}</h3>
-                    <span>{{ chatActivo.productName }}</span>
+                    <h3>{{ conversacionActiva.otherUserName }}</h3>
+                    <span>{{ conversacionActiva.productName }}</span>
                 </div>
 
                 <div class="msgs-body">
-                    <div v-if="mensajesChat.length === 0" class="empty">
+                    <div v-if="mensajesDelChatActual.length === 0" class="empty">
                         Escribe el primer mensaje...
                     </div>
                     
                     <div 
-                        v-for="(msg, index) in mensajesChat" 
+                        v-for="(msg, index) in mensajesDelChatActual" 
                         :key="msg.id_message || index"
                         class="row"
-                        :class="getSenderId(msg) === getMyId() ? 'mine' : 'theirs'"
+                        :class="obtenerIdDelRemitente(msg) === obtenerMiIdDeUsuario() ? 'mine' : 'theirs'"
                     >
                         <div class="bubble">
                             <p>{{ msg.content }}</p>
@@ -230,8 +272,8 @@ onUnmounted(() => {
                 </div>
 
                 <div class="input-area">
-                    <input v-model="nuevoMensaje" @keyup.enter="enviar" placeholder="Escribe..." />
-                    <button @click="enviar">Enviar</button>
+                    <input v-model="textoNuevoMensaje" @keyup.enter="enviarMensaje" placeholder="Escribe..." />
+                    <button @click="enviarMensaje">Enviar</button>
                 </div>
             </div>
 
