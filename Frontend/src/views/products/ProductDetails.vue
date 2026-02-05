@@ -321,11 +321,11 @@ onMounted(() => {
         </div>
         <Review :reviewsData="ReviewsProducto" :productId="producto.id_product" />
     </div>
+    </div>
     <div v-else class="error-msg">
         <h3>Error</h3>
         <p>{{ error }}</p>
     </div>
-
   </div>
 </template>
 
