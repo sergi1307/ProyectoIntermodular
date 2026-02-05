@@ -1,103 +1,108 @@
 <script setup>
-    import axios from 'axios';
-    import { onMounted, ref, watch, computed } from 'vue';
-    import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { onMounted, ref, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import starRating from "../../components/ratings/starRating.vue";
 
-    const router = useRouter();
-    const productos = ref([]);
-    const categorias = ref([]);
-    const vistaActual = ref('grid'); 
+const router = useRouter();
+const productos = ref([]);
+const categorias = ref([]);
+const vistaActual = ref('grid'); 
 
-    const precioMin = ref(0)
-    const precioMax = ref(100)
-    const precioMaximo = 100 
-    const busqueda = ref('')
-    const categoriaSeleccionada = ref(null)
-    const ordenSeleccionado = ref('')
+const precioMin = ref(0)
+const precioMax = ref(100)
+const precioMaximo = 100 
+const busqueda = ref('')
+const categoriaSeleccionada = ref(null)
+const ordenSeleccionado = ref('')
 
-    const productosFiltrados = computed(() => {
-      const texto = busqueda.value.trim().toLowerCase()
+// --- COMPUTED: FILTRADO Y ORDEN ---
+const productosFiltrados = computed(() => {
+  const texto = busqueda.value.trim().toLowerCase()
 
-      let resultado = [...productos.value].filter(producto => {
-        const pasaBusqueda =
-          !texto || producto.name.toLowerCase().includes(texto)
+  let resultado = [...productos.value].filter(producto => {
+    const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
+    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
+    const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
+    return pasaBusqueda && pasaCategoria && pasaPrecio
+  })
 
-        const pasaCategoria =
-          categoriaSeleccionada.value === null ||
-          producto.category?.id_category === categoriaSeleccionada.value
+  switch (ordenSeleccionado.value) {
+    case 'precio-asc':
+      resultado.sort((a, b) => a.price - b.price)
+      break
+    case 'precio-desc':
+      resultado.sort((a, b) => b.price - a.price)
+      break
+    case 'nombre-asc':
+      resultado.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    case 'nombre-desc':
+      resultado.sort((a, b) => b.name.localeCompare(a.name))
+      break
+  }
+  return resultado
+})
 
-        const pasaPrecio =
-          producto.price >= precioMin.value &&
-          producto.price <= precioMax.value
+// --- WATCHERS DE RANGO ---
+watch(precioMin, (nuevoMin) => { if (nuevoMin > precioMax.value) precioMin.value = precioMax.value })
+watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value = precioMin.value })
 
-        return pasaBusqueda && pasaCategoria && pasaPrecio
-      })
+// --- IR A DETALLE ---
+const irAlDetalle = (id) => {
+    router.push({ name: 'product-details', params: { id: id } });
+};
 
-      switch (ordenSeleccionado.value) {
-        case 'precio-asc':
-          resultado.sort((a, b) => a.price - b.price)
-          break
-        case 'precio-desc':
-          resultado.sort((a, b) => b.price - a.price)
-          break
-        case 'nombre-asc':
-          resultado.sort((a, b) => a.name.localeCompare(b.name))
-          break
-        case 'nombre-desc':
-          resultado.sort((a, b) => b.name.localeCompare(a.name))
-          break
-      }
-      return resultado
-    })
-    
-    watch(precioMin, (nuevoMin) => {
-      if (nuevoMin > precioMax.value) {
-        precioMin.value = precioMax.value
-      }
-    })
+// --- OBTENER PRODUCTOS ---
+const obtenerProductos = async () => {
+    try {
+        const resProductos = await axios.get("http://localhost:8080/api/products/", {
+            withCredentials: true
+        });
 
-    watch(precioMax, (nuevoMax) => {
-      if (nuevoMax < precioMin.value) {
-        precioMax.value = precioMin.value
-      }
-    })
+        // Inicializar mediaRating y totalReviews para cada producto
+        productos.value = resProductos.data.data.map(p => ({
+            ...p,
+            mediaRating: 0,
+            totalReviews: 0
+        }));
 
-    const irAlDetalle = (id) => {
-        router.push({ name: 'product-details', params: { id: id } });
-    };
+        // Obtener media de reviews por producto
+        productos.value.forEach(async (p) => {
+            try {
+                const res = await axios.get(`http://localhost:8080/api/reviews/producto/${p.id_product}/media`);
+                p.mediaRating = res.data.average ?? 0;
+                p.totalReviews = res.data.total_reviews ?? 0;
+            } catch (err) {
+                console.log(`Error al obtener media de producto ${p.id_product}`);
+                p.mediaRating = 0;
+                p.totalReviews = 0;
+            }
+        });
 
-    const obtenerProductos = async () => {
-        try {
-            const resProductos = await axios.get("http://localhost:8080/api/products/", {
-                withCredentials: true
-            });
-
-            productos.value = resProductos.data.data; 
-            console.log("Productos cargados:", productos.value);
-        } catch (error) {
-            console.error("Error cargando los productos:", error);
-        }
+    } catch (error) {
+        console.error("Error cargando los productos:", error);
     }
+}
 
-    const obtenerCategorias = async () =>{
-        try{
-            const resCategorias = await axios.get("http://localhost:8080/api/categories/", {
-                withCredentials: true
-            });
-
-            categorias.value = resCategorias.data;
-            console.log("Categorias cargadas")
-        } catch(error){
-            console.error("Error cargando las categorias")
-        }
+// --- OBTENER CATEGORIAS ---
+const obtenerCategorias = async () =>{
+    try{
+        const resCategorias = await axios.get("http://localhost:8080/api/categories/", {
+            withCredentials: true
+        });
+        categorias.value = resCategorias.data;
+    } catch(error){
+        console.error("Error cargando las categorias")
     }
+}
 
-    onMounted(() =>{
-        obtenerProductos();
-
-        obtenerCategorias();
-    });
+onMounted(() =>{
+    obtenerProductos();
+    obtenerCategorias();
+});
 </script>
+
 
 <template>
     <div id="cabecera">
@@ -205,8 +210,8 @@
                         
                         <p id="granja">{{ producto.delivery_point.name }}</p>
                         <div class="rating">
-                            <span class="rating-number">4.5</span>
-                            <span class="star">★</span>
+                            <span class="rating-number">{{ producto.mediaRating.toFixed(2) }}</span>
+                            <starRating :modelValue="producto.mediaRating" readonly />
                         </div>
 
                         <div id="footer-tarjeta">

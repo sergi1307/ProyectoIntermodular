@@ -8,13 +8,14 @@ import Review from '@/components/reviews/Review.vue';
 const route = useRoute();
 const router = useRouter();
 const producto = ref(null);
-const review = ref(null);
 const ventasUsuario = ref([]);
 const cargando = ref(true);
 const error = ref(null);
 const ReviewsProducto = ref([]);
 const rating = ref(0);
 const reviewComment = ref('');
+const mediaRating = ref(0);
+const totalReviews = ref(0);
 
 const cantidadSeleccionada = ref(1);
 
@@ -164,7 +165,7 @@ const obtenerReviewsProducto = async () => {
     const response = await axios.get(
       `http://localhost:8080/api/reviews/producto/${producto.value.id_product}`
     );
-    ReviewsProducto.value = response.data; // <-- Esto debe ser todo el paginador
+    ReviewsProducto.value = response.data;
     console.log("ReviewsProducto:", ReviewsProducto.value)
   } catch (err) {
     console.error(err);
@@ -206,11 +207,29 @@ const realizarReview = async () => {
 
     alert('Review enviada correctamente')
 }
+const obtenerMediaReviews = async () => {
+
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/reviews/producto/${producto.value.id_product}/media`
+    );
+
+
+    mediaRating.value = response.data.average ?? 0;
+    totalReviews.value = response.data.total_reviews ?? 0;
+  } catch (err) {
+    console.log("Error al obtener la media");
+  }
+};
+
 onMounted(() => {
     obtenerDetalleProducto();
     obtenerVentasUsuario();
     watch(producto, (newVal) => {
         if(newVal) obtenerReviewsProducto();
+        if (newVal?.id_product) {
+          obtenerMediaReviews();
+        }
     });
 });
 </script>
@@ -249,9 +268,12 @@ onMounted(() => {
                 </span>
             </div>
 
-            <div class="calificacion">
-                <span class="rating-number">4.5</span>
-                <starRating :modelValue="4.5" readonly />
+            <div class="calificacion" v-if="mediaRating">
+                <span class="rating-number">
+                    {{ mediaRating.toFixed(2) }}   
+                </span>
+                <starRating :modelValue="mediaRating" readonly />
+                <span class="opinions">({{ totalReviews }} opiniones)</span>
             </div>
 
             <div class="descripcion-box">
@@ -512,6 +534,18 @@ h1 { margin: 10px 0; color: #1a4d2e; font-size: 2.5em; }
     background-color: #ccc;
     cursor: not-allowed;
 }
+.rating-resumen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.rating-text {
+  font-size: 0.95rem;
+  color: #555;
+}
+
 
 @media (max-width: 768px) {
     .detalle-grid { grid-template-columns: 1fr; }

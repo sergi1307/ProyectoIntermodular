@@ -1,72 +1,58 @@
 <template>
   <div class="stars" :class="{ readonly }">
     <span
-      v-for="star in maxStars"
-      :key="star"
-      class="star"
-      :class="getStarClass(star)"
-      @mousemove="!readonly && onHoverStar($event, star)"
-      @mouseleave="!readonly && (hover = 0)"
-      @click="!readonly && onClickStar($event, star)"
-    >
-      ★
-    </span>
+  v-for="star in readonly ? [1] : Array.from({ length: maxStars }, (_, i) => i + 1)"
+  :key="star"
+  class="star"
+  :class="getStarClass(star, readonly)"
+  @mousemove="!readonly && onHoverStar($event, star)"
+  @mouseleave="!readonly && (hover = 0)"
+  @click="!readonly && onClickStar($event, star)"
+>
+  ★
+</span>
+
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
-  modelValue: {
-    type: Number,
-    default: 0
-  },
-  maxStars: {
-    type: Number,
-    default: 5
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  }
+  modelValue: Number,
+  maxStars: { type: Number, default: 5 },
+  readonly: { type: Boolean, default: false }
 });
 
-
 const emit = defineEmits(["update:modelValue"]);
-
 const hover = ref(0);
 
-function getStarClass(star) {
+function getStarClass(star, readonly = false) {
   const value = hover.value || props.modelValue;
-
+  if (readonly) {
+    // En readonly, mostramos solo una estrella "proporcional"
+    if (value >= 1) return { active: true };
+    if (value >= 0.5) return { half: true };
+    return {};
+  }
   return {
     active: star <= Math.floor(value),
     half: star === Math.floor(value) + 1 && value % 1 >= 0.5
   };
 }
 
-function onHoverStar(event, star) {
-  if (props.readonly) return;
-
-  const { left, width } = event.currentTarget.getBoundingClientRect();
-  const hoverX = event.clientX - left;
-
-  hover.value = hoverX < width / 2 ? star - 0.5 : star;
+function onHoverStar(e, star) {
+  const { left, width } = e.currentTarget.getBoundingClientRect();
+  hover.value = e.clientX - left < width / 2 ? star - 0.5 : star;
 }
 
-function onClickStar(event, star) {
-  if (props.readonly) return;
-
-  const { left, width } = event.currentTarget.getBoundingClientRect();
-  const clickX = event.clientX - left;
-
+function onClickStar(e, star) {
+  const { left, width } = e.currentTarget.getBoundingClientRect();
   emit(
     "update:modelValue",
-    clickX < width / 2 ? star - 0.5 : star
+    e.clientX - left < width / 2 ? star - 0.5 : star
   );
 }
-
 </script>
 
 <style scoped>
@@ -103,5 +89,4 @@ function onClickStar(event, star) {
 .stars.readonly .star {
   cursor: default;
 }
-
 </style>

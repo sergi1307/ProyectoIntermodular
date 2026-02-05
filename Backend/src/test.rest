@@ -148,6 +148,16 @@ Accept: application/json
     "comment": "Muy rico todo"
 }
 
+### Obtener media de calificaciones de un producto
+GET http://localhost:8080/api/reviews/producto/1/media
+Content-Type: application/json
+
+###
+
+### Obtener todas las reviews de un producto (para comparar)
+GET http://localhost:8080/api/reviews/producto/1
+Content-Type: application/json
+
 ### ------------------------------------------------------------------------
 ### 6. MENSAJERÍA (Nuevo)
 ### ------------------------------------------------------------------------
