@@ -138,4 +138,25 @@ class ReviewController extends Controller
     
     return response()->json($reviews, 200);
     }
+
+    /**
+     * Función para obtener la media de calificaciones de un producto
+     *
+     * @param numeric $productId
+     * @return json
+     */
+    public function obtenerMediaPorProducto($productId)
+    {
+        $ventasIds = Sale::where('id_product', $productId)->pluck('id_sale');
+
+        $media = Review::whereIn('id_sale', $ventasIds)
+            ->avg('calification');
+        
+        $total = Review::whereIn('id_sale', $ventasIds)->count();
+
+        return response()->json([
+            'average' => round($media, 2),
+            'total_reviews' => $total
+        ], 200);
+    }
 }
