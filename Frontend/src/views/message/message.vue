@@ -1,96 +1,172 @@
 <script setup>
-import { onMounted, onUnmounted, ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, onUnmounted, ref, nextTick } from 'vue';
+import { useRoute } from 'vue-router'; 
 import axios from 'axios';
 
-const miIdUsuario = 1; 
-
-const message = ref([]);
-const intervalId = ref(null);
-const chatSeleccionado = ref(null);
+const bandeja = ref([]);
+const mensajesChat = ref([]);
+const chatActivo = ref(null);
 const nuevoMensaje = ref("");
-const route = useRoute(); 
-const obtenerMensaje = async () => {
+const route = useRoute();
+const intervalId = ref(null);
+
+const getMyId = () => {
     try {
-        const response = await axios.get("http://localhost:8080/api/messages/inbox", {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        message.value = response.data;
-    } catch (error) {
-        console.error("Error cargando mensajes:", error);
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return 0;
+        const user = JSON.parse(userStr);
+        return Number(user.id_user || user.id);
+    } catch (e) {
+        return 0;
     }
 };
 
-const enviarMensaje = async () => {
-    if (!nuevoMensaje.value) return;
+const getSenderId = (msg) => {
+    if (msg.id_transmitter) return Number(msg.id_transmitter);
+    if (msg.transmitter && msg.transmitter.id_user) return Number(msg.transmitter.id_user);
+    return 0;
+};
 
-    const datosParaEnviar = {
+const getToken = () => localStorage.getItem("token");
+
+const getPartnerInfo = (chat) => {
+    const myId = getMyId();
+    const senderId = getSenderId(chat);
+    
+    const receiverId = chat.receiver ? chat.receiver.id_user : chat.id_receiver;
+    const transmitterId = chat.transmitter ? chat.transmitter.id_user : chat.id_transmitter;
+    
+    const receiverName = chat.receiver ? chat.receiver.name : (chat.receiver_name || 'Usuario');
+    const transmitterName = chat.transmitter ? chat.transmitter.name : (chat.transmitter_name || 'Usuario');
+
+    if (senderId === myId) {
+        return { id: Number(receiverId), name: receiverName };
+    } else {
+        return { id: Number(transmitterId), name: transmitterName };
+    }
+};
+
+const scrollToBottom = () => {
+    nextTick(() => {
+        const el = document.querySelector('.msgs-body');
+        if (el) el.scrollTop = el.scrollHeight;
+    });
+};
+
+const fetchBandeja = async () => {
+    try {
+        const res = await axios.get("http://localhost:8080/api/messages/inbox", {
+            headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        
+        if (res.data.bandeja) {
+            bandeja.value = res.data.bandeja;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const fetchConversacion = async (prodId, otherUserId) => {
+    try {
+        const res = await axios.get("http://localhost:8080/api/messages/conversation", {
+            headers: { Authorization: `Bearer ${getToken()}` },
+            params: {
+                id_product: prodId,
+                id_user_chat: otherUserId
+            }
+        });
+
+        if (res.data.messages) {
+            mensajesChat.value = res.data.messages;
+            scrollToBottom();
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const seleccionarChat = async (item, esFantasma = false) => {
+    const myId = getMyId();
+    let partner;
+
+    if (esFantasma) {
+        partner = { id: Number(item.otherUserId), name: item.otherUserName };
+    } else {
+        partner = getPartnerInfo(item);
+    }
+
+    if (partner.id === myId) return; 
+
+    chatActivo.value = {
+        productId: esFantasma ? item.productId : item.product.id_product,
+        productName: esFantasma ? item.productName : item.product.name,
+        otherUserId: partner.id,
+        otherUserName: partner.name
+    };
+
+    mensajesChat.value = [];
+    await fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
+};
+
+const enviar = async () => {
+    if (!nuevoMensaje.value.trim() || !chatActivo.value) return;
+
+    const payload = {
         content: nuevoMensaje.value,
-        productId: chatSeleccionado.value.product.id_product,
-        receiverId: chatSeleccionado.value.transmitter.id_user
+        id_product: chatActivo.value.productId,
+        id_receiver: chatActivo.value.otherUserId
     };
 
     try {
-        await axios.post("http://localhost:8080/api/messages", datosParaEnviar, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        await axios.post("http://localhost:8080/api/messages", payload, {
+            headers: { Authorization: `Bearer ${getToken()}` }
         });
 
         nuevoMensaje.value = "";
-        await obtenerMensaje(); 
+        
+        await fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
+        await fetchBandeja();
 
-    } catch (error) {
-        console.error("Error enviando:", error);
-        alert("Error al enviar. Revisa la consola.");
+    } catch (e) {
+        alert("Error al enviar mensaje");
     }
 };
 
-const mensajesContacto = computed(() => {
-    if (!chatSeleccionado.value) return [];
-    
-    if (!chatSeleccionado.value.id_message && !message.value.length) return [];
-
-    return message.value.filter(msg => {
-        return msg.product.id_product == chatSeleccionado.value.product.id_product && 
-               (msg.transmitter.id_user == chatSeleccionado.value.transmitter.id_user || 
-                msg.transmitter.id_user == miIdUsuario); 
-    });
-});
-
-const chats = computed(() => {
-    const contactos = {};
-    if (!message.value) return [];
-    
-    for (const msg of message.value){
-        let otroUsuarioId = msg.transmitter.id_user === miIdUsuario ? msg.transmitter.id_user : msg.transmitter.id_user;
-
-        const clave = `chat-${msg.product.id_product}-${msg.transmitter.id_user}`;
-        contactos[clave] = msg;
-    }
-    return Object.values(contactos);
-});
-
 onMounted(async () => {
-    await obtenerMensaje();
+    await fetchBandeja();
 
     if (route.query.prodId) {
         const pId = Number(route.query.prodId);
-        const uId = Number(route.query.userId);
+        const uId = Number(route.query.userId); 
+        const myId = getMyId();
 
-        const chatExistente = message.value.find(m => 
-            m.product.id_product === pId && m.transmitter.id_user === uId
-        );
+        if (uId !== myId) {
+            const existe = bandeja.value.find(c => {
+                const partner = getPartnerInfo(c);
+                return c.product.id_product === pId && partner.id === uId;
+            });
 
-        if (chatExistente) {
-            chatSeleccionado.value = chatExistente;
-        } else {
-            chatSeleccionado.value = {
-                id_message: null, 
-                product: { id_product: pId, name: route.query.prodName },
-                transmitter: { id_user: uId, name: route.query.userName }
-            };
+            if (existe) {
+                seleccionarChat(existe, false);
+            } else {
+                const fantasma = {
+                    productId: pId,
+                    productName: route.query.prodName,
+                    otherUserId: uId,
+                    otherUserName: route.query.userName
+                };
+                seleccionarChat(fantasma, true);
+            }
         }
     }
-    intervalId.value = setInterval(obtenerMensaje, 3000);
+
+    intervalId.value = setInterval(() => {
+        fetchBandeja();
+        if (chatActivo.value) {
+            fetchConversacion(chatActivo.value.productId, chatActivo.value.otherUserId);
+        }
+    }, 3000);
 });
 
 onUnmounted(() => {
@@ -99,85 +175,101 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div style="display: flex; gap: 0; height: 90vh; font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5;">
+    <div class="chat-container">
         
-        <div style="width: 30%; border-right: 1px solid #ddd; background: white; display: flex; flex-direction: column;">
-            <div style="padding: 20px; background: #eee; border-bottom: 1px solid #ddd;">
-                <h2 style="margin: 0; color: #333;">💬 Mensajes</h2>
-            </div>
-            
-            <ul style="list-style: none; padding: 0; margin: 0; overflow-y: auto;">
+        <div class="sidebar">
+            <div class="header"><h3>Mis Chats</h3></div>
+            <ul class="chat-list">
                 <li 
-                    v-for="chat in chats" 
-                    :key="chat.id_message" 
-                    @click="chatSeleccionado = chat"
-                    style="cursor: pointer; padding: 15px; border-bottom: 1px solid #f1f1f1; transition: 0.2s;"
-                    onmouseover="this.style.background='#f9f9f9'"
-                    onmouseout="this.style.background='white'"
+                    v-for="(chat, index) in bandeja" 
+                    :key="chat.id_message || index"
+                    @click="seleccionarChat(chat, false)"
+                    :class="{ 'active': chatActivo && chatActivo.productId === chat.product.id_product && chatActivo.otherUserId === getPartnerInfo(chat).id }"
                 >
-                    <div style="font-weight: bold; font-size: 1.1em; color: #111;">{{chat.transmitter.name}}</div>
-                    <div style="color: #666; font-size: 0.9em; margin-top: 4px;">📦 {{chat.product.name}}</div>
+                    <div class="info">
+                        <span class="name">{{ getPartnerInfo(chat).name }}</span>
+                        <span class="prod">📦 {{ chat.product.name }}</span>
+                    </div>
+                </li>
+
+                <li 
+                    v-if="chatActivo && !bandeja.find(c => c.product.id_product === chatActivo.productId && getPartnerInfo(c).id === chatActivo.otherUserId)"
+                    class="active"
+                >
+                    <div class="info">
+                        <span class="name">{{ chatActivo.otherUserName }} (Nuevo)</span>
+                        <span class="prod">📦 {{ chatActivo.productName }}</span>
+                    </div>
                 </li>
             </ul>
         </div>
 
-        <div style="width: 70%; display: flex; flex-direction: column; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat;">
-            
-            <div v-if="chatSeleccionado" style="display: flex; flex-direction: column; height: 100%;">
-                
-                <div style="padding: 10px 20px; background: #f0f2f5; border-bottom: 1px solid #ccc; display: flex; align-items: center;">
-                    <div>
-                        <h3 style="margin: 0; color: #333;">{{ chatSeleccionado.transmitter.name }}</h3>
-                        <span style="font-size: 0.85em; color: #666;">Interesado en: <strong>{{ chatSeleccionado.product.name }}</strong></span>
-                    </div>
+        <div class="main">
+            <div v-if="chatActivo" class="window">
+                <div class="chat-header">
+                    <h3>{{ chatActivo.otherUserName }}</h3>
+                    <span>{{ chatActivo.productName }}</span>
                 </div>
 
-                <div style="flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column;">
-                    <div v-if="mensajesContacto.length === 0" style="text-align: center; color: #555; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 10px; align-self: center; margin-top: 20px;">
-                        Has iniciado una nueva conversación.<br>¡Saluda! 👋
+                <div class="msgs-body">
+                    <div v-if="mensajesChat.length === 0" class="empty">
+                        Escribe el primer mensaje...
                     </div>
-
+                    
                     <div 
-                        v-for="msg in mensajesContacto" 
-                        :key="msg.id_message"
-                        :style="{
-                            alignSelf: msg.transmitter.id_user === miIdUsuario ? 'flex-end' : 'flex-start',
-                            backgroundColor: msg.transmitter.id_user === miIdUsuario ? '#dcf8c6' : 'white',
-                            padding: '10px 15px',
-                            margin: '5px',
-                            borderRadius: '8px',
-                            maxWidth: '65%',
-                            boxShadow: '0 1px 1px rgba(0,0,0,0.1)',
-                            position: 'relative'
-                        }"
+                        v-for="(msg, index) in mensajesChat" 
+                        :key="msg.id_message || index"
+                        class="row"
+                        :class="getSenderId(msg) === getMyId() ? 'mine' : 'theirs'"
                     >
-                        <div style="word-wrap: break-word;">{{ msg.content }}</div>
+                        <div class="bubble">
+                            <p>{{ msg.content }}</p>
+                            <small v-if="msg.shipping_date">{{ new Date(msg.shipping_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }}</small>
+                        </div>
                     </div>
                 </div>
 
-                <div style="padding: 15px; background: #f0f2f5; display: flex; gap: 10px; align-items: center;">
-                    <input 
-                        v-model="nuevoMensaje" 
-                        type="text" 
-                        placeholder="Escribe un mensaje aquí..."
-                        style="flex-grow: 1; padding: 12px; border-radius: 20px; border: 1px solid #ccc; outline: none;"
-                        @keyup.enter="enviarMensaje"
-                    >
-                    <button 
-                        @click="enviarMensaje"
-                        style="padding: 10px 20px; background: #008069; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.1em;"
-                    >
-                        ➤
-                    </button>
+                <div class="input-area">
+                    <input v-model="nuevoMensaje" @keyup.enter="enviar" placeholder="Escribe..." />
+                    <button @click="enviar">Enviar</button>
                 </div>
             </div>
 
-            <div v-else style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; background: #f0f2f5;">
-                <div style="font-size: 4em;">💬</div>
-                <h2>Tus Mensajes</h2>
-                <p>Selecciona una conversación para leerla.</p>
+            <div v-else class="no-select">
+                <p>Selecciona un chat</p>
             </div>
-
         </div>
     </div>
 </template>
+
+<style scoped>
+.chat-container { display: flex; height: 90vh; font-family: sans-serif; background: #f0f2f5; }
+.sidebar { width: 300px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+.header { padding: 15px; background: #eee; border-bottom: 1px solid #ddd; }
+.chat-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+.chat-list li { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+.chat-list li:hover { background: #f9f9f9; }
+.chat-list li.active { background: #e6f7ff; border-left: 4px solid #1890ff; }
+.info { display: flex; flex-direction: column; }
+.name { font-weight: bold; }
+.prod { font-size: 0.85em; color: #666; }
+
+.main { flex: 1; display: flex; flex-direction: column; }
+.window { display: flex; flex-direction: column; height: 100%; }
+.chat-header { padding: 15px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+.msgs-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; }
+.mine { justify-content: flex-end; }
+.theirs { justify-content: flex-start; }
+.bubble { padding: 10px 15px; border-radius: 10px; max-width: 70%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word; }
+.mine .bubble { background: #dcf8c6; }
+.theirs .bubble { background: white; }
+.bubble p { margin: 0; }
+.bubble small { font-size: 0.7em; color: #666; display: block; text-align: right; margin-top: 5px; }
+
+.input-area { padding: 15px; background: #f0f0f0; display: flex; gap: 10px; }
+.input-area input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
+.input-area button { padding: 10px 20px; border-radius: 20px; border: none; background: #008069; color: white; cursor: pointer; }
+.no-select { display: flex; align-items: center; justify-content: center; height: 100%; color: #888; }
+.empty { text-align: center; color: #888; margin-top: 20px; }
+</style>

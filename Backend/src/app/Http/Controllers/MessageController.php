@@ -99,27 +99,26 @@ class MessageController extends Controller
             'id_user_chat' => 'required|exists:users,id_user'
         ]);
 
-        // IDs necesarios para hacer las comprobaciones
         $idPersonal = $request->user()->id_user;
         $idProducto = $request->id_product;
-        $id_usuario = $request->id_user_chat;
+        $idOtroUsuario = $request->id_user_chat;
 
-        // Obtenemos los mensajes enviados
-        $enviados = Message::where('id_product', $idProducto)
-            ->where('id_transmitter', $idPersonal)
-            ->where('id_receiver', $id_usuario)
+        // SOLUCIÓN: Una sola consulta agrupada con paréntesis lógicos
+        // SELECT * FROM messages WHERE id_product = X AND ( (emisor=YO y receptor=TU) OR (emisor=TU y receptor=YO) )
+        $mensajes = Message::where('id_product', $idProducto)
+            ->where(function($query) use ($idPersonal, $idOtroUsuario) {
+                $query->where(function($q) use ($idPersonal, $idOtroUsuario) {
+                    $q->where('id_transmitter', $idPersonal)
+                      ->where('id_receiver', $idOtroUsuario);
+                })
+                ->orWhere(function($q) use ($idPersonal, $idOtroUsuario) {
+                    $q->where('id_transmitter', $idOtroUsuario)
+                      ->where('id_receiver', $idPersonal);
+                });
+            })
+            ->orderBy('shipping_date', 'asc')
             ->get();
-        
-        // Obtenemos los mensajes recibidos
-        $recibidos = Message::where('id_product', $idProducto)
-            ->where('id_transmitter', $id_usuario)
-            ->where('id_receiver', $idPersonal)
-            ->get();
-        
-        // Fusionamos para crear el chat
-        $mensajes = $enviados->merge($recibidos)->sortBy('shipping_date')->values();
 
-        // Retornamos la respuesta en formato json
         return response()->json([
             'status' => 'true',
             'messages' => $mensajes
