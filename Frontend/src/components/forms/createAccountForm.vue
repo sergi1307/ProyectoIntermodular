@@ -78,17 +78,17 @@
         <p>Únete a nuestro mercado sostenible</p>
         <!-- Cuan apretem al botó de submit, captura el procés HTML per a que faja la petició de Axios -->
         <form @submit.prevent="enviarDatos">
-            <label for="name">Nombre Completo</label><br>
-            <input type="text" placeholder="Paco" v-model="name"> <br><br>
+            <label for="name">Nombre Completo</label>
+            <input type="text" placeholder="Paco" v-model="name">
 
-            <label for="email">Correo Electrónico</label><br>
-            <input type="email" placeholder="ejemplo@ejemplo.com" v-model="email"> <br><br>
+            <label for="email">Correo Electrónico</label>
+            <input type="email" placeholder="ejemplo@ejemplo.com" v-model="email">
 
-            <label for="phone">Teléfono</label><br>
-            <input type="text" placeholder="12345678" v-model="phone"> <br><br>
+            <label for="phone">Teléfono</label>
+            <input type="text" placeholder="12345678" v-model="phone">
 
-            <label for="password">Contraseña</label><br>
-            <input type="password" placeholder="••••••••" v-model="password"> <br><br>
+            <label for="password">Contraseña</label>
+            <input type="password" placeholder="••••••••" v-model="password">
 
             <button type="submit">Crear Cuenta</button>
 
@@ -120,13 +120,13 @@
     form {
         display: flex;
         flex-direction: column;
+        gap: 20px;
     }
 
     label {
         font-weight: 500;
         font-size: 0.9rem;
         color: #555;
-        display: inline-block;
     }
 
     input[type="email"],

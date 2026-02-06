@@ -80,11 +80,15 @@ const formatearFecha = (fecha) => {
   return new Date(fecha).toLocaleDateString();
 }
 
-// Función para dar color según el estado
 const claseEstado = (estado) => {
-  if (estado === "Rechazada") return "estado-rechazado";
-  if (estado === "En Curso") return "estado-encurso";
-  if (estado === "Aceptada") return "estado-aceptado";
+  if (!estado) return "";
+  
+  const estadoNormalizado = estado.toLowerCase();
+
+  if (estadoNormalizado === "rechazado") return "estado-rechazado";
+  if (estadoNormalizado === "en curso") return "estado-encurso";
+  if (estadoNormalizado === "aceptado") return "estado-aceptado";
+  
   return "";
 };
 

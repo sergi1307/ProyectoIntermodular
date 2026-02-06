@@ -32,8 +32,9 @@
       <h3>Mis Tiendas</h3>
       <div v-for="tienda in misTiendas" :key="tienda.id" class="item">
         <div>
-          <strong>{{ tienda.name }}</strong>
-          <span>{{ tienda.direction }}</span>
+          <p>
+            <strong>{{ tienda.name }}</strong> - <span>{{ tienda.direction }}</span>
+          </p>  
         </div>
         <div>
           <button @click="editar(tienda)" class="boton-editar">Editar</button>

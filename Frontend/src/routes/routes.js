@@ -64,7 +64,8 @@ const routes = [
      {
         path: '/message',
         name: 'message',
-        component: message
+        component: message,
+        meta: { vendedor: true }
     },
 ];
 

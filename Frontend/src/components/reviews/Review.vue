@@ -102,27 +102,117 @@ const fetchPage = async (page) => {
   </section>
 </template>
 
-<style>
-.header{
-  padding: 5px;
+<style scoped>
+section {
+  background-color: #f9fafb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
-button{
-  background-color: #1a4d2e;
+
+h3 {
+  color: #1c5537;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.review {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.header {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #f3f4f6;
+  line-height: 1.6;
+}
+
+.header strong {
+  color: #111827;
+  font-size: 1.05rem;
+}
+
+.header span {
+  color: #fbbf24;
+  margin-left: 8px;
+}
+
+.header small {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.review p {
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+button {
+  background-color: #1c5537;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
   border: none;
   cursor: pointer;
   border-radius: 8px;
-  padding: 5px;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(28, 85, 55, 0.2);
 }
-.paginacion{
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+
+button:hover:not(:disabled) {
+  background-color: #14402a;
+  transform: translateY(-1px);
 }
-.anterior[disabled],
-.siguiente[disabled]{
-  background-color: #ccc;
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+section > p:last-child {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  border: 1px dashed #e5e7eb;
 }
 </style>

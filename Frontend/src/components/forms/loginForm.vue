@@ -63,18 +63,18 @@
         <p>Inicia sesión para entrar a Proximarkt</p>
         <!-- Cuan apretem al botó de submit, captura el procés HTML per a que faja la petició de Axios -->
         <form @submit.prevent="enviarDatos">
-            <label for="email">Correo Electrónico</label><br>
-            <input type="email" placeholder="ejemplo@ejemplo.com" v-model="email"> <br><br>
+            <label for="email">Correo Electrónico</label>
+            <input type="email" placeholder="ejemplo@ejemplo.com" v-model="email"> 
 
-            <label for="password">Contraseña</label><br>
-            <input type="password" placeholder="••••••••" v-model="password"> <br><br>
+            <label for="password">Contraseña</label>
+            <input type="password" placeholder="••••••••" v-model="password">
 
             <div id="remember_forgot">
                 <div>
                     <input type="checkbox" v-model="recordarme">Remember me
                 </div>
                 <button>Ha olvidado la contraseña?</button>
-            </div> <br>
+            </div>
 
             <button type="submit">Iniciar Sesión</button>
 
@@ -106,6 +106,7 @@
     form {
         display: flex;
         flex-direction: column;
+        gap: 20px;
     }
 
     label {

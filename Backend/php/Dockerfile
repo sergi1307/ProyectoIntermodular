@@ -21,7 +21,7 @@ RUN docker-php-ext-install pdo pdo_mysql xml ctype zip
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 # Iniciar Xdebug
-RUN docker-php-ext-enable xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 # Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php \

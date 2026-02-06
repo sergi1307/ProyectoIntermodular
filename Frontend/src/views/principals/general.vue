@@ -180,7 +180,7 @@ onMounted(() =>{
         <main>
             <div id="resultados">
                 <span>{{ productosFiltrados.length }} Productos encontrados</span>
-                <select v-model="ordenSeleccionado">
+                <select id="seleccionar" v-model="ordenSeleccionado">
                   <option value="">Ordenar por</option>
                   <option value="precio-desc">Precio: mayor a menor</option>
                   <option value="precio-asc">Precio: menor a mayor</option>
@@ -344,7 +344,6 @@ onMounted(() =>{
 
         #filtro-barraLateral {
             margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
             padding-bottom: 10px;
 
             h3 {
@@ -467,6 +466,15 @@ onMounted(() =>{
             margin-bottom: 20px;
             color: #666;
             font-size: 0.95rem;
+
+            #seleccionar {
+                padding: 0.5rem;
+                background-color: rgba(156, 156, 156, 0.6);
+                border: none;
+                border-radius: 500px;
+                font-weight: bold;
+                font-size: 0.9em;
+            }
         }
 
         #productos {
@@ -622,6 +630,7 @@ onMounted(() =>{
                 flex-direction: column;
                 gap: 10px;
                 align-items: flex-start;
+                align-items: center;
             }
 
             #productos {
