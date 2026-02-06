@@ -45,7 +45,7 @@
           class="tarjeta-producto"
         >
           <div class="imagen-container">
-            <img :src="producto.image || '/placeholder.jpg'" :alt="producto.name" />
+            <img :src="obtenerUrlImagen(producto.image)" :alt="producto.name" />
           </div>
           <div class="info-producto">
             <h3>{{ producto.name }}</h3>
@@ -118,6 +118,11 @@ export default {
     cerrarProductos() {
       this.puntoSeleccionado = null;
       this.productos = [];
+    },
+
+    obtenerUrlImagen(rutaImagen) {
+      if (!rutaImagen) return '/placeholder.jpg';
+      return `http://localhost:8080/storage/${rutaImagen}`;
     }
   }
 }
