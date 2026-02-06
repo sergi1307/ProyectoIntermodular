@@ -241,131 +241,138 @@ onMounted(() => {
 
 <template>
   <div class="detalle-container">
+    
     <button @click="volver" class="btn-volver">&larr; Volver al listado</button>
 
-    <div v-if="cargando" class="loading">Cargando datos del producto...</div>
+    <div v-if="cargando" class="loading">Cargando datos...</div>
 
-    <div v-else-if="producto" class="detalle-grid">
-      <div class="detalle-imagen">
-        <img
-          :src="`http://localhost:8080/storage/${producto.image}`"
-          :alt="producto.nombre"
-        />
-      </div>
-
-      <div class="detalle-info">
-        <div class="tags">
-          <span v-if="producto.category && producto.category.name" class="tag">
-            {{ producto.category.name }}
-          </span>
-          <span v-else-if="producto.category_name" class="tag">
-            {{ producto.category_name }}
-          </span>
-        </div>
-
-        <h1>{{ producto.name }}</h1>
-
-        <div class="precio-grande">
-          {{ precioTotal }}€
-          <span class="unidad">
-            ({{ cantidadSeleccionada }} x {{ producto.price }}€)
-          </span>
-        </div>
-
-        <div class="calificacion" v-if="mediaRating">
-          <span class="rating-number">
-            {{ mediaRating.toFixed(2) }}
-          </span>
-          <starRating :modelValue="mediaRating" readonly />
-          <span class="opinions">({{ totalReviews }} opiniones)</span>
-        </div>
-
-        <div class="descripcion-box">
-          <h3>Descripción</h3>
-          <p>{{ producto.description || "Sin descripción disponible." }}</p>
-
-          <div class="meta-info">
-            <div>
-              <strong>📍 Origen:</strong><br />
-              {{
-                producto.delivery_point
-                  ? producto.delivery_point.name
-                  : "Ubicación desconocida"
-              }}
+    <div v-else-if="producto">
+        
+        <div class="detalle-grid">
+            
+            <div class="detalle-imagen">
+                <img
+                :src="`http://localhost:8080/storage/${producto.image}`"
+                :alt="producto.nombre"
+                />
             </div>
-            <div>
-              <strong>📦 Stock Disponible:</strong><br />
-              {{ producto.stock }} {{ producto.type_stock }}
+
+            <div class="detalle-info">
+                
+                <div class="tags">
+                    <span v-if="producto.category && producto.category.name" class="tag">
+                        {{ producto.category.name }}
+                    </span>
+                    <span v-else-if="producto.category_name" class="tag">
+                        {{ producto.category_name }}
+                    </span>
+                </div>
+
+                <h1>{{ producto.name }}</h1>
+
+                <div class="precio-grande">
+                    {{ precioTotal }}€
+                    <span class="unidad">
+                        ({{ cantidadSeleccionada }} x {{ producto.price }}€)
+                    </span>
+                </div>
+
+                <div class="calificacion" v-if="mediaRating">
+                    <span class="rating-number">{{ mediaRating.toFixed(2) }}</span>
+                    <starRating :modelValue="mediaRating" readonly />
+                    <span class="opinions">({{ totalReviews }} opiniones)</span>
+                </div>
+
+                <div class="descripcion-box">
+                    <h3>Descripción</h3>
+                    <p>{{ producto.description || "Sin descripción disponible." }}</p>
+
+                    <div class="meta-info">
+                        <div>
+                            <strong>📍 Origen:</strong><br />
+                            {{ producto.delivery_point ? producto.delivery_point.name : "Ubicación desconocida" }}
+                        </div>
+                        <div>
+                            <strong>📦 Stock:</strong><br />
+                            {{ producto.stock }} {{ producto.type_stock }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acciones-compra">
+                    
+                    <div class="selector-cantidad" v-if="producto.stock > 0">
+                        <label for="cantidad">Cantidad:</label>
+                        <div class="input-wrapper">
+                            <input
+                                id="cantidad"
+                                type="number"
+                                v-model.number="cantidadSeleccionada"
+                                min="1"
+                                :max="producto.stock"
+                                @change="validarCantidad"
+                                class="input-cantidad"
+                            />
+                        </div>
+                        <small class="stock-hint">Máximo {{ producto.stock }} unidades</small>
+                    </div>
+
+                    <div class="botones-grupo">
+                        <button @click="contactarVendedor" class="btn-chat">💬 Chat</button>
+                        <button
+                            @click="realizarCompra"
+                            class="btn-comprar"
+                            :disabled="producto.stock <= 0"
+                            :class="{ agotado: producto.stock <= 0 }"
+                        >
+                            {{ producto.stock > 0 ? `Comprar por ${precioTotal}€` : "Sin Stock" }}
+                        </button>
+                    </div>
+                </div>
+            </div> </div> <div class="reviews-section-full">
+            <h3>Deja tu valoración</h3>
+            
+            <div class="review-form-wrapper">
+                
+                <div class="rating-input-group">
+                    <label>Tu Puntuación:</label>
+                    <div class="stars-row">
+                        <starRating v-model="rating" />
+                        <span class="rating-value">{{ rating }}/5</span>
+                    </div>
+                </div>
+
+                <form class="form-comentario">
+                    <label for="comment" class="label-comentario">Cuéntanos tu experiencia:</label>
+                    <textarea 
+                        id="comment"
+                        v-model="reviewComment"
+                        rows="4"
+                        class="textarea-estilizado"
+                        placeholder="¿Qué te ha parecido la calidad? ¿Y el trato con el vendedor?"  
+                    ></textarea>
+                    
+                    <button type="button" @click="realizarReview" class="btn-review">
+                        Enviar Valoración
+                    </button>
+                </form>
             </div>
-          </div>
+
+            <hr class="divider">
+
+            <Review 
+                ref="listaReviewsRef"
+                :reviewsData="ReviewsProducto" 
+                :productId="producto.id_product" 
+                :mediaRating="mediaRating"
+                :totalReviews="totalReviews"
+            />
         </div>
 
-        <div class="acciones-compra">
-          <div class="selector-cantidad" v-if="producto.stock > 0">
-            <label for="cantidad">Cantidad a comprar:</label>
-            <div class="input-wrapper">
-              <input
-                id="cantidad"
-                type="number"
-                v-model.number="cantidadSeleccionada"
-                min="1"
-                :max="producto.stock"
-                @change="validarCantidad"
-                class="input-cantidad"
-              />
-            </div>
-            <small class="stock-hint"
-              >Máximo {{ producto.stock }} unidades</small
-            >
-          </div>
-
-          <div class="botones-grupo">
-            <button
-              @click="contactarVendedor"
-              class="btn-chat"
-              title="Contactar con el vendedor"
-            >
-              💬 Chat
-            </button>
-
-            <button
-              @click="realizarCompra"
-              class="btn-comprar"
-              :disabled="producto.stock <= 0"
-              :class="{ agotado: producto.stock <= 0 }"
-            >
-              {{
-                producto.stock > 0
-                  ? `Comprar por $${precioTotal}`
-                  : "Sin Stock Disponible"
-              }}
-            </button>
-          </div>
-          <starRating v-model="rating" />
-          <p>Valoración: {{ rating }}</p>
-          <form>
-            <label for="comment">Escribe un comentario sobre el producto:</label
-            ><br />
-            <textarea
-              id="comment"
-              v-model="reviewComment"
-              rows="5"
-              placeholder="Opinion del producto..."
-            ></textarea
-            ><br />
-            <button type="button" @click="realizarReview" class="btn-review">
-              Enviar Valoracion
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div v-else class="error-msg">
-      <h3>Error</h3>
+    </div> <div v-else class="error-msg">
+      <h3>Ups, hubo un error</h3>
       <p>{{ error }}</p>
     </div>
-
-    <Review :reviewsData="ReviewsProducto" :productId="producto.id_product" />
   </div>
 </template>
 
@@ -375,7 +382,16 @@ onMounted(() => {
   margin: 20px auto;
   padding: 20px;
   font-family: "Segoe UI", sans-serif;
+  color: #333;
 }
+
+.loading, .error-msg {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: #666;
+}
+
 .btn-volver {
   background: none;
   border: none;
@@ -388,27 +404,6 @@ onMounted(() => {
   text-decoration: underline;
 }
 
-.btn-review {
-  background-color: #1a4d2e;
-  color: white;
-  border: none;
-  padding: 18px 30px;
-  font-size: 1.1em;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.loading,
-.error-msg {
-  text-align: center;
-  padding: 40px;
-  font-size: 1.2em;
-  color: #666;
-}
-
 .detalle-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -417,6 +412,7 @@ onMounted(() => {
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
 }
 
 .detalle-imagen img {
@@ -425,17 +421,13 @@ onMounted(() => {
   border-radius: 15px;
   object-fit: cover;
   max-height: 500px;
+  border: 1px solid #eee;
 }
 
 .detalle-info {
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
-
-.tags {
-  display: flex;
-  gap: 10px;
 }
 
 .tags .tag {
@@ -449,15 +441,15 @@ onMounted(() => {
 }
 
 h1 {
-  margin: 10px 0;
+  margin: 5px 0;
   color: #1a4d2e;
-  font-size: 2.5em;
+  font-size: 2.2em;
 }
 
 .precio-grande {
-  font-size: 2.2em;
+  font-size: 2em;
   color: #1a4d2e;
-  font-weight: bold;
+  font-weight: 800;
 }
 .unidad {
   font-size: 0.5em;
@@ -468,18 +460,17 @@ h1 {
 .calificacion {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.95rem;
+  gap: 8px;
 }
 .rating-number {
-  font-size: 1.5em;
+  font-size: 1.3em;
   color: #1a4d2e;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .descripcion-box {
   background-color: #f9f7f2;
-  padding: 25px;
+  padding: 20px;
   border-radius: 12px;
   color: #555;
   line-height: 1.6;
@@ -488,41 +479,10 @@ h1 {
 .meta-info {
   display: flex;
   gap: 30px;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
-}
-
-.selector-cantidad {
-  margin-bottom: 15px;
-}
-
-.selector-cantidad label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
-
-.input-cantidad {
-  padding: 10px;
-  font-size: 1.1em;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  width: 80px;
-  text-align: center;
-}
-
-.input-cantidad:focus {
-  border-color: #1a4d2e;
-  outline: none;
-}
-
-.stock-hint {
-  display: block;
-  color: #888;
-  font-size: 0.85em;
-  margin-top: 5px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e6e6e6;
+  font-size: 0.9em;
 }
 
 .botones-grupo {
@@ -541,11 +501,8 @@ h1 {
   cursor: pointer;
   flex-grow: 2;
   font-weight: bold;
-  transition: all 0.2s;
 }
-.btn-comprar:hover:not(:disabled) {
-  background-color: #143a22;
-}
+.btn-comprar:hover { background-color: #143a22; }
 
 .btn-chat {
   background-color: #007bff;
@@ -557,35 +514,100 @@ h1 {
   cursor: pointer;
   flex-grow: 1;
   font-weight: bold;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-.btn-chat:hover {
-  background-color: #0056b3;
 }
 
-.btn-comprar.agotado {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-.rating-resumen {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+.input-cantidad {
+  padding: 10px;
+  font-size: 1.1em;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  width: 80px;
+  text-align: center;
 }
 
-.rating-text {
-  font-size: 0.95rem;
-  color: #555;
+.reviews-section-full {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.review-form-wrapper {
+    margin-top: 20px;
+}
+
+.rating-input-group {
+    margin-bottom: 15px;
+}
+.stars-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.rating-value {
+    background-color: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.label-comentario {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.textarea-estilizado {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #fafafa;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.textarea-estilizado:focus {
+    outline: none;
+    border-color: #1a4d2e;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+}
+
+.btn-review {
+    width: 100%;
+    margin-top: 15px;
+    background-color: #1a4d2e;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px -1px rgba(26, 77, 46, 0.2);
+}
+.btn-review:hover {
+    background-color: #143a22;
+    transform: translateY(-2px);
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 30px 0;
 }
 
 @media (max-width: 768px) {
-  .detalle-grid {
-    grid-template-columns: 1fr;
-  }
+  .detalle-grid { grid-template-columns: 1fr; }
 }
 </style>
