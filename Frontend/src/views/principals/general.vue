@@ -34,7 +34,9 @@ const productosParaGrid = computed(() => {
   let resultado = [...productos.value].filter(producto => {
     const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
     const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
-    return pasaBusqueda && pasaPrecio
+    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
+    
+    return pasaBusqueda && pasaPrecio && pasaCategoria
   })
   
   // Aplicar ordenación
