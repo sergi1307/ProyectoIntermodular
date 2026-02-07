@@ -21,17 +21,21 @@ const puntoSeleccionado = ref(null)
 const productosDelPunto = ref([])
 const cargandoProductosPunto = ref(false)
 
-// --- COMPUTED: FILTRADO Y ORDEN ---
-const productosFiltrados = computed(() => {
-  const texto = busqueda.value.trim().toLowerCase()
+// Variables para filtro de proximidad
+const ubicacionUsuario = ref(null)
+const distanciaMax = ref(50) // km - por defecto 50 para mostrar todo
+const distanciaMaxima = 50 // km máximo
 
+// --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + orden) ---
+const productosParaGrid = computed(() => {
+  const texto = busqueda.value.trim().toLowerCase()
+  
   let resultado = [...productos.value].filter(producto => {
     const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
-    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
-    const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
-    return pasaBusqueda && pasaCategoria && pasaPrecio
+    return pasaBusqueda
   })
-
+  
+  // Aplicar ordenación
   switch (ordenSeleccionado.value) {
     case 'precio-asc':
       resultado.sort((a, b) => a.price - b.price)
@@ -46,6 +50,35 @@ const productosFiltrados = computed(() => {
       resultado.sort((a, b) => b.name.localeCompare(a.name))
       break
   }
+  
+  return resultado
+})
+
+// --- COMPUTED: PRODUCTOS FILTRADOS (para mapa: búsqueda + categoría + precio + proximidad) ---
+const productosFiltrados = computed(() => {
+  const texto = busqueda.value.trim().toLowerCase()
+
+  let resultado = [...productos.value].filter(producto => {
+    const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
+    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
+    const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
+    
+    // Filtro de proximidad - SOLO si hay ubicación del usuario
+    let pasaProximidad = true
+    if (ubicacionUsuario.value && producto.delivery_point) {
+      const distancia = calcularDistancia(
+        ubicacionUsuario.value.lat,
+        ubicacionUsuario.value.lng,
+        producto.delivery_point.latitude,
+        producto.delivery_point['length']
+      )
+      pasaProximidad = distancia <= distanciaMax.value
+    }
+    // Si NO hay ubicación, se ignora el filtro de proximidad (pasaProximidad = true)
+    
+    return pasaBusqueda && pasaCategoria && pasaPrecio && pasaProximidad
+  })
+
   return resultado
 })
 
@@ -76,6 +109,36 @@ watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value
 // --- IR A DETALLE ---
 const irAlDetalle = (id) => {
     router.push({ name: 'product-details', params: { id: id } });
+};
+
+// --- OBTENER UBICACIÓN DEL USUARIO ---
+const obtenerUbicacion = () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                ubicacionUsuario.value = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+            },
+            (error) => {
+                console.error('Error obteniendo ubicación:', error);
+                // Si falla, el filtro de proximidad simplemente no se aplica
+            }
+        );
+    }
+};
+
+// --- CALCULAR DISTANCIA (Haversine) ---
+const calcularDistancia = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
 };
 
 // --- OBTENER PRODUCTOS ---
@@ -147,6 +210,7 @@ const cerrarProductosDelPunto = () => {
 onMounted(() =>{
     obtenerProductos();
     obtenerCategorias();
+    obtenerUbicacion();
 });
 </script>
 
@@ -216,11 +280,29 @@ onMounted(() =>{
                   <span>{{ precioMax }}€</span>
                 </div>
             </div>
+
+            <h4>Proximidad</h4>
+            <p>Distancia máxima: {{ distanciaMax }} km</p>
+            <div class="grupo-filtro">
+                <div class="sliders_control">
+                    <input
+                      type="range"
+                      min="2"
+                      :max="distanciaMaxima"
+                      step="2"
+                      v-model="distanciaMax"
+                    />
+                </div>
+                <div id="rango-precios">
+                  <span>2 km</span>
+                  <span>50 km</span>
+                </div>
+            </div>
         </aside>
 
         <main>
             <div id="resultados">
-                <span>{{ productosFiltrados.length }} Productos encontrados</span>
+                <span>{{ productosParaGrid.length }} Productos encontrados</span>
                 <select id="seleccionar" v-model="ordenSeleccionado">
                   <option value="">Ordenar por</option>
                   <option value="precio-desc">Precio: mayor a menor</option>
@@ -232,7 +314,7 @@ onMounted(() =>{
 
             <div id="productos">
                 <div 
-                    v-for="producto in productosFiltrados" 
+                    v-for="producto in productosParaGrid" 
                     :key="producto.id_product" 
                     class="tarjeta-producto"
                     @click="irAlDetalle(producto.id_product)">
