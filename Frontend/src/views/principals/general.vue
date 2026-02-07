@@ -16,6 +16,11 @@ const busqueda = ref('')
 const categoriaSeleccionada = ref(null)
 const ordenSeleccionado = ref('')
 
+// Variables para productos del delivery point seleccionado
+const puntoSeleccionado = ref(null)
+const productosDelPunto = ref([])
+const cargandoProductosPunto = ref(false)
+
 // --- COMPUTED: FILTRADO Y ORDEN ---
 const productosFiltrados = computed(() => {
   const texto = busqueda.value.trim().toLowerCase()
@@ -115,6 +120,28 @@ const obtenerCategorias = async () =>{
     } catch(error){
         console.error("Error cargando las categorias")
     }
+}
+
+// --- MOSTRAR PRODUCTOS DEL PUNTO SELECCIONADO ---
+const mostrarProductosDelPunto = async (punto) => {
+    puntoSeleccionado.value = punto;
+    cargandoProductosPunto.value = true;
+    productosDelPunto.value = [];
+
+    try {
+        const response = await axios.get(`http://localhost:8080/api/delivery_points/${punto.id}/products`);
+        productosDelPunto.value = response.data;
+    } catch (error) {
+        console.error('Error al cargar productos del punto:', error);
+        alert('No se pudieron cargar los productos de este punto de venta');
+    } finally {
+        cargandoProductosPunto.value = false;
+    }
+}
+
+const cerrarProductosDelPunto = () => {
+    puntoSeleccionado.value = null;
+    productosDelPunto.value = [];
 }
 
 onMounted(() =>{
@@ -245,12 +272,47 @@ onMounted(() =>{
             <!-- Sección del mapa debajo de productos -->
             <div v-if="tiendasFiltradas.length > 0" class="seccion-mapa">
                 <h2>Puntos de Venta</h2>
-                <p class="descripcion-mapa">Explora en el mapa dónde encontrar estos productos</p>
+                <p class="descripcion-mapa">Haz click en un marcador para ver sus productos</p>
                 <mapa-puntosdeventa 
                     :puntos="tiendasFiltradas"
                     titulo=""
                     map-id="mapa-productos-general"
+                    @punto-seleccionado="mostrarProductosDelPunto"
                 />
+            </div>
+
+            <!-- Sección de productos del punto seleccionado -->
+            <div v-if="puntoSeleccionado" class="seccion-productos-punto">
+                <div class="cabecera-seccion">
+                    <h3>Productos en {{ puntoSeleccionado.name }}</h3>
+                    <button @click="cerrarProductosDelPunto" class="btn-cerrar">✕</button>
+                </div>
+
+                <div v-if="cargandoProductosPunto" class="cargando">
+                    Cargando productos...
+                </div>
+
+                <div v-else-if="productosDelPunto.length === 0" class="sin-productos">
+                    No hay productos disponibles en este punto de venta.
+                </div>
+
+                <div v-else class="grid-productos-punto">
+                    <router-link
+                        v-for="producto in productosDelPunto"
+                        :key="producto.id_product"
+                        :to="`/product-details/${producto.id_product}`"
+                        class="tarjeta-producto-mini"
+                    >
+                        <div class="imagen-mini">
+                            <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.name" />
+                        </div>
+                        <div class="info-mini">
+                            <h4>{{ producto.name }}</h4>
+                            <p class="precio-mini">{{ producto.price }}€ / {{ producto.type_stock }}</p>
+                            <p class="categoria-mini">{{ producto.category?.name }}</p>
+                        </div>
+                    </router-link>
+                </div>
             </div>
         </main>
     </div>
@@ -648,6 +710,107 @@ onMounted(() =>{
         color: #666;
         margin-bottom: 20px;
         font-size: 1rem;
+    }
+}
+
+.seccion-productos-punto {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px solid #1a4d2e;
+
+    .cabecera-seccion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h3 {
+            color: #1a4d2e;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .btn-cerrar {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #c82333;
+            }
+        }
+    }
+
+    .cargando, .sin-productos {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .grid-productos-punto {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+
+        .tarjeta-producto-mini {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            }
+
+            .imagen-mini {
+                height: 120px;
+                width: 100%;
+                background: #eee;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .info-mini {
+                padding: 12px;
+
+                h4 {
+                    font-size: 1rem;
+                    color: #1c5537;
+                    margin: 0 0 5px 0;
+                }
+
+                .precio-mini {
+                    font-weight: bold;
+                    color: #333;
+                    margin: 5px 0;
+                }
+
+                .categoria-mini {
+                    font-size: 0.85rem;
+                    color: #888;
+                    margin: 0;
+                }
+            }
+        }
     }
 }
 </style>
