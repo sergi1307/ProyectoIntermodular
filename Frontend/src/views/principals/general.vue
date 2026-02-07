@@ -23,8 +23,8 @@ const cargandoProductosPunto = ref(false)
 
 // Variables para filtro de proximidad
 const ubicacionUsuario = ref(null)
-const distanciaMax = ref(200) // km - por defecto 200 para mostrar todo
-const distanciaMaxima = 200 // km máximo
+const distanciaMax = ref(500) // km - por defecto 500 para mostrar todo
+const distanciaMaxima = 500 // km máximo
 const filtroProximidadActivo = ref(false) // Solo se activa cuando usuario mueve el slider
 
 // --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + precio + orden) ---
@@ -36,7 +36,19 @@ const productosParaGrid = computed(() => {
     const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
     const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
     
-    return pasaBusqueda && pasaPrecio && pasaCategoria
+    // Filtro de proximidad - SOLO si está activo Y hay ubicación
+    let pasaProximidad = true
+    if (filtroProximidadActivo.value && ubicacionUsuario.value && producto.delivery_point) {
+      const distancia = calcularDistancia(
+        ubicacionUsuario.value.lat,
+        ubicacionUsuario.value.lng,
+        producto.delivery_point.latitude,
+        producto.delivery_point['length']
+      )
+      pasaProximidad = distancia <= distanciaMax.value
+    }
+
+    return pasaBusqueda && pasaPrecio && pasaCategoria && pasaProximidad
   })
   
   // Aplicar ordenación
@@ -306,7 +318,7 @@ onMounted(() =>{
                 </div>
                 <div id="rango-precios">
                   <span>2 km</span>
-                  <span>200 km</span>
+                  <span>500 km</span>
                 </div>
             </div>
         </aside>
