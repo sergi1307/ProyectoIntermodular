@@ -248,6 +248,17 @@ onMounted(() =>{
                     </div>
                 </div>
             </div>
+
+            <!-- Sección del mapa debajo de productos -->
+            <div v-if="tiendasFiltradas.length > 0" class="seccion-mapa">
+                <h2>Puntos de Venta</h2>
+                <p class="descripcion-mapa">Explora en el mapa dónde encontrar estos productos</p>
+                <mapa-puntos-deventa 
+                    :puntos="tiendasFiltradas"
+                    titulo=""
+                    map-id="mapa-productos-general"
+                />
+            </div>
         </main>
     </div>
 </template>
@@ -664,6 +675,26 @@ onMounted(() =>{
                 }
             }
         }
+    }
+}
+
+.seccion-mapa {
+    margin-top: 40px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+
+    h2 {
+        color: #1a4d2e;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .descripcion-mapa {
+        color: #666;
+        margin-bottom: 20px;
+        font-size: 1rem;
     }
 }
 </style>
