@@ -25,6 +25,7 @@ const cargandoProductosPunto = ref(false)
 const ubicacionUsuario = ref(null)
 const distanciaMax = ref(50) // km - por defecto 50 para mostrar todo
 const distanciaMaxima = 50 // km máximo
+const filtroProximidadActivo = ref(false) // Solo se activa cuando usuario mueve el slider
 
 // --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + orden) ---
 const productosParaGrid = computed(() => {
@@ -63,9 +64,9 @@ const productosFiltrados = computed(() => {
     const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
     const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
     
-    // Filtro de proximidad - SOLO si hay ubicación del usuario
+    // Filtro de proximidad - SOLO si está activo Y hay ubicación
     let pasaProximidad = true
-    if (ubicacionUsuario.value && producto.delivery_point) {
+    if (filtroProximidadActivo.value && ubicacionUsuario.value && producto.delivery_point) {
       const distancia = calcularDistancia(
         ubicacionUsuario.value.lat,
         ubicacionUsuario.value.lng,
@@ -74,7 +75,7 @@ const productosFiltrados = computed(() => {
       )
       pasaProximidad = distancia <= distanciaMax.value
     }
-    // Si NO hay ubicación, se ignora el filtro de proximidad (pasaProximidad = true)
+    // Si el filtro NO está activo o NO hay ubicación, se muestran todos
     
     return pasaBusqueda && pasaCategoria && pasaPrecio && pasaProximidad
   })
@@ -105,6 +106,13 @@ const tiendasFiltradas = computed(() => {
 // --- WATCHERS DE RANGO ---
 watch(precioMin, (nuevoMin) => { if (nuevoMin > precioMax.value) precioMin.value = precioMax.value })
 watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value = precioMin.value })
+
+// Watcer para activar filtro de proximidad cuando usuario mueve el slider
+watch(distanciaMax, () => {
+  if (ubicacionUsuario.value) {
+    filtroProximidadActivo.value = true
+  }
+})
 
 // --- IR A DETALLE ---
 const irAlDetalle = (id) => {
