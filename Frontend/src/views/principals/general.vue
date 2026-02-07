@@ -636,6 +636,9 @@ onMounted(() =>{
     background: white;
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 
     h2 {
         color: #1a4d2e;

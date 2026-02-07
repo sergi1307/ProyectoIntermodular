@@ -114,7 +114,7 @@
               const limites = [];
               this.puntos.forEach(punto => {
                   const lat = punto.latitude;
-                  const lng = punto.length; 
+                  const lng = punto['length']; // Usar bracket notation porque 'length' es palabra reservada 
 
                   if (lat && lng) {
                       const marcador = L.marker([lat, lng]);
@@ -161,7 +161,7 @@
     }
     .tarjeta-mapa > div:nth-child(2) { 
         width: 100%; 
-        height: 800px;
+        height: 450px;
         border-radius: 15px; 
         border: 2px solid #eee;
         z-index: 1; 
