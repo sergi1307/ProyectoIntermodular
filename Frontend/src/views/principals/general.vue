@@ -304,7 +304,7 @@ onMounted(() =>{
                 </div>
                 <div id="rango-precios">
                   <span>2 km</span>
-                  <span>50 km</span>
+                  <span>100 km</span>
                 </div>
             </div>
         </aside>
