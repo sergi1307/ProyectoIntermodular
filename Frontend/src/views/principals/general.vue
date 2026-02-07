@@ -23,8 +23,8 @@ const cargandoProductosPunto = ref(false)
 
 // Variables para filtro de proximidad
 const ubicacionUsuario = ref(null)
-const distanciaMax = ref(100) // km - por defecto 100 para mostrar todo
-const distanciaMaxima = 100 // km máximo
+const distanciaMax = ref(200) // km - por defecto 200 para mostrar todo
+const distanciaMaxima = 200 // km máximo
 const filtroProximidadActivo = ref(false) // Solo se activa cuando usuario mueve el slider
 
 // --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + precio + orden) ---
@@ -304,7 +304,7 @@ onMounted(() =>{
                 </div>
                 <div id="rango-precios">
                   <span>2 km</span>
-                  <span>100 km</span>
+                  <span>200 km</span>
                 </div>
             </div>
         </aside>
