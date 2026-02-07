@@ -3,6 +3,7 @@ import axios from 'axios';
 import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
+import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
 const router = useRouter();
 const productos = ref([]);
@@ -42,6 +43,26 @@ const productosFiltrados = computed(() => {
       break
   }
   return resultado
+})
+
+// --- COMPUTED: TIENDAS FILTRADAS ---
+const tiendasFiltradas = computed(() => {
+  const tiendasUnicas = new Map();
+  
+  productosFiltrados.value.forEach(producto => {
+    const dp = producto.delivery_point;
+    if (dp && !tiendasUnicas.has(dp.id_delivery_point)) {
+      tiendasUnicas.set(dp.id_delivery_point, {
+        id: dp.id_delivery_point,
+        name: dp.name,
+        direction: dp.direction,
+        latitude: parseFloat(dp.latitude),
+        length: parseFloat(dp.length)
+      });
+    }
+  });
+  
+  return Array.from(tiendasUnicas.values());
 })
 
 // --- WATCHERS DE RANGO ---
