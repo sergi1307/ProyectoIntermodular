@@ -23,17 +23,18 @@ const cargandoProductosPunto = ref(false)
 
 // Variables para filtro de proximidad
 const ubicacionUsuario = ref(null)
-const distanciaMax = ref(50) // km - por defecto 50 para mostrar todo
-const distanciaMaxima = 50 // km máximo
+const distanciaMax = ref(100) // km - por defecto 100 para mostrar todo
+const distanciaMaxima = 100 // km máximo
 const filtroProximidadActivo = ref(false) // Solo se activa cuando usuario mueve el slider
 
-// --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + orden) ---
+// --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + precio + orden) ---
 const productosParaGrid = computed(() => {
   const texto = busqueda.value.trim().toLowerCase()
   
   let resultado = [...productos.value].filter(producto => {
     const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
-    return pasaBusqueda
+    const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
+    return pasaBusqueda && pasaPrecio
   })
   
   // Aplicar ordenación
