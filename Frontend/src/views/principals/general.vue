@@ -316,7 +316,7 @@ onMounted(() =>{
     margin-top: 20px;
 
     .barraLateral {
-        width: 250px;
+        width: 280px;
         padding: 25px;
         background-color: #fff;
         border-radius: 12px;
@@ -637,8 +637,6 @@ onMounted(() =>{
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
 
     h2 {
         color: #1a4d2e;
