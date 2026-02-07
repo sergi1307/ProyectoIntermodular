@@ -7,8 +7,7 @@ import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
 const router = useRouter();
 const productos = ref([]);
-const categorias = ref([]);
-const vistaActual = ref('grid'); 
+const categorias = ref([]); 
 
 const precioMin = ref(0)
 const precioMax = ref(100)
@@ -142,12 +141,6 @@ onMounted(() =>{
                     placeholder="Buscar...">
                 </input>
             </div>
-        <div id="selector">
-            <div id="borde">
-                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
-                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
-            </div>
-        </div>
     </div>
 
     <div id="contenedor-principal">
@@ -253,7 +246,7 @@ onMounted(() =>{
             <div v-if="tiendasFiltradas.length > 0" class="seccion-mapa">
                 <h2>Puntos de Venta</h2>
                 <p class="descripcion-mapa">Explora en el mapa dónde encontrar estos productos</p>
-                <mapa-puntos-deventa 
+                <mapa-puntosdeventa 
                     :puntos="tiendasFiltradas"
                     titulo=""
                     map-id="mapa-productos-general"
@@ -311,47 +304,6 @@ onMounted(() =>{
             width: 18px;
             height: 18px;
             opacity: 0.5;
-        }
-    }
-
-    #selector {
-        padding: 2%;
-        display: flex;
-        justify-content: center;
-
-        #borde {
-            display: flex;
-            background-color: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 4px;
-            width: fit-content;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-            button {
-                padding: 8px 20px;
-                border: none;
-                background-color: transparent;
-                color: #555;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 0.95rem;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-
-                &:hover {
-                    background-color: #f5f5f5;
-                }
-
-                &.activo {
-                    background-color: #1c5537;
-                    color: white;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-            }
         }
     }
 }
