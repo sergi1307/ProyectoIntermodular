@@ -10,8 +10,8 @@ const productos = ref([]);
 const categorias = ref([]); 
 
 const precioMin = ref(0)
-const precioMax = ref(100)
-const precioMaximo = 100 
+const precioMax = ref(500)
+const precioMaximo = 500 
 const busqueda = ref('')
 const categoriaSeleccionada = ref(null)
 const ordenSeleccionado = ref('')
