@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
 
+const url = import.meta.env.VITE_API_URL;
 
 // Almacena la lista de todas las conversaciones abiertas
 const listaDeConversaciones = ref([]);
@@ -78,7 +79,7 @@ const desplazarScrollAlFinal = () => {
 // Pide al servidor la lista general de chats (Bandeja de entrada)
 const cargarBandejaDeEntrada = async () => {
     try {
-        const respuesta = await axios.get("http://localhost:8080/api/messages/inbox", {
+        const respuesta = await axios.get(`${url}/api/messages/inbox`, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
         
@@ -93,7 +94,7 @@ const cargarBandejaDeEntrada = async () => {
 // Pide al servidor todos los mensajes de una conversación específica
 const cargarHistorialDeMensajes = async (idProducto, idOtroUsuario) => {
     try {
-        const respuesta = await axios.get("http://localhost:8080/api/messages/conversation", {
+        const respuesta = await axios.get(`${url}/api/messages/conversation`, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` },
             params: {
                 id_product: idProducto,
@@ -151,7 +152,7 @@ const enviarMensaje = async () => {
     };
 
     try {
-        await axios.post("http://localhost:8080/api/messages", datosMensaje, {
+        await axios.post(`${url}/api/messages`, datosMensaje, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
 

@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
 import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
+const url = import.meta.env.VITE_API_URL;
+
 const router = useRouter();
 const productos = ref([]);
 const categorias = ref([]); 
@@ -167,7 +169,7 @@ const calcularDistancia = (lat1, lon1, lat2, lon2) => {
 // --- OBTENER PRODUCTOS ---
 const obtenerProductos = async () => {
     try {
-        const resProductos = await axios.get("http://localhost:8080/api/products/", {
+        const resProductos = await axios.get(`${url}/api/products/`, {
             withCredentials: true
         });
 
@@ -181,7 +183,7 @@ const obtenerProductos = async () => {
         // Obtener media de reviews por producto
         productos.value.forEach(async (p) => {
             try {
-                const res = await axios.get(`http://localhost:8080/api/reviews/producto/${p.id_product}/media`);
+                const res = await axios.get(`${url}/api/reviews/producto/${p.id_product}/media`);
                 p.mediaRating = res.data.average ?? 0;
                 p.totalReviews = res.data.total_reviews ?? 0;
             } catch (err) {
@@ -199,7 +201,7 @@ const obtenerProductos = async () => {
 // --- OBTENER CATEGORIAS ---
 const obtenerCategorias = async () =>{
     try{
-        const resCategorias = await axios.get("http://localhost:8080/api/categories/", {
+        const resCategorias = await axios.get(`${url}/api/categories/`, {
             withCredentials: true
         });
         categorias.value = resCategorias.data;
@@ -215,7 +217,7 @@ const mostrarProductosDelPunto = async (punto) => {
     productosDelPunto.value = [];
 
     try {
-        const response = await axios.get(`http://localhost:8080/api/delivery_points/${punto.id}/products`);
+        const response = await axios.get(`${url}/api/delivery_points/${punto.id}/products`);
         productosDelPunto.value = response.data;
     } catch (error) {
         console.error('Error al cargar productos del punto:', error);
@@ -344,7 +346,7 @@ onMounted(() =>{
 
                     <div id="imagen-producto">
                         <img 
-                            :src="`http://localhost:8080/storage/${producto.image}`" 
+                            :src="`${url}/storage/${producto.image}`" 
                             :alt="producto.nombre">
                     </div>
 
@@ -409,7 +411,7 @@ onMounted(() =>{
                         class="tarjeta-producto-mini"
                     >
                         <div class="imagen-mini">
-                            <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.name" />
+                            <img :src="`${url}/storage/${producto.image}`" :alt="producto.name" />
                         </div>
                         <div class="info-mini">
                             <h4>{{ producto.name }}</h4>

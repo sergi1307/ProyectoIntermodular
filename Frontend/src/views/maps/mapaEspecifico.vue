@@ -53,6 +53,8 @@
 import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
 import axios from 'axios';
 
+const url = import.meta.env.VITE_API_URL;
+
 export default {
   name: 'MapaEspecifico',
   components: { MapaTiendas },
@@ -78,7 +80,7 @@ export default {
                  return;
             }
 
-            const response = await axios.get('http://localhost:8080/api/map', {
+            const response = await axios.get(`${url}/api/map`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 
@@ -131,7 +133,7 @@ export default {
         const token = localStorage.getItem('token');
         
         if (this.modoEdicion) {
-          await axios.put(`http://localhost:8080/api/delivery_points/update/${this.form.id}`, 
+          await axios.put(`${url}/api/delivery_points/update/${this.form.id}`, 
             this.form, 
             { headers: { 'Authorization': 'Bearer ' + token } }
           );
@@ -139,7 +141,7 @@ export default {
         } else {
           const user = JSON.parse(localStorage.getItem('user'));
           const userId = user.id_user;
-          await axios.post('http://localhost:8080/api/delivery_points/store', 
+          await axios.post(`${url}/api/delivery_points/store`, 
             {
               id_user: userId,
               name: this.form.name,
@@ -169,7 +171,7 @@ export default {
       try {
         const token = localStorage.getItem('token');
         
-        await axios.delete(`http://localhost:8080/api/delivery_points/destroy/${id}`, {
+        await axios.delete(`${url}/api/delivery_points/destroy/${id}`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         

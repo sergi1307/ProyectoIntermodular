@@ -2,10 +2,12 @@
 import axios from 'axios';
 import router from '../../routes/routes';
 
+const url = import.meta.env.VITE_API_URL;
+
 const cerrarSesion = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.post(`http://localhost:8080/api/auth/logout`, {}, {
+    const response = await axios.post(`${url}/api/auth/logout`, {}, {
       withCredentials: true,
       headers: {
         Authorization: `Bearer ${token}`

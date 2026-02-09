@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+
+const url = import.meta.env.VITE_API_URL;
+
 // Ajusta estas rutas según donde guardes este archivo
 import createProduct from "../forms/createProductForm.vue";
 import editProduct from "../forms/editProductForm.vue";
@@ -34,10 +37,10 @@ const obtenerDatos = async () => {
       // 2. CORRECCIÓN AQUÍ:
       // - Usamos comillas invertidas (`) para meter la variable ${userId}
       // - Añadimos el token en el header por seguridad
-      axios.get(`http://localhost:8080/api/products/mine?id_user=${userId}`, {
+      axios.get(`${url}/api/products/mine?id_user=${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      axios.get("http://localhost:8080/api/categories"),
+      axios.get(`${url}/api/categories`),
     ]);
 
     // Corrección para asegurar que sea un array
@@ -86,7 +89,7 @@ const eliminarProducto = async (id) => {
   if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
   try {
     // Añadimos también el token al borrar por si acaso
-    await axios.delete(`http://localhost:8080/api/products/destroy/${id}`, {
+    await axios.delete(`${url}/api/products/destroy/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     await obtenerDatos(); // Recarreguem la llista després d'eliminar

@@ -2,6 +2,8 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 
+const url = import.meta.env.VITE_API_URL;
+
 const props = defineProps({
   reviewsData: Object,
   productId: Number
@@ -55,7 +57,7 @@ const fetchPage = async (page) => {
 
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/reviews/producto/${props.productId}?page=${page}`
+      `${url}/api/reviews/producto/${props.productId}?page=${page}`
     );
     reviewsVisibles.value = data.data || []
     pagina.value = data.current_page || 1
