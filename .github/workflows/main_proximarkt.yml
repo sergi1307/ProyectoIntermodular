@@ -34,7 +34,7 @@ jobs:
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
       - run: |
-          cd src
+          cd Backend/src
           composer validate --no-check-publish
           composer install --prefer-dist --no-progress
 
@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: php-app
-          path: src
+          path: Backend/src
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,5 +73,6 @@ jobs:
           package: .
 
           
+
 
 
