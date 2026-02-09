@@ -3,30 +3,55 @@ import axios from 'axios';
 import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
+import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
 const router = useRouter();
 const productos = ref([]);
-const categorias = ref([]);
-const vistaActual = ref('grid'); 
+const categorias = ref([]); 
 
 const precioMin = ref(0)
-const precioMax = ref(100)
-const precioMaximo = 100 
+const precioMax = ref(500)
+const precioMaximo = 500 
 const busqueda = ref('')
 const categoriaSeleccionada = ref(null)
 const ordenSeleccionado = ref('')
 
-// --- COMPUTED: FILTRADO Y ORDEN ---
-const productosFiltrados = computed(() => {
-  const texto = busqueda.value.trim().toLowerCase()
+// Variables para productos del delivery point seleccionado
+const puntoSeleccionado = ref(null)
+const productosDelPunto = ref([])
+const cargandoProductosPunto = ref(false)
 
+// Variables para filtro de proximidad
+const ubicacionUsuario = ref(null)
+const distanciaMax = ref(500) // km - por defecto 500 para mostrar todo
+const distanciaMaxima = 500 // km máximo
+const filtroProximidadActivo = ref(false) // Solo se activa cuando usuario mueve el slider
+
+// --- COMPUTED: PRODUCTOS PARA GRID (búsqueda + precio + orden) ---
+const productosParaGrid = computed(() => {
+  const texto = busqueda.value.trim().toLowerCase()
+  
   let resultado = [...productos.value].filter(producto => {
     const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
-    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
     const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
-    return pasaBusqueda && pasaCategoria && pasaPrecio
-  })
+    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
+    
+    // Filtro de proximidad - SOLO si está activo Y hay ubicación
+    let pasaProximidad = true
+    if (filtroProximidadActivo.value && ubicacionUsuario.value && producto.delivery_point) {
+      const distancia = calcularDistancia(
+        ubicacionUsuario.value.lat,
+        ubicacionUsuario.value.lng,
+        producto.delivery_point.latitude,
+        producto.delivery_point['length']
+      )
+      pasaProximidad = distancia <= distanciaMax.value
+    }
 
+    return pasaBusqueda && pasaPrecio && pasaCategoria && pasaProximidad
+  })
+  
+  // Aplicar ordenación
   switch (ordenSeleccionado.value) {
     case 'precio-asc':
       resultado.sort((a, b) => a.price - b.price)
@@ -41,16 +66,102 @@ const productosFiltrados = computed(() => {
       resultado.sort((a, b) => b.name.localeCompare(a.name))
       break
   }
+  
   return resultado
+})
+
+// --- COMPUTED: PRODUCTOS FILTRADOS (para mapa: búsqueda + categoría + precio + proximidad) ---
+const productosFiltrados = computed(() => {
+  const texto = busqueda.value.trim().toLowerCase()
+
+  let resultado = [...productos.value].filter(producto => {
+    const pasaBusqueda = !texto || producto.name.toLowerCase().includes(texto)
+    const pasaCategoria = categoriaSeleccionada.value === null || producto.category?.id_category === categoriaSeleccionada.value
+    const pasaPrecio = producto.price >= precioMin.value && producto.price <= precioMax.value
+    
+    // Filtro de proximidad - SOLO si está activo Y hay ubicación
+    let pasaProximidad = true
+    if (filtroProximidadActivo.value && ubicacionUsuario.value && producto.delivery_point) {
+      const distancia = calcularDistancia(
+        ubicacionUsuario.value.lat,
+        ubicacionUsuario.value.lng,
+        producto.delivery_point.latitude,
+        producto.delivery_point['length']
+      )
+      pasaProximidad = distancia <= distanciaMax.value
+    }
+    // Si el filtro NO está activo o NO hay ubicación, se muestran todos
+    
+    return pasaBusqueda && pasaCategoria && pasaPrecio && pasaProximidad
+  })
+
+  return resultado
+})
+
+// --- COMPUTED: TIENDAS FILTRADAS ---
+const tiendasFiltradas = computed(() => {
+  const tiendasUnicas = new Map();
+  
+  productosFiltrados.value.forEach(producto => {
+    const dp = producto.delivery_point;
+    if (dp && !tiendasUnicas.has(dp.id_delivery_point)) {
+      tiendasUnicas.set(dp.id_delivery_point, {
+        id: dp.id_delivery_point,
+        name: dp.name,
+        direction: dp.direction,
+        latitude: parseFloat(dp.latitude),
+        length: parseFloat(dp.length)
+      });
+    }
+  });
+  
+  return Array.from(tiendasUnicas.values());
 })
 
 // --- WATCHERS DE RANGO ---
 watch(precioMin, (nuevoMin) => { if (nuevoMin > precioMax.value) precioMin.value = precioMax.value })
 watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value = precioMin.value })
 
+// Watcer para activar filtro de proximidad cuando usuario mueve el slider
+watch(distanciaMax, () => {
+  if (ubicacionUsuario.value) {
+    filtroProximidadActivo.value = true
+  }
+})
+
 // --- IR A DETALLE ---
 const irAlDetalle = (id) => {
     router.push({ name: 'product-details', params: { id: id } });
+};
+
+// --- OBTENER UBICACIÓN DEL USUARIO ---
+const obtenerUbicacion = () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                ubicacionUsuario.value = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+            },
+            (error) => {
+                console.error('Error obteniendo ubicación:', error);
+                // Si falla, el filtro de proximidad simplemente no se aplica
+            }
+        );
+    }
+};
+
+// --- CALCULAR DISTANCIA (Haversine) ---
+const calcularDistancia = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
 };
 
 // --- OBTENER PRODUCTOS ---
@@ -97,9 +208,32 @@ const obtenerCategorias = async () =>{
     }
 }
 
+// --- MOSTRAR PRODUCTOS DEL PUNTO SELECCIONADO ---
+const mostrarProductosDelPunto = async (punto) => {
+    puntoSeleccionado.value = punto;
+    cargandoProductosPunto.value = true;
+    productosDelPunto.value = [];
+
+    try {
+        const response = await axios.get(`http://localhost:8080/api/delivery_points/${punto.id}/products`);
+        productosDelPunto.value = response.data;
+    } catch (error) {
+        console.error('Error al cargar productos del punto:', error);
+        alert('No se pudieron cargar los productos de este punto de venta');
+    } finally {
+        cargandoProductosPunto.value = false;
+    }
+}
+
+const cerrarProductosDelPunto = () => {
+    puntoSeleccionado.value = null;
+    productosDelPunto.value = [];
+}
+
 onMounted(() =>{
     obtenerProductos();
     obtenerCategorias();
+    obtenerUbicacion();
 });
 </script>
 
@@ -121,12 +255,6 @@ onMounted(() =>{
                     placeholder="Buscar...">
                 </input>
             </div>
-        <div id="selector">
-            <div id="borde">
-                <router-link to="/general"><button :class="{ 'activo': vistaActual === 'grid' }" @click="vistaActual = 'grid'">Productos</button></router-link>
-                <router-link to="/mapa"><button :class="{ 'activo': vistaActual === 'map' }" @click="vistaActual = 'map'">Mapa</button></router-link>
-            </div>
-        </div>
     </div>
 
     <div id="contenedor-principal">
@@ -153,7 +281,7 @@ onMounted(() =>{
                     <input
                       type="range"
                       min="0"
-                      :max="precioMaximo"
+                      :max="precioMax"
                       v-model="precioMin"
                     />
                     <div id="rango-precios">
@@ -165,7 +293,7 @@ onMounted(() =>{
                     <p>Máximo</p>
                     <input
                       type="range"
-                      min="0"
+                      :min="precioMin"
                       :max="precioMaximo"
                       v-model="precioMax"
                     />
@@ -175,11 +303,29 @@ onMounted(() =>{
                   <span>{{ precioMax }}€</span>
                 </div>
             </div>
+
+            <h4>Proximidad</h4>
+            <p>Distancia máxima: {{ distanciaMax }} km</p>
+            <div class="grupo-filtro">
+                <div class="sliders_control">
+                    <input
+                      type="range"
+                      min="2"
+                      :max="distanciaMaxima"
+                      step="2"
+                      v-model="distanciaMax"
+                    />
+                </div>
+                <div id="rango-precios">
+                  <span>2 km</span>
+                  <span>500 km</span>
+                </div>
+            </div>
         </aside>
 
         <main>
             <div id="resultados">
-                <span>{{ productosFiltrados.length }} Productos encontrados</span>
+                <span>{{ productosParaGrid.length }} Productos encontrados</span>
                 <select id="seleccionar" v-model="ordenSeleccionado">
                   <option value="">Ordenar por</option>
                   <option value="precio-desc">Precio: mayor a menor</option>
@@ -191,7 +337,7 @@ onMounted(() =>{
 
             <div id="productos">
                 <div 
-                    v-for="producto in productosFiltrados" 
+                    v-for="producto in productosParaGrid" 
                     :key="producto.id_product" 
                     class="tarjeta-producto"
                     @click="irAlDetalle(producto.id_product)">
@@ -225,6 +371,52 @@ onMounted(() =>{
                             <button id="añadir" @click.stop>+</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Sección del mapa debajo de productos -->
+            <div v-if="tiendasFiltradas.length > 0" class="seccion-mapa">
+                <h2>Puntos de Venta</h2>
+                <p class="descripcion-mapa">Haz click en un marcador para ver sus productos</p>
+                <mapa-puntosdeventa 
+                    :puntos="tiendasFiltradas"
+                    titulo=""
+                    map-id="mapa-productos-general"
+                    @punto-seleccionado="mostrarProductosDelPunto"
+                />
+            </div>
+
+            <!-- Sección de productos del punto seleccionado -->
+            <div v-if="puntoSeleccionado" class="seccion-productos-punto">
+                <div class="cabecera-seccion">
+                    <h3>Productos en {{ puntoSeleccionado.name }}</h3>
+                    <button @click="cerrarProductosDelPunto" class="btn-cerrar">✕</button>
+                </div>
+
+                <div v-if="cargandoProductosPunto" class="cargando">
+                    Cargando productos...
+                </div>
+
+                <div v-else-if="productosDelPunto.length === 0" class="sin-productos">
+                    No hay productos disponibles en este punto de venta.
+                </div>
+
+                <div v-else class="grid-productos-punto">
+                    <router-link
+                        v-for="producto in productosDelPunto"
+                        :key="producto.id_product"
+                        :to="`/product-details/${producto.id_product}`"
+                        class="tarjeta-producto-mini"
+                    >
+                        <div class="imagen-mini">
+                            <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.name" />
+                        </div>
+                        <div class="info-mini">
+                            <h4>{{ producto.name }}</h4>
+                            <p class="precio-mini">{{ producto.price }}€ / {{ producto.type_stock }}</p>
+                            <p class="categoria-mini">{{ producto.category?.name }}</p>
+                        </div>
+                    </router-link>
                 </div>
             </div>
         </main>
@@ -281,47 +473,6 @@ onMounted(() =>{
             opacity: 0.5;
         }
     }
-
-    #selector {
-        padding: 2%;
-        display: flex;
-        justify-content: center;
-
-        #borde {
-            display: flex;
-            background-color: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 4px;
-            width: fit-content;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-            button {
-                padding: 8px 20px;
-                border: none;
-                background-color: transparent;
-                color: #555;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 0.95rem;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-
-                &:hover {
-                    background-color: #f5f5f5;
-                }
-
-                &.activo {
-                    background-color: #1c5537;
-                    color: white;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-            }
-        }
-    }
 }
 
 #contenedor-principal {
@@ -332,7 +483,7 @@ onMounted(() =>{
     margin-top: 20px;
 
     .barraLateral {
-        width: 250px;
+        width: 280px;
         padding: 25px;
         background-color: #fff;
         border-radius: 12px;
@@ -640,6 +791,128 @@ onMounted(() =>{
                     #imagen-producto {
                         height: 200px;
                     }
+                }
+            }
+        }
+    }
+}
+
+.seccion-mapa {
+    margin-top: 40px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+
+    h2 {
+        color: #1a4d2e;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .descripcion-mapa {
+        color: #666;
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+}
+
+.seccion-productos-punto {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px solid #1a4d2e;
+
+    .cabecera-seccion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h3 {
+            color: #1a4d2e;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .btn-cerrar {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #c82333;
+            }
+        }
+    }
+
+    .cargando, .sin-productos {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .grid-productos-punto {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+
+        .tarjeta-producto-mini {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            }
+
+            .imagen-mini {
+                height: 120px;
+                width: 100%;
+                background: #eee;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .info-mini {
+                padding: 12px;
+
+                h4 {
+                    font-size: 1rem;
+                    color: #1c5537;
+                    margin: 0 0 5px 0;
+                }
+
+                .precio-mini {
+                    font-weight: bold;
+                    color: #333;
+                    margin: 5px 0;
+                }
+
+                .categoria-mini {
+                    font-size: 0.85rem;
+                    color: #888;
+                    margin: 0;
                 }
             }
         }
