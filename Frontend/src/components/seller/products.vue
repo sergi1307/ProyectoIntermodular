@@ -4,12 +4,10 @@ import axios from "axios";
 
 const url = import.meta.env.VITE_API_URL;
 
-// Ajusta estas rutas según donde guardes este archivo
 import createProduct from "../forms/createProductForm.vue";
 import editProduct from "../forms/editProductForm.vue";
 import BaseModal from "../modals/Modal.vue";
 
-// --- TOTA LA LÒGICA DE PRODUCTES VE ACÍ ---
 const productos = ref([]);
 const categorias = ref([]);
 const openCrear = ref(false);
@@ -19,31 +17,25 @@ const busqueda = ref("");
 const filtroCategoria = ref("");
 const filtroEstado = ref("");
 const obtenerDatos = async () => {
-  // 1. OBTENEMOS EL USUARIO Y EL TOKEN DEL LOCALSTORAGE
   const userStr = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
-  // Si no hay usuario o token, no podemos cargar sus productos
   if (!userStr || !token) {
     console.error("No hay sesión iniciada.");
     return;
   }
 
   const user = JSON.parse(userStr);
-  const userId = user.id_user; // Cogemos el ID
+  const userId = user.id_user;
 
   try {
     const [resProductos, resCategorias] = await Promise.all([
-      // 2. CORRECCIÓN AQUÍ:
-      // - Usamos comillas invertidas (`) para meter la variable ${userId}
-      // - Añadimos el token en el header por seguridad
       axios.get(`${url}/api/products/mine?id_user=${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
       axios.get(`${url}/api/categories`),
     ]);
 
-    // Corrección para asegurar que sea un array
     const data = resProductos.data;
     productos.value = Array.isArray(data) ? data : data.data || [];
 
@@ -88,11 +80,10 @@ const agregarProducto = async () => {
 const eliminarProducto = async (id) => {
   if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
   try {
-    // Añadimos también el token al borrar por si acaso
     await axios.delete(`${url}/api/products/destroy/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
-    await obtenerDatos(); // Recarreguem la llista després d'eliminar
+    await obtenerDatos();
   } catch (error) {
     console.error("Error eliminando producto:", error);
     alert("No se pudo eliminar el producto.");
