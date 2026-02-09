@@ -34,7 +34,7 @@ jobs:
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
       - run: |
-          cd backend
+          cd Backend
           composer validate --no-check-publish
           composer install --prefer-dist --no-progress
 
@@ -73,3 +73,4 @@ jobs:
           package: .
 
           
+
