@@ -5,6 +5,8 @@
     import { useRouter } from 'vue-router';
     
     const router = useRouter();
+    const url = import.meta.env.VITE_API_URL;
+    console.log(url);
 
     // Declarem les variables reactives que rebrem del formulari
     const name = ref('');
@@ -37,7 +39,7 @@
 
         try {
             // Fem la petició axios al backend enviant les dades necessàries per a fer el registre
-            const response = await axios.post('http://localhost:8080/api/auth/register', datos, {
+            const response = await axios.post(`${url}/api/auth/register`, datos, {
                 withCredentials: true
             });
             console.log("Respuesta del servidor:", response.data);
