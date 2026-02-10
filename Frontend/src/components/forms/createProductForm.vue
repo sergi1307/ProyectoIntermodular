@@ -2,6 +2,8 @@
 import { ref, defineProps, defineEmits, onMounted } from 'vue'
 import axios from 'axios'
 
+const url = import.meta.env.VITE_API_URL;
+
 // Recibimos categorías del padre (como tenías antes)
 const props = defineProps({
   categorias: {
@@ -30,7 +32,7 @@ const cargarPuntosEntrega = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if(!user) return;
 
-    const res = await axios.get(`http://localhost:8080/api/delivery_points/myPoints?id_user=${user.id_user}`, {
+    const res = await axios.get(`${url}/api/delivery_points/myPoints?id_user=${user.id_user}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
 

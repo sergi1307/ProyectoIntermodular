@@ -3,6 +3,8 @@ import { ref, onMounted,computed  } from "vue";
 import axios from "axios";
 import Modal from "../../components/modals/Modal.vue";
 
+const url = import.meta.env.VITE_API_URL;
+
 const compras = ref([]);
 const mostrarModal = ref(false);
 const compraSeleccionada = ref(null);
@@ -20,7 +22,7 @@ const verDetalles = (compra) => {
 
 const obtenerCompras = async () => {
     try {
-        const response = await axios.get("http://localhost:8080/api/sales/my-purchases", {
+        const response = await axios.get(`${url}/api/sales/my-purchases`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -33,7 +35,7 @@ const obtenerCompras = async () => {
 }
 
 const rechazarCompra = async (compra) => {
-  const url = `http://localhost:8080/api/sales/update/${compra.id_sale}`;
+  const url = `${url}/api/sales/update/${compra.id_sale}`;
   console.log(url);
   try {
     const payload = {

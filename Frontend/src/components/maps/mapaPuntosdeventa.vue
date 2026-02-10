@@ -114,7 +114,7 @@
               const limites = [];
               this.puntos.forEach(punto => {
                   const lat = punto.latitude;
-                  const lng = punto.length; 
+                  const lng = punto['length']; // Usar bracket notation porque 'length' es palabra reservada 
 
                   if (lat && lng) {
                       const marcador = L.marker([lat, lng]);
@@ -126,8 +126,7 @@
                               marcador.openPopup();
                           });
                       } else if (!this.esEditable) {
-                          // Modo visualización: emitir evento para mostrar productos
-                          marcador.bindPopup(`<b>${punto.name}</b><br>${punto.direction}<br><em>Click para ver productos</em>`);
+                          // Modo visualización: solo emitir evento sin popup
                           marcador.on('click', () => {
                               this.$emit('punto-seleccionado', punto);
                           });
@@ -161,7 +160,7 @@
     }
     .tarjeta-mapa > div:nth-child(2) { 
         width: 100%; 
-        height: 800px;
+        height: 450px;
         border-radius: 15px; 
         border: 2px solid #eee;
         z-index: 1; 

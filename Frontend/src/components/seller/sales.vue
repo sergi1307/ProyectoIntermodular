@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Modal from "../modals/Modal.vue";
 
+const url = import.meta.env.VITE_API_URL;
+
 const ventas = ref([]);
 const mostrarModal = ref(false);
 const ventaSeleccionada = ref(null);
@@ -12,7 +14,7 @@ const filtroEstado = ref('');
 const obtenerVentas = async () => {
   console.log(localStorage.getItem("token"));
   try {
-    const response = await axios.get("http://localhost:8080/api/sales/my-orders", {
+    const response = await axios.get(`${url}/api/sales/my-orders`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -25,7 +27,7 @@ const obtenerVentas = async () => {
 };
 
 const rechazarVenta = async (ventas) => {
-  const url = `http://localhost:8080/api/sales/update/${ventas.id_sale}`;
+  const url = `${url}/api/sales/update/${ventas.id_sale}`;
 
   try {
     const payload = {
@@ -48,7 +50,7 @@ const rechazarVenta = async (ventas) => {
 }
 
 const aceptarVenta = async (venta) => {
-  const url = `http://localhost:8080/api/sales/update/${venta.id_sale}`;
+  const url = `${url}/api/sales/update/${venta.id_sale}`;
 
   try {
     const userString = localStorage.getItem("user");

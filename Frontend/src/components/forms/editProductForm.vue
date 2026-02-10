@@ -2,6 +2,8 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+const url = import.meta.env.VITE_API_URL;
+
 const props = defineProps({
   producto: { type: Object, required: true }
 })
@@ -24,7 +26,7 @@ const imagen = ref(null)
 // 1. Cargar Categorías
 const cargarCategorias = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/api/categories')
+    const res = await axios.get(`${url}/api/categories`)
     categorias.value = res.data
   } catch (error) {
     console.error('Error cargando categorías:', error)
@@ -37,7 +39,7 @@ const cargarPuntosEntrega = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if(!user) return;
 
-    const res = await axios.get(`http://localhost:8080/api/delivery_points?id_user=${user.id_user}`, {
+    const res = await axios.get(`${url}/api/delivery_points?id_user=${user.id_user}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     puntosEntrega.value = res.data;
@@ -118,7 +120,7 @@ const guardar = async () => {
 
   try {
     await axios.put(
-      `http://localhost:8080/api/products/update/${props.producto.id_product}`,
+      `${url}/api/products/update/${props.producto.id_product}`,
       formData, 
       {
         headers: { 

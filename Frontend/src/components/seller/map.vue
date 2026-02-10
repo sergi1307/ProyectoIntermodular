@@ -2,6 +2,8 @@
 import mapaEspecifico from "../../views/maps/mapaEspecifico.vue";
 import axios from "axios";
 
+const url = import.meta.env.VITE_API_URL;
+
 export default {
   name: "SellerMapWrapper",
   components: {
@@ -25,7 +27,7 @@ export default {
           return;
         }
 
-        const response = await axios.get("http://localhost:8080/api/map", {
+        const response = await axios.get(`${url}/api/map`, {
           headers: { Authorization: "Bearer " + token },
         });
 
