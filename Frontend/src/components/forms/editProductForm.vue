@@ -2,7 +2,8 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const props = defineProps({
   producto: { type: Object, required: true }

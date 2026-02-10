@@ -2,7 +2,8 @@
 import axios from 'axios';
 import router from '../../routes/routes';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const cerrarSesion = async () => {
   try {
