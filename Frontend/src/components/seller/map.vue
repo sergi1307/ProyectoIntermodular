@@ -2,7 +2,7 @@
 import mapaEspecifico from "../../views/maps/mapaEspecifico.vue";
 import axios from "axios";
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 export default {
   name: "SellerMapWrapper",
