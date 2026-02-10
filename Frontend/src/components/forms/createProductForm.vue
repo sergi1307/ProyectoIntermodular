@@ -2,7 +2,7 @@
 import { ref, defineProps, defineEmits, onMounted } from 'vue'
 import axios from 'axios'
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 // Recibimos categorías del padre (como tenías antes)
 const props = defineProps({

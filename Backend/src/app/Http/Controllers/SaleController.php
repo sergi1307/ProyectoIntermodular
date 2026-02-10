@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\Product;
+use App\Notifications\EstadoPedidoNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -187,6 +188,14 @@ class SaleController extends Controller
         // Guardamos los cambios
         $sale->save();
         $product->save();
+
+        // Obtenemos el comprador
+        $comprador = $sale->buyer;
+
+        // Enviamos notificación al comprador
+        if ($comprador) {
+            $comprador->notify(new EstadoPedidoNotification($sale));
+        }
 
         // Devolvemos la respuesta en formato json
         return response()->json(['message' => 'Venta actualizada', 'sale' => $sale], 200);

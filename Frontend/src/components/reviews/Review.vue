@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 const props = defineProps({
   reviewsData: Object,

@@ -6,6 +6,7 @@ import general from '../views/principals/general.vue';
 import compras from '../views/principals/compras.vue';
 import ProductDetails from '../views/products/ProductDetails.vue';
 import message from '../views/message/message.vue';
+import notifications from '../views/notifications/notifications.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -60,6 +61,12 @@ const routes = [
         component: message,
         meta: { vendedor: true }
     },
+    {
+        path: '/mis-notificaciones',
+        name: 'misNotificaciones',
+        component: notifications,
+        meta: { comprador: true }
+    }
 ];
 
 const router = createRouter({

@@ -3,7 +3,7 @@ import { ref, onMounted,computed  } from "vue";
 import axios from "axios";
 import Modal from "../../components/modals/Modal.vue";
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 const compras = ref([]);
 const mostrarModal = ref(false);
