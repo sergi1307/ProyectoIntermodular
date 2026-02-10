@@ -2,7 +2,7 @@
 import axios from 'axios';
 import router from '../../routes/routes';
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 const cerrarSesion = async () => {
   try {
@@ -37,9 +37,14 @@ const cerrarSesion = async () => {
         <img src="../../assets/icons/dashboard.png" alt="Dashboard">
       </router-link>
 
-      <router-link to="message"><button class="icono-btn">
+      <button class="icono-btn">
         <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
+      </button>
+
+      <router-link to="message"><button class="icono-btn">
+        <img src="../../assets/icons/mensajes.png" alt="Notificaciones"/> 
       </button></router-link>
+
 
       <button class="icono-btn">
         <img src="../../assets/icons/carrito.png" alt="Carrito" />

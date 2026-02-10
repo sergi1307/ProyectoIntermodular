@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_URL_DEV;
 
 import createProduct from "../forms/createProductForm.vue";
 import editProduct from "../forms/editProductForm.vue";
