@@ -129,6 +129,11 @@ watch(distanciaMax, () => {
   }
 })
 
+// Watcher para cerrar el detalle del punto si cambian los filtros importantes
+watch([busqueda, categoriaSeleccionada, precioMin, precioMax, distanciaMax], () => {
+    cerrarProductosDelPunto();
+});
+
 // --- IR A DETALLE ---
 const irAlDetalle = (id) => {
     router.push({ name: 'product-details', params: { id: id } });
@@ -281,7 +286,7 @@ onMounted(() =>{
                     <input
                       type="range"
                       min="0"
-                      :max="precioMax"
+                      :max="precioMaximo"
                       v-model="precioMin"
                     />
                     <div id="rango-precios">
@@ -293,7 +298,7 @@ onMounted(() =>{
                     <p>Máximo</p>
                     <input
                       type="range"
-                      :min="precioMin"
+                      min="0"
                       :max="precioMaximo"
                       v-model="precioMax"
                     />
