@@ -118,9 +118,11 @@ const tiendasFiltradas = computed(() => {
   return Array.from(tiendasUnicas.values());
 })
 
-// --- WATCHERS DE RANGO ---
-watch(precioMin, (nuevoMin) => { if (nuevoMin > precioMax.value) precioMin.value = precioMax.value })
-watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value = precioMin.value })
+
+// --- WATCHERS DE RANGO ELIMINADOS ---
+// Los sliders ahora tienen restricciones físicas (min/max dinámicos)
+// que previenen estados inválidos directamente en el navegador
+
 
 // Watcer para activar filtro de proximidad cuando usuario mueve el slider
 watch(distanciaMax, () => {
@@ -306,7 +308,7 @@ onMounted(() =>{
                     <input
                       type="range"
                       min="0"
-                      :max="precioMaximo"
+                      :max="precioMax"
                       v-model="precioMin"
                     />
                     <div id="rango-precios">
