@@ -318,7 +318,7 @@ onMounted(() =>{
                     <p>Máximo</p>
                     <input
                       type="range"
-                      min="0"
+                      :min="precioMin"
                       :max="precioMaximo"
                       v-model="precioMax"
                     />
