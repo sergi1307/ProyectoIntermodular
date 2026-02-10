@@ -434,7 +434,7 @@ onMounted(() =>{
                         class="tarjeta-producto-mini"
                     >
                         <div class="imagen-mini">
-                            <img :src="`http://localhost:8080/storage/${producto.image}`" :alt="producto.name" />
+                            <img :src="`http://localhost:8080/storage/${producto.image}`" />
                         </div>
                         <div class="info-mini">
                             <h4>{{ producto.name }}</h4>
