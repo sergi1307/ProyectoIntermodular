@@ -5,7 +5,7 @@
     import { useRouter } from 'vue-router';
     
     const router = useRouter();
-    const url = import.meta.env.VITE_API_URL_DEV;
+    import url from '../../config/api';
     console.log(url);
 
     // Declarem les variables reactives que rebrem del formulari

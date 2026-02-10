@@ -5,7 +5,8 @@ import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
 import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const router = useRouter();
 const productos = ref([]);

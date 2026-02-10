@@ -53,7 +53,8 @@
 import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_API_URL;
+import url from '../../config/api';
+console.log(url);
 
 export default {
   name: 'MapaEspecifico',
