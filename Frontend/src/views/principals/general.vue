@@ -118,12 +118,6 @@ const tiendasFiltradas = computed(() => {
   return Array.from(tiendasUnicas.values());
 })
 
-
-// --- WATCHERS DE RANGO ELIMINADOS ---
-// Los sliders ahora tienen restricciones físicas (min/max dinámicos)
-// que previenen estados inválidos directamente en el navegador
-
-
 // Watcer para activar filtro de proximidad cuando usuario mueve el slider
 watch(distanciaMax, () => {
   if (ubicacionUsuario.value) {
