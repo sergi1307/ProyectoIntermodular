@@ -1,10 +1,10 @@
 <script setup>
 import axios from 'axios';
 import router from '../../routes/routes';
-
+import { useNotificaciones } from '@/composables/useNotificaciones';
 import url from '../../config/api';
 console.log(url);
-
+const notificacion = useNotificaciones();
 const cerrarSesion = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -14,7 +14,7 @@ const cerrarSesion = async () => {
         Authorization: `Bearer ${token}`
       }
     });
-
+    notificacion.exito("Sesión cerrada correctamente"); 
     console.log("Cuenta cerrada correctamente");
     router.push('/');
   } catch (error) {

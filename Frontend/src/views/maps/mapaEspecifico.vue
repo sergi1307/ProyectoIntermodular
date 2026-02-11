@@ -52,6 +52,7 @@
 <script>
 import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
 import axios from 'axios';
+import { useNotificaciones } from '@/composables/useNotificaciones';
 
 import url from '../../config/api';
 console.log(url);
@@ -59,6 +60,10 @@ console.log(url);
 export default {
   name: 'MapaEspecifico',
   components: { MapaTiendas },
+  setup() {
+    const notificacion = useNotificaciones();
+    return { notificacion };
+  },
   data() {
     return {
       misTiendas: [],
@@ -138,7 +143,7 @@ export default {
             this.form, 
             { headers: { 'Authorization': 'Bearer ' + token } }
           );
-          alert('Tienda actualizada');
+          this.notificacion.exito('Tienda actualizada');
         } else {
           const user = JSON.parse(localStorage.getItem('user'));
           const userId = user.id_user;
@@ -152,7 +157,7 @@ export default {
             }, 
             { headers: { 'Authorization': 'Bearer ' + token } }
           );
-          alert('Tienda creada');
+          this.notificacion.exito('Tienda creada');
         }
         
         this.cargarMisTiendas();
@@ -162,29 +167,29 @@ export default {
         if (error.response && error.response.data && error.response.data.message) {
           mensaje = error.response.data.message;
         }
-        alert('Error: ' + mensaje);
+        this.notificacion.error('Error: ' + mensaje);
       }
     },
 
-    async eliminar(id) {
-      if (!confirm('¿Seguro que quieres eliminar esta tienda?')) return;
-      
-      try {
-        const token = localStorage.getItem('token');
-        
-        await axios.delete(`${url}/api/delivery_points/destroy/${id}`, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        
-        alert('Tienda eliminada');
-        this.cargarMisTiendas();
-      } catch (error) {
-        let mensaje = error.message;
-        if (error.response && error.response.data && error.response.data.message) {
-          mensaje = error.response.data.message;
+    eliminar(id) {
+      this.notificacion.confirmar('¿Seguro que quieres eliminar esta tienda?', async () => {
+        try {
+          const token = localStorage.getItem('token');
+          
+          await axios.delete(`${url}/api/delivery_points/destroy/${id}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          
+          this.notificacion.exito('Tienda eliminada');
+          this.cargarMisTiendas();
+        } catch (error) {
+          let mensaje = error.message;
+          if (error.response && error.response.data && error.response.data.message) {
+            mensaje = error.response.data.message;
+          }
+          this.notificacion.error('Error: ' + mensaje);
         }
-        alert('Error: ' + mensaje);
-      }
+      });
     },
 
     cancelar() {

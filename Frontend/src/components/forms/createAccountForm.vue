@@ -1,10 +1,13 @@
+```
 <script setup>
     // Importem les llibreríes necessàries
     import { ref } from 'vue';
     import axios from 'axios';
     import { useRouter } from 'vue-router';
+    import { useNotificaciones } from '@/composables/useNotificaciones'; // Added this line
     
     const router = useRouter();
+    const notificacion = useNotificaciones(); // Added this line
     import url from '../../config/api';
     console.log(url);
 
@@ -22,7 +25,7 @@
 
         // Si algún valor d'estos es null que done una alerta per a que els plene tots
         if (!name.value || !email.value || !password.value || !phone.value) {
-            alert("Por favor, rellena todos los campos.");
+            notificacion.advertencia("Por favor, rellena todos los campos.");
             return;
         }
 
@@ -62,13 +65,13 @@
             if (error.response) {
                 // El servidor respondió, pero con un código de error (4xx, 5xx)
                 console.log("Datos del error:", error.response.data);
-                alert(error.response.data.message || "Error en el servidor: " + error.response.status);
+                notificacion.error(error.response.data.message || "Error en el servidor: " + error.response.status);
             } else if (error.request) {
                 // La petición se hizo pero NO hubo respuesta (Servidor apagado o CORS)
-                alert("No se recibió respuesta del servidor. Comprueba que el backend esté encendido (Puerto 8000).");
+                notificacion.error("No se recibió respuesta del servidor. Comprueba que el backend esté encendido (Puerto 8000).");
             } else {
                 // Error al configurar la petición
-                alert("Error al enviar la petición: " + error.message);
+                notificacion.error("Error al enviar la petición: " + error.message);
             }
         }
     }

@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import { useNotificaciones } from '@/composables/useNotificaciones';
+
+const notificacion = useNotificaciones();
 
 import url from '../../config/api';
 console.log(url);
@@ -78,17 +81,19 @@ const agregarProducto = async () => {
   openCrear.value = false;
 };
 
-const eliminarProducto = async (id) => {
-  if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
-  try {
-    await axios.delete(`${url}/api/products/destroy/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    await obtenerDatos();
-  } catch (error) {
-    console.error("Error eliminando producto:", error);
-    alert("No se pudo eliminar el producto.");
-  }
+const eliminarProducto = (id) => {
+  notificacion.confirmar("¿Seguro que quieres eliminar este producto?", async () => {
+    try {
+      await axios.delete(`${url}/api/products/destroy/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      await obtenerDatos();
+      notificacion.exito("Producto eliminado correctamente");
+    } catch (error) {
+      console.error("Error eliminando producto:", error);
+      notificacion.error("No se pudo eliminar el producto.");
+    }
+  });
 };
 
 const actualizarProducto = (datosNuevos) => {
