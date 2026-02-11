@@ -52,7 +52,7 @@
                 } else {
                     console.warn("El backend no ha tornat l'usuari");
                 }
-
+                notificacion.exito("¡Bienvenido de nuevo!");
                 router.push('/general');
             }
         } catch (error) {
