@@ -56,7 +56,7 @@
                 } else {
                     console.warn("El backend no ha tornat l'usuari");
                 }
-
+                notificacion.exito("¡Cuenta creada con éxito!");
                 router.push('/general');
             }
         } catch(error) {
