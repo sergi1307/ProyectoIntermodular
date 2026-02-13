@@ -2,8 +2,12 @@
 import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+const notificacion = useNotificaciones();
+
+import url from '../../config/api';
+console.log(url);
 
 const listaDeConversaciones = ref([]);
 const mensajesDelChatActual = ref([]);
@@ -164,7 +168,7 @@ const enviarMensaje = async () => {
         // NOTA: No recargamos el historial aquí inmediatamente para que no se borre la hora visualmente
 
     } catch (error) {
-        alert("Error al enviar mensaje");
+        notificacion.error("Error al enviar mensaje");
     }
 };
 

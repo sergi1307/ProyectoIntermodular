@@ -3,9 +3,12 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { useRouter } from 'vue-router';
+    import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
     const router = useRouter();
-    const url = import.meta.env.VITE_API_URL_DEV;
+    const notificacion = useNotificaciones();
+    import url from '../../config/api';
+    console.log(url);
     
     // Declarem les variables reactives que rebrem del formulari
     const email = ref('');
@@ -20,7 +23,7 @@
 
         // Si algún valor d'estos es null que done una alerta per a que els plene tots
         if (!email.value || !password.value) {
-            alert("Por favor, rellena todos los campos.");
+            notificacion.advertencia("Por favor, rellena todos los campos.");
             return;
         }
 
@@ -49,11 +52,20 @@
                 } else {
                     console.warn("El backend no ha tornat l'usuari");
                 }
-
+                notificacion.exito("¡Bienvenido de nuevo!");
                 router.push('/general');
             }
         } catch (error) {
-            alert(error.response.data.message);
+            if (error.response) {
+                // El servidor respondió con error
+                notificacion.error(error.response.data.message || 'Error de autenticación');
+            } else if (error.request) {
+                // La petición se hizo pero no hubo respuesta (CORS/servidor apagado)
+                notificacion.error('No se pudo conectar con el servidor. Verifica que el backend esté encendido y CORS configurado.');
+            } else {
+                // Error al configurar la petición
+                notificacion.error('Error: ' + error.message);
+            }
         }
     }
 </script>

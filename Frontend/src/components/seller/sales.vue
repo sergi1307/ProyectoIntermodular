@@ -3,7 +3,8 @@ import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Modal from "../modals/Modal.vue";
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const ventas = ref([]);
 const mostrarModal = ref(false);
@@ -27,7 +28,7 @@ const obtenerVentas = async () => {
 };
 
 const rechazarVenta = async (ventas) => {
-  const url = `${url}/api/sales/update/${ventas.id_sale}`;
+  const request = `${url}/api/sales/update/${ventas.id_sale}`;
 
   try {
     const payload = {
@@ -35,7 +36,7 @@ const rechazarVenta = async (ventas) => {
       
     };
 
-    const response = await axios.put(url, payload, {
+    const response = await axios.put(request, payload, {
       headers : {
         Authorization : `Bearer ${localStorage.getItem("token")}`,
       },
@@ -50,7 +51,7 @@ const rechazarVenta = async (ventas) => {
 }
 
 const aceptarVenta = async (venta) => {
-  const url = `${url}/api/sales/update/${venta.id_sale}`;
+  const request = `${url}/api/sales/update/${venta.id_sale}`;
 
   try {
     const userString = localStorage.getItem("user");
@@ -62,7 +63,7 @@ const aceptarVenta = async (venta) => {
       'state': 'Aceptado'
     };
 
-    const response = await axios.put(url, payload, {
+    const response = await axios.put(request, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

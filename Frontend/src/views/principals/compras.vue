@@ -3,7 +3,8 @@ import { ref, onMounted,computed  } from "vue";
 import axios from "axios";
 import Modal from "../../components/modals/Modal.vue";
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const compras = ref([]);
 const mostrarModal = ref(false);
@@ -35,8 +36,8 @@ const obtenerCompras = async () => {
 }
 
 const rechazarCompra = async (compra) => {
-  const url = `${url}/api/sales/update/${compra.id_sale}`;
-  console.log(url);
+  const request = `${url}/api/sales/update/${compra.id_sale}`;
+  console.log(request);
   try {
     const payload = {
       'id_product': compra.product.id_product,
@@ -45,7 +46,7 @@ const rechazarCompra = async (compra) => {
     };
 
     console.log(payload);
-    const response = await axios.put(url, payload, {
+    const response = await axios.put(request, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

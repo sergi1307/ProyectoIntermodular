@@ -1,8 +1,12 @@
 <script setup>
 import { ref, defineProps, defineEmits, onMounted } from 'vue'
 import axios from 'axios'
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+const notificacion = useNotificaciones();
+
+import url from '../../config/api';
+console.log(url);
 
 // Recibimos categorías del padre (como tenías antes)
 const props = defineProps({
@@ -59,13 +63,13 @@ const enviarDatos = async () => {
   if (!id_delivery_point.value) camposFaltantes.push("Punto de entrega");
 
   if (camposFaltantes.length > 0) {
-    alert("Te falta rellenar: " + camposFaltantes.join(", "));
+    notificacion.advertencia("Te falta rellenar: " + camposFaltantes.join(", "));
     return;
   }
 
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {
-    alert("No se encontró la sesión del usuario.");
+    notificacion.error("No se encontró la sesión del usuario.");
     return;
   }
 
@@ -107,11 +111,11 @@ const enviarDatos = async () => {
     price.value = null; stock.value = null; type_stock.value = '';
     id_delivery_point.value = ''; imagen.value = null;
     
-    alert('Producto creado correctamente')
+    notificacion.exito('Producto creado correctamente')
     
   } catch (error) {
     console.error('Error al crear producto:', error.response?.data || error)
-    alert('Error al guardar. Revisa la consola para ver el detalle.')
+    notificacion.error('Error al guardar. Revisa la consola para ver el detalle.')
   }
 }
 

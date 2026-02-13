@@ -1,8 +1,12 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, defineProps, defineEmits } from 'vue'
 import axios from 'axios'
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+const notificacion = useNotificaciones();
+
+import url from '../../config/api';
+console.log(url);
 
 const props = defineProps({
   producto: { type: Object, required: true }
@@ -94,11 +98,11 @@ watch(
 // 4. Guardar cambios
 const guardar = async () => {
   if (!category_id.value) {
-    alert("Por favor selecciona una categoría.");
+    notificacion.advertencia("Por favor selecciona una categoría.");
     return;
   }
   if (!id_delivery_point.value) {
-    alert("Por favor selecciona un punto de entrega.");
+    notificacion.advertencia("Por favor selecciona un punto de entrega.");
     return;
   }
 
@@ -131,14 +135,14 @@ const guardar = async () => {
     )
 
     emit('updated'); 
-    alert('Producto actualizado correctamente');
+    notificacion.exito('Producto actualizado correctamente');
 
   } catch (error) {
     console.error('Error al actualizar:', error.response?.data || error)
     if (error.response?.status === 403) {
-       alert('No tienes permiso para editar este producto.');
+       notificacion.error('No tienes permiso para editar este producto.');
     } else {
-       alert('Error al guardar. Revisa la consola.');
+       notificacion.error('Error al guardar. Revisa la consola.');
     }
   }
 }

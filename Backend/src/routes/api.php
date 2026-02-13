@@ -9,7 +9,8 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Delivery_pointController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\MessageController; // <--- NUEVO IMPORT
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 
 //--------------------------------------------------------------------------------------
 // RUTAS PÚBLICAS (Sin Token)
@@ -73,6 +74,14 @@ Route::middleware('auth:sanctum')->group(function() {
     // Utilidad de Mapa
     Route::get('/map', [UserController::class, 'mostrarMapa'])->name('map');
 
+    // Notificaciones
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::patch('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
 
     // 3. E-Commerce (Compras y Ventas)
     Route::prefix('cart')->name('cart.')->group(function () {
