@@ -218,4 +218,43 @@ section > p:last-child {
   border-radius: 8px;
   border: 1px dashed #e5e7eb;
 }
+
+@media (max-width: 600px) {
+  section {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 12px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+
+  .review {
+    padding: 15px;
+  }
+
+  .header strong {
+    font-size: 1rem;
+  }
+  
+  .paginacion {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    flex: 1; /* Los botones ocupan el mismo ancho */
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .paginacion span {
+    width: 100%;
+    text-align: center;
+    order: -1; /* Pone el texto "Página X" arriba en pantallas muy pequeñas */
+    margin-bottom: 5px;
+  }
+}
 </style>

@@ -143,4 +143,44 @@
     #derecha a:hover {
         text-decoration: underline;
     }
+
+    @media (max-width: 768px) {
+        #iniciarSesion {
+            align-items: flex-start; 
+            padding: 20px 0;
+            background-color: #fff; 
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column; 
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+            min-height: auto;
+        }
+
+        #izquierda {
+            padding: 20px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        #titulo {
+            margin-bottom: 0;
+        }
+
+        #titulo h1 {
+            font-size: 1.5rem;
+        }
+
+        #content {
+            display: none; 
+        }
+
+        #derecha {
+            padding: 30px 20px;
+        }
+    }
 </style>

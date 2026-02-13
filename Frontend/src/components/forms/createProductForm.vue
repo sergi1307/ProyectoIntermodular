@@ -215,105 +215,125 @@ onMounted(() => {
 
 <style scoped>
 .contenedor-formulario {
-  width: 100%;
-  padding-right: 5px;
-  max-height: 70vh;
-  overflow-y: auto;
+    width: 100%;
+    padding-right: 5px;
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
 }
 
 h3 {
-  margin: 0 0 5px 0;
-  color: #1c5537;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 10px;
+    margin: 0 0 5px 0;
+    color: #1c5537;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
 }
 
 .campo {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .fila {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
 }
 
 input, select, textarea {
-  padding: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: #fff;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
 }
 
-/* Ajuste para input file */
 input[type="file"] {
-  padding: 7px;
+    padding: 7px;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #9ca3af;
+    color: #9ca3af;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: #1c5537;
-  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+    outline: none;
+    border-color: #1c5537;
+    box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
 }
 
 textarea {
-  resize: vertical;
-  min-height: 80px;
-  font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
 }
 
 select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px;
-  cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
 }
 
 .botones {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .btn-guardar {
-  width: 100%;
-  background-color: #1c5537;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+    width: 100%;
+    background-color: #1c5537;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .btn-guardar:hover {
-  background-color: #15422a;
+    background-color: #15422a;
+}
+
+@media (max-width: 768px) {
+    .fila {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .contenedor-formulario {
+        max-height: 85vh;
+        padding-right: 0;
+    }
+
+    input, select, textarea {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .btn-guardar {
+        padding: 14px;
+    }
 }
 </style>

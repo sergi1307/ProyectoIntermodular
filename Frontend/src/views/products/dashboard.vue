@@ -54,12 +54,16 @@ const pestanyaActiva = ref('products')
   min-height: 100vh;
   padding: 24px;
   font-family: 'Inter', system-ui, sans-serif;
+  box-sizing: border-box;
 }
+
 #contenedor {
   background: white;
   border-radius: 14px;
   padding: 24px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 #menu ul {
@@ -69,6 +73,7 @@ const pestanyaActiva = ref('products')
   padding-bottom: 12px;
   margin-bottom: 24px;
   padding-left: 0;
+  margin-top: 0;
 }
 
 #menu li {
@@ -81,6 +86,8 @@ const pestanyaActiva = ref('products')
   color: #6b7280;
   padding-bottom: 12px;
   transition: all 0.2s;
+  display: inline-block;
+  border-bottom: 3px solid transparent;
 }
 
 #menu a:hover {
@@ -90,5 +97,32 @@ const pestanyaActiva = ref('products')
 #menu a.active {
   color: #1c5537;
   border-bottom: 3px solid #1c5537;
+}
+
+@media (max-width: 768px) {
+  #dashboard {
+    padding: 10px;
+  }
+
+  #contenedor {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  #menu ul {
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  #menu li {
+    flex: 1;
+    text-align: center;
+  }
+
+  #menu a {
+    width: 100%;
+    font-size: 0.95rem;
+    padding-bottom: 8px;
+  }
 }
 </style>
