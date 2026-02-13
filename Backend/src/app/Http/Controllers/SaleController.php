@@ -6,6 +6,8 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Notifications\EstadoPedidoNotification;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Notifications\NuevoPedidoNotificacion;
 use Illuminate\Support\Facades\Auth;
 
 use function Symfony\Component\Clock\now;
@@ -72,6 +74,13 @@ class SaleController extends Controller
             'quantity' => $request->quantity, // Campo añadido
             'state' => 'En Curso'
         ]);
+
+        // Enviamos notificación al usuario
+        $vendedor = User::find($request->id_seller);
+
+        if ($vendedor) {
+            $vendedor->notify(new NuevoPedidoNotificacion($sale));
+        }
 
         // Devolvemos los datos en formato json
         return response()->json([

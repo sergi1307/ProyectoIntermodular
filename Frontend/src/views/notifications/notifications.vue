@@ -58,6 +58,11 @@ onMounted(() => {
                     <small>{{ new Date(noti.created_at).toLocaleString() }}</small>
                 </div>
 
+                <div class="contenido" v-else-if="noti.data.tipo == 'venta'">
+                    <h3>{{ noti.data.titulo }}</h3>
+                    <small>{{ new Date(noti.created_at).toLocaleString() }}</small>
+                </div>
+
                 <div v-else>
                     <h3>{{ noti.data.titulo }}</h3>
                     <small>{{ new Date(noti.created_at).toLocaleString() }}</small>

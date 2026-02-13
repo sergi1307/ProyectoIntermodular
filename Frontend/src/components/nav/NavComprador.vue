@@ -8,13 +8,13 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 import url from '../../config/api';
 console.log(url);
 
+const token = localStorage.getItem("token");
 const notificaciones = ref();
 let intervaloNotificaciones = null;
 const notificacion = useNotificaciones();
 
 const cerrarSesion = async () => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axios.post(`${url}/api/auth/logout`, {}, {
       withCredentials: true,
       headers: {
@@ -45,7 +45,7 @@ const obtenerNotificaciones = async () => {
 }
 
 onMounted(() => {
-  intervaloNotificaciones = setInterval(obtenerNotificaciones, 10000);
+  intervaloNotificaciones = setInterval(obtenerNotificaciones, 3000);
 });
 </script>
 

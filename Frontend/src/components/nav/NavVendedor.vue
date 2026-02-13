@@ -27,7 +27,6 @@ const obtenerNotificaciones = async () => {
 
 const cerrarSesion = async () => {
   try {
-    const token = localStorage.getItem("token");
     if (token) {
       await axios.post(
         `${url}/api/auth/logout`,
@@ -51,7 +50,7 @@ const cerrarSesion = async () => {
 };
 
 onMounted(() => {
-  intervaloNotificaciones = setInterval(obtenerNotificaciones, 10000);
+  intervaloNotificaciones = setInterval(obtenerNotificaciones, 3000);
 });
 </script>
 
@@ -170,7 +169,7 @@ onMounted(() => {
 .svg-icon {
   width: 28px;
   height: 28px;
-  color: #c9a764;
+  color: #e84930;
   transition:
     transform 0.3s ease,
     color 0.3s ease;
@@ -178,7 +177,7 @@ onMounted(() => {
 
 .icono-btn:hover .svg-icon {
   transform: scale(1.2);
-  color: #e67e22;
+  filter: invert(0.4) sepia(1) saturate(15) hue-rotate(-30deg);
 }
 
 .badge {
@@ -197,6 +196,7 @@ onMounted(() => {
   justify-content: center;
   border: 1px solid #143b27;
   pointer-events: none;
+  z-index: 10;
 }
 
 .icono-btn {
