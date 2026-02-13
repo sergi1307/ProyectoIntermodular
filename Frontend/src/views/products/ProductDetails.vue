@@ -8,6 +8,8 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 const notificacion = useNotificaciones();
 
+const url = import.meta.env.VITE_API_URL_DEV;
+
 const route = useRoute();
 const router = useRouter();
 const producto = ref(null);
@@ -35,7 +37,7 @@ const obtenerDetalleProducto = async () => {
   const id = route.params.id;
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/products/show/${id}`,
+      `${url}/api/products/show/${id}`,
       {
         withCredentials: true,
       },
@@ -75,7 +77,7 @@ const contactarVendedor = async () => {
   };
 
   try {
-    await axios.post("http://localhost:8080/api/messages/", primerMensaje, {
+    await axios.post(`${url}/api/messages/`, primerMensaje, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -130,7 +132,7 @@ const realizarCompra = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/sales/store",
+      `${url}/api/sales/store`,
       datosVenta,
       {
         withCredentials: true,
@@ -157,7 +159,7 @@ const obtenerVentasUsuario = async () => {
   const token = localStorage.getItem("token");
 
   const response = await axios.get(
-    "http://localhost:8080/api/sales/my-purchases",
+    `${url}/api/sales/my-purchases`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -178,7 +180,7 @@ const obtenerVentaDelProducto = () => {
 const obtenerReviewsProducto = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/reviews/producto/${producto.value.id_product}`,
+      `${url}/api/reviews/producto/${producto.value.id_product}`,
     );
     ReviewsProducto.value = response.data;
     console.log("ReviewsProducto:", ReviewsProducto.value);
@@ -209,18 +211,19 @@ const realizarReview = async () => {
     comment: reviewComment.value,
   };
 
-  await axios.post("http://localhost:8080/api/reviews/store", datosReview, {
+  await axios.post(`${url}/api/reviews/store`, datosReview, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
   notificacion.exito("Review enviada correctamente");
+  location.reload();
 };
 const obtenerMediaReviews = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/reviews/producto/${producto.value.id_product}/media`,
+      `${url}/api/reviews/producto/${producto.value.id_product}/media`,
     );
 
     mediaRating.value = response.data.average ?? 0;
@@ -255,7 +258,7 @@ onMounted(() => {
             
             <div class="detalle-imagen">
                 <img
-                :src="`http://localhost:8080/storage/${producto.image}`"
+                :src="`${url}/storage/${producto.image}`"
                 :alt="producto.nombre"
                 />
             </div>
