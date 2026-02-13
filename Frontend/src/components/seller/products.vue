@@ -269,6 +269,7 @@ onMounted(obtenerDatos);
   font-size: 14px;
   color: #374151;
 }
+
 #filter {
   background: transparent;
   padding: 0;
@@ -309,22 +310,36 @@ onMounted(obtenerDatos);
   color: white;
   cursor: pointer;
   border: none;
+  white-space: nowrap;
 }
+
 #boton button:hover {
   background-color: #16432b;
+}
+
+#listaProductos {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; 
 }
 
 #listaProductos table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px; 
 }
+
 #listaProductos th {
   text-align: left;
   padding: 14px;
   font-size: 13px;
   color: #6b7280;
   border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
 }
+
 #listaProductos td {
   padding: 16px 14px;
   border-bottom: 1px solid #f1f5f9;
@@ -356,10 +371,6 @@ onMounted(obtenerDatos);
   background: #22c55e;
 }
 
-.status-reservado::before {
-  background: #eab308;
-}
-
 .status-agotado::before {
   background: #ef4444;
 }
@@ -369,59 +380,56 @@ td button {
   border: none;
   cursor: pointer;
   margin-right: 6px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
 }
+
+td button:hover {
+  background-color: #f3f4f6;
+}
+
 td img {
   width: 18px;
   opacity: 0.7;
-}
-
-@media (max-width: 1024px) {
-  #listaProductos th:nth-child(2),
-  #listaProductos td:nth-child(2) {
-    display: none;
-  }
 }
 
 @media (max-width: 768px) {
   #menu_producto {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    padding: 16px;
   }
 
-  #search,
-  #filter,
-  #boton,
+  #search {
+    width: 100%;
+  }
+
+  #filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 10px;
+  }
+
+  #filter select {
+    width: 100%;
+    margin: 0;
+  }
+
   #boton button {
     width: 100%;
-    justify-content: center;
-    box-sizing: border-box;
   }
-
-  #listaProductos {
-    overflow-x: auto;
-  }
-
-  #listaProductos th,
-  #listaProductos td {
-    padding: 10px 5px;
-    font-size: 13px;
-  }
-
-  #listaProductos th:nth-child(2),
+  #listaProductos th:nth-child(2), 
   #listaProductos td:nth-child(2),
-  #listaProductos th:nth-child(3),
-  #listaProductos td:nth-child(3),
-  #listaProductos th:nth-child(5),
-  #listaProductos td:nth-child(5),
   #listaProductos th:nth-child(6),
   #listaProductos td:nth-child(6) {
     display: none;
   }
 
-  #listaProductos td:last-child {
-    white-space: nowrap;
-    text-align: right;
+  #listaProductos th, 
+  #listaProductos td {
+    padding: 12px 8px;
   }
 }
 </style>

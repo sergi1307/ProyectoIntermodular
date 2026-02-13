@@ -106,7 +106,11 @@
 <style scoped>
     .form-container {
         width: 100%;
+        max-width: 480px; 
+        margin: 0 auto;   
+        padding: 20px;    
         color: #333;
+        box-sizing: border-box; 
     }
 
     h2 {
@@ -114,6 +118,7 @@
         font-weight: bold;
         font-size: 1.8rem;
         margin-bottom: 5px;
+        text-align: left; 
     }
 
     p {
@@ -178,5 +183,27 @@
         color: #1c5537;
         font-weight: bold;
         text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+        .form-container {
+            padding: 15px; 
+            max-width: 100%;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        input[type="email"],
+        input[type="text"],
+        input[type="password"] {
+            font-size: 16px; 
+            padding: 14px 15px;
+        }
+
+        button[type="submit"] {
+            padding: 16px;
+        }
     }
 </style>

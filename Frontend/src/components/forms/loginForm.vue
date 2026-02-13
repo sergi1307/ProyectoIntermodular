@@ -100,6 +100,10 @@
 <style scoped>
     .form-container {
         width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
         color: #333;
     }
 
@@ -153,9 +157,15 @@
         color: #555;
     }
     
+    #remember_forgot div {
+        display: flex;
+        align-items: center;
+    }
+
     #remember_forgot input[type="checkbox"] {
         accent-color: #1c5537;
         margin-right: 5px;
+        width: auto;
     }
 
     #remember_forgot button {
@@ -165,7 +175,7 @@
         cursor: pointer;
         font-weight: 600;
         padding: 0;
-        font-weight: 0.8em;
+        font-size: 1em;
     }
 
     button[type="submit"] {
@@ -195,5 +205,32 @@
         color: #1c5537;
         font-weight: bold;
         text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+        .form-container {
+            max-width: 100%;
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            font-size: 16px;
+            padding: 14px 15px;
+        }
+
+        button[type="submit"] {
+            padding: 15px;
+        }
+
+        #remember_forgot {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
     }
 </style>

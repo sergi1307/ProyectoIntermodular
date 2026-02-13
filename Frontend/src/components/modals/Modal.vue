@@ -66,34 +66,54 @@ watch(() => props.modelValue, (value) => {
   align-items: center;
   justify-content: center;
   z-index: 999;
+  padding: 10px;
 }
 
 .modal-container {
   background: white;
   width: 90%;
   max-width: 500px;
+  max-height: 85vh;
   border-radius: 12px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .modal-header {
   padding: 1rem;
   border-bottom: 1px solid #eee;
-}
-
-.modal-footer {
-  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #fff;
 }
 
 .modal-body {
   padding: 1rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.modal-footer {
+  border-top: 1px solid #eee;
+  padding: 1rem;
+  background-color: #f9fafb;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  color: #666;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #000;
 }
 
 .modal-fade-enter-active,
@@ -106,4 +126,24 @@ watch(() => props.modelValue, (value) => {
   opacity: 0;
 }
 
+@media (max-width: 600px) {
+  .modal-container {
+    width: 95%;
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 12px;
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  .close-btn {
+    font-size: 1.8rem;
+    padding: 5px; 
+  }
+}
 </style>

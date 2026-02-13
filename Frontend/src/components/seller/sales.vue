@@ -310,10 +310,16 @@ onMounted(obtenerVentas);
   box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
 }
 
+#listaProductos {
+  width: 100%;
+  overflow-x: auto;
+}
+
 #listaProductos table {
   width: 100%;
   border-collapse: collapse;
 }
+
 #listaProductos th {
   text-align: center;
   padding: 14px;
@@ -321,6 +327,7 @@ onMounted(obtenerVentas);
   color: #6b7280;
   border-bottom: 1px solid #e5e7eb;
 }
+
 #listaProductos td {
   text-align: center;
   padding: 16px 14px;
@@ -333,10 +340,6 @@ onMounted(obtenerVentas);
   font-weight: 700;
   color: #111827;
 }
-.id-text {
-  font-family: monospace;
-  color: #6b7280;
-}
 
 td button {
   background: transparent;
@@ -344,9 +347,16 @@ td button {
   cursor: pointer;
   margin-right: 6px;
 }
+
 .action-icon {
   width: 26px;
   opacity: 0.7;
+}
+
+.acciones-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .estado {
@@ -375,14 +385,6 @@ td button {
   border: 1px solid #dcfce7;
 }
 
-@media (max-width: 1024px) {
-  #listaProductos th:nth-child(2), #listaProductos td:nth-child(2),
-  #listaProductos th:nth-child(3), #listaProductos td:nth-child(3)
-  {
-    display: none;
-  }
-}
-
 @media (max-width: 768px) {
   
   #menu_producto {
@@ -395,6 +397,11 @@ td button {
     width: 100%;
     justify-content: center;
     box-sizing: border-box;
+  }
+
+  #filtro select {
+    width: 100%;
+    text-align: center;
   }
 
   #listaProductos table, 
@@ -425,7 +432,7 @@ td button {
     border: none;
     border-bottom: 1px solid #f3f4f6;
     position: relative;
-    padding-left: 50%;
+    padding-left: 50%; 
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: right;
@@ -437,7 +444,7 @@ td button {
   #listaProductos td:last-child {
     border-bottom: none;
     padding-top: 20px;
-    justify-content: flex-end;
+    justify-content: flex-end; 
   }
 
   #listaProductos td::before {
@@ -447,16 +454,17 @@ td button {
     text-transform: uppercase;
     font-size: 11px;
     text-align: left;
+    margin-right: 10px;
   }
 
   .action-icon {
-    width: 32px;
+    width: 32px; 
     height: 32px;
   }
 
   .acciones-wrapper {
-    display: flex;
-    gap: 20px;
+    width: 100%;
+    justify-content: flex-end;
   }
 
   #precio {
