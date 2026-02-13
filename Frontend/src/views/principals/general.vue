@@ -4,6 +4,9 @@ import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
 import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
+
+const notificacion = useNotificaciones();
 
 import url from '../../config/api';
 console.log(url);
@@ -243,7 +246,7 @@ const mostrarProductosDelPunto = async (punto) => {
 
     } catch (error) {
         console.error('Error al cargar productos del punto:', error);
-        alert('No se pudieron cargar los productos de este punto de venta');
+        notificacion.error('No se pudieron cargar los productos de este punto de venta');
     } finally {
         cargandoProductosPunto.value = false;
     }

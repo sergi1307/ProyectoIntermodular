@@ -4,6 +4,9 @@ import { useRoute, useRouter } from "vue-router";
 import starRating from "../../components/ratings/starRating.vue";
 import axios from "axios";
 import Review from "@/components/reviews/Review.vue";
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
+
+const notificacion = useNotificaciones();
 
 const url = import.meta.env.VITE_API_URL_DEV;
 
@@ -61,7 +64,7 @@ const validarCantidad = () => {
 const contactarVendedor = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("Debes iniciar sesión para chatear.");
+    notificacion.advertencia("Debes iniciar sesión para chatear.");
     return;
   }
 
@@ -94,9 +97,9 @@ const contactarVendedor = async () => {
   } catch (error) {
     console.error("Error al crear chat:", error);
     if (error.response) {
-      alert(`Error del servidor: ${JSON.stringify(error.response.data)}`);
+      notificacion.error(`Error del servidor: ${JSON.stringify(error.response.data)}`);
     } else {
-      alert("No se pudo conectar con el servidor.");
+      notificacion.error("No se pudo conectar con el servidor.");
     }
   }
 };
@@ -106,13 +109,13 @@ const realizarCompra = async () => {
   const token = localStorage.getItem("token");
 
   if (!usuarioStored || !token) {
-    alert("Debes iniciar sesión para realizar una compra.");
+    notificacion.advertencia("Debes iniciar sesión para realizar una compra.");
     return;
   }
   const usuario = JSON.parse(usuarioStored);
 
   if (producto.value.stock <= 0) {
-    alert("Lo sentimos, este producto no tiene stock disponible.");
+    notificacion.advertencia("Lo sentimos, este producto no tiene stock disponible.");
     return;
   }
 
@@ -140,7 +143,7 @@ const realizarCompra = async () => {
     );
 
     if (response.data.status === "true" || response.status === 200) {
-      alert(
+      notificacion.exito(
         `¡Compra realizada con éxito! Has comprado ${cantidadSeleccionada.value} unidad(es) por ${precioTotal.value}€`,
       );
       obtenerDetalleProducto();
@@ -149,7 +152,7 @@ const realizarCompra = async () => {
     console.error(err);
     const mensaje =
       err.response?.data?.message || "Error al procesar la compra";
-    alert(mensaje);
+    notificacion.error(mensaje);
   }
 };
 const obtenerVentasUsuario = async () => {
@@ -191,14 +194,14 @@ const realizarReview = async () => {
   const token = localStorage.getItem("token");
 
   if (!usuario || !token) {
-    alert("Debes iniciar sesión");
+    notificacion.advertencia("Debes iniciar sesión");
     return;
   }
 
   const venta = obtenerVentaDelProducto();
 
   if (!venta) {
-    alert("Debes haber comprado este producto para dejar una review");
+    notificacion.advertencia("Debes haber comprado este producto para dejar una review");
     return;
   }
 
@@ -214,7 +217,7 @@ const realizarReview = async () => {
     },
   });
 
-  alert("Review enviada correctamente");
+  notificacion.exito("Review enviada correctamente");
   location.reload();
 };
 const obtenerMediaReviews = async () => {

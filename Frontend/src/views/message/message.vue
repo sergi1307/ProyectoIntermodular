@@ -2,6 +2,9 @@
 import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
+
+const notificacion = useNotificaciones();
 
 import url from '../../config/api';
 console.log(url);
@@ -165,7 +168,7 @@ const enviarMensaje = async () => {
         await cargarBandejaDeEntrada();
 
     } catch (error) {
-        alert("Error al enviar mensaje");
+        notificacion.error("Error al enviar mensaje");
     }
 };
 

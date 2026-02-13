@@ -3,13 +3,14 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 import router from "../../routes/routes";
 import url from "../../config/api";
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 console.log(url);
 const token = localStorage.getItem("token");
 
 const notificaciones = ref();
 let intervaloNotificaciones = null;
-
+const notificacion = useNotificaciones();
 
 const obtenerNotificaciones = async () => {
   try {
@@ -18,7 +19,6 @@ const obtenerNotificaciones = async () => {
         Authorization:  `Bearer ${token}` 
       }
     });
-
     notificaciones.value = response.data.count;
   } catch (error) {
     console.log('Error:', error);
@@ -40,7 +40,7 @@ const cerrarSesion = async () => {
         },
       );
     }
-
+    notificacion.exito("Sesión cerrada correctamente"); 
     console.log("Cuenta cerrada correctamente");
     localStorage.removeItem("token");
     router.push("/");

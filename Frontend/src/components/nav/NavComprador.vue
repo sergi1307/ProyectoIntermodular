@@ -3,12 +3,14 @@ import axios from 'axios';
 import router from '../../routes/routes';
 import { ref, onMounted } from 'vue';
 import NotificationBell from '../notifications/NotificationBell.vue';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 import url from '../../config/api';
 console.log(url);
 
 const notificaciones = ref();
 let intervaloNotificaciones = null;
+const notificacion = useNotificaciones();
 
 const cerrarSesion = async () => {
   try {
@@ -19,7 +21,7 @@ const cerrarSesion = async () => {
         Authorization: `Bearer ${token}`
       }
     });
-
+    notificacion.exito("Sesión cerrada correctamente"); 
     console.log("Cuenta cerrada correctamente");
     router.push('/');
   } catch (error) {
