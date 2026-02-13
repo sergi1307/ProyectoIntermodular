@@ -42,7 +42,8 @@
       watch: {
           puntos: {
               handler(newVal) {
-                  if (this.map && newVal.length > 0) {
+                  if (this.map) {
+                      this.map.closePopup(); // Cerrar cualquier popup abierto al cambiar filtros
                       this.dibujarMarcadores();
                   }
               },

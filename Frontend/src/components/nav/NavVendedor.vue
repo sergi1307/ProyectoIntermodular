@@ -2,7 +2,8 @@
 import axios from 'axios';
 import router from '../../routes/routes';
 
-const url = import.meta.env.VITE_API_URL_DEV_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const cerrarSesion = async () => {
   try {
@@ -34,8 +35,12 @@ const cerrarSesion = async () => {
       
       <router-link to="/general" class="link-modo">&larr; Volver</router-link>
 
-      <router-link to="message"><button class="icono-btn">
+      <button class="icono-btn">
         <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
+      </button>
+
+      <router-link to="message"><button class="icono-btn">
+        <img src="../../assets/icons/mensajes.png" alt="Notificaciones"/> 
       </button></router-link>
 
       <button class="icono-btn">

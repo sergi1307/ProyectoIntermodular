@@ -3,7 +3,8 @@ import axios from 'axios';
 import router from '../../routes/routes';
 import NotificationBell from '../notifications/NotificationBell.vue';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const cerrarSesion = async () => {
   try {
@@ -38,11 +39,14 @@ const cerrarSesion = async () => {
         <img src="../../assets/icons/dashboard.png" alt="Dashboard">
       </router-link>
 
-      <NotificationBell />
+      <button class="icono-btn">
+        <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
+      </button>
 
       <router-link to="message"><button class="icono-btn">
-        <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
+        <img src="../../assets/icons/mensajes.png" alt="Notificaciones"/> 
       </button></router-link>
+
 
       <button class="icono-btn">
         <img src="../../assets/icons/carrito.png" alt="Carrito" />

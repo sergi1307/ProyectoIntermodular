@@ -5,7 +5,8 @@ import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
 import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 const router = useRouter();
 const productos = ref([]);
@@ -120,16 +121,17 @@ const tiendasFiltradas = computed(() => {
   return Array.from(tiendasUnicas.values());
 })
 
-// --- WATCHERS DE RANGO ---
-watch(precioMin, (nuevoMin) => { if (nuevoMin > precioMax.value) precioMin.value = precioMax.value })
-watch(precioMax, (nuevoMax) => { if (nuevoMax < precioMin.value) precioMax.value = precioMin.value })
-
 // Watcer para activar filtro de proximidad cuando usuario mueve el slider
 watch(distanciaMax, () => {
   if (ubicacionUsuario.value) {
     filtroProximidadActivo.value = true
   }
 })
+
+// Watcher para cerrar el detalle del punto si cambian los filtros importantes
+watch([busqueda, categoriaSeleccionada, precioMin, precioMax, distanciaMax], () => {
+    cerrarProductosDelPunto();
+});
 
 // --- IR A DETALLE ---
 const irAlDetalle = (id) => {
@@ -217,8 +219,28 @@ const mostrarProductosDelPunto = async (punto) => {
     productosDelPunto.value = [];
 
     try {
-        const response = await axios.get(`${url}/api/delivery_points/${punto.id}/products`);
-        productosDelPunto.value = response.data;
+        const response = await axios.get(`http://localhost:8080/api/delivery_points/${punto.id}/products`);
+        
+        // Inicializamos los productos con rating 0
+        const productosBase = response.data.map(p => ({
+            ...p,
+            mediaRating: 0
+        }));
+
+        productosDelPunto.value = productosBase;
+
+        // Cargar ratings de todos los productos en paralelo
+        await Promise.all(
+            productosDelPunto.value.map(async (p) => {
+                try {
+                    const res = await axios.get(`http://localhost:8080/api/reviews/producto/${p.id_product}/media`);
+                    p.mediaRating = res.data.average ?? 0;
+                } catch (err) {
+                    console.log(`Error al obtener reviews del producto ${p.id_product}`);
+                }
+            })
+        );
+
     } catch (error) {
         console.error('Error al cargar productos del punto:', error);
         alert('No se pudieron cargar los productos de este punto de venta');
@@ -411,11 +433,15 @@ onMounted(() =>{
                         class="tarjeta-producto-mini"
                     >
                         <div class="imagen-mini">
-                            <img :src="`${url}/storage/${producto.image}`" :alt="producto.name" />
+                            <img :src="`http://localhost:8080/storage/${producto.image}`" />
                         </div>
                         <div class="info-mini">
                             <h4>{{ producto.name }}</h4>
                             <p class="precio-mini">{{ producto.price }}€ / {{ producto.type_stock }}</p>
+                            <div class="rating-mini">
+                                <span>{{ producto.mediaRating.toFixed(1) }}</span>
+                                <starRating :modelValue="producto.mediaRating" readonly :size="12" />
+                            </div>
                             <p class="categoria-mini">{{ producto.category?.name }}</p>
                         </div>
                     </router-link>
@@ -907,14 +933,28 @@ onMounted(() =>{
 
                 .precio-mini {
                     font-weight: bold;
-                    color: #333;
-                    margin: 5px 0;
+                    color: #1a4d2e;
+                    margin: 5px 0 0;
+                    font-size: 0.95rem;
+                }
+
+                .rating-mini {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    margin-top: 5px;
+                    font-size: 0.8rem;
+                    color: #666;
+                    
+                    :deep(.stars) {
+                        font-size: 1rem !important;
+                    }
                 }
 
                 .categoria-mini {
-                    font-size: 0.85rem;
+                    font-size: 0.8rem;
                     color: #888;
-                    margin: 0;
+                    margin-top: 5px;
                 }
             }
         }

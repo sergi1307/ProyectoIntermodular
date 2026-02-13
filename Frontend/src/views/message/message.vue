@@ -3,7 +3,8 @@ import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
 
-const url = import.meta.env.VITE_API_URL_DEV;
+import url from '../../config/api';
+console.log(url);
 
 // Almacena la lista de todas las conversaciones abiertas
 const listaDeConversaciones = ref([]);
