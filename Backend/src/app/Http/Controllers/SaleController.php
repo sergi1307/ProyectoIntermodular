@@ -34,7 +34,7 @@ class SaleController extends Controller
         $product = Product::findOrFail($request->id_product);
 
         // Comprobamos que el stock sea superior a la cantidad solicitada
-        if ($product->stock < $request->quantity) { // Corregido a $request->quantity
+        if ($product->stock < $request->quantity) {
             return response()->json([
                 'status' => 'false',
                 'message' => 'Stock insuficiente'

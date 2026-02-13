@@ -1,10 +1,14 @@
 <script setup>
 import axios from 'axios';
 import router from '../../routes/routes';
+import { ref, onMounted } from 'vue';
 import NotificationBell from '../notifications/NotificationBell.vue';
 
 import url from '../../config/api';
 console.log(url);
+
+const notificaciones = ref();
+let intervaloNotificaciones = null;
 
 const cerrarSesion = async () => {
   try {
@@ -23,6 +27,24 @@ const cerrarSesion = async () => {
   }
   
 }
+
+const obtenerNotificaciones = async () => {
+  try {
+    const response = await axios.get(`${url}/api/notifications/unread-count`, {
+      headers: { 
+        Authorization:  `Bearer ${token}` 
+      }
+    });
+
+    notificaciones.value = response.data.count;
+  } catch (error) {
+    console.log('Error:', error);
+  }
+}
+
+onMounted(() => {
+  intervaloNotificaciones = setInterval(obtenerNotificaciones, 10000);
+});
 </script>
 
 <template>
@@ -39,18 +61,29 @@ const cerrarSesion = async () => {
         <img src="../../assets/icons/dashboard.png" alt="Dashboard">
       </router-link>
 
-      <button class="icono-btn">
-        <img src="../../assets/icons/campana.png" alt="Notificaciones"/> 
-      </button>
+      <router-link to="/mis-notificaciones" class="notificacion-wrapper">
+        <button class="icono-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="svg-icon"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9a2.25 2.25 0 104.496 0 25.057 25.057 0 01-4.496 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <span v-if="notificaciones > 0" class="badge">{{
+          notificaciones
+        }}</span>
+      </router-link>
 
       <router-link to="message"><button class="icono-btn">
         <img src="../../assets/icons/mensajes.png" alt="Notificaciones"/> 
       </button></router-link>
-
-
-      <button class="icono-btn">
-        <img src="../../assets/icons/carrito.png" alt="Carrito" />
-      </button>
 
       <div class="listaDesplegable">
         <button class="icono-btn">
@@ -60,6 +93,7 @@ const cerrarSesion = async () => {
         <div class="subMenu">
           <button @click="cerrarSesion">Cerrar Sesión</button>
           <router-link to="/mis-compras">Mis Compras</router-link>
+          <router-link to="/mis-tiendas">Mis Tiendas</router-link>
         </div>
       </div>
 
@@ -183,5 +217,44 @@ const cerrarSesion = async () => {
 .subMenu a:hover {
   background-color: #f9f9f9;
   color: #e67e22;
+}
+
+.notificacion-wrapper {
+  position: relative; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.svg-icon {
+  width: 28px;
+  height: 28px;
+  color: #e84930;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.icono-btn:hover .svg-icon {
+  transform: scale(1.2);
+  filter: invert(0.4) sepia(1) saturate(15) hue-rotate(-30deg);
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  left: -8px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #143b27;
+  pointer-events: none;
+  z-index: 10;
 }
 </style>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Notifications\MensajeNotificacion;
 
 class MessageController extends Controller
 {
@@ -76,6 +78,12 @@ class MessageController extends Controller
             'content' => $request->content,
             'shipping_date' => $shipping_date
         ]);
+
+        $receiver = User::find($request->id_receiver);
+
+        if ($receiver) {
+            $receiver->notify(new MensajeNotificacion(($message)));
+        }
 
         // Retornamos la respuesta en formato json
         return response()->json([

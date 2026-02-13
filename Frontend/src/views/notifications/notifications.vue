@@ -11,6 +11,7 @@ const cargarTodo = async () => {
             headers: { Authorization: `Bearer ${token}` }
         });
         notificaciones.value = response.data.data;
+        console.log(notificaciones.value);
     } catch (error) {
         console.error("Error al cargar");
     }
@@ -52,8 +53,13 @@ onMounted(() => {
                     <span v-else>✔</span>
                 </div>
 
-                <div class="contenido">
-                    <h3>{{ noti.data.mensaje }}</h3>
+                <div class="contenido" v-if="noti.data.tipo == 'pedido'">
+                    <h3>{{ noti.data.titulo }}</h3>
+                    <small>{{ new Date(noti.created_at).toLocaleString() }}</small>
+                </div>
+
+                <div v-else>
+                    <h3>{{ noti.data.titulo }}</h3>
                     <small>{{ new Date(noti.created_at).toLocaleString() }}</small>
                 </div>
             </div>

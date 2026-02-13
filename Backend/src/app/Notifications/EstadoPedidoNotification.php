@@ -40,7 +40,8 @@ class EstadoPedidoNotification extends Notification
         $esRechazado = $this->sale->state === 'Rechazado';
 
         return [
-            'mensaje' => $esRechazado
+            'tipo' => 'pedido',
+            'titulo' => $esRechazado
                 ? 'Tu pedido #' . $this->sale->id_sale . ' ha sido rechazada.'
                 : '¡Tu pedido #' . $this->sale->id_sale . ' ha sido aceptado!',
             'sale_id' => $this->sale->id,

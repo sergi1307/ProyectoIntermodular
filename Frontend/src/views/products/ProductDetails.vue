@@ -215,6 +215,7 @@ const realizarReview = async () => {
   });
 
   alert("Review enviada correctamente");
+  location.reload();
 };
 const obtenerMediaReviews = async () => {
   try {
