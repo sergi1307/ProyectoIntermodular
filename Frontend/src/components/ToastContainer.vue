@@ -1,5 +1,5 @@
 <script setup>
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 const { notificaciones, eliminar, confirmacion, cerrarConfirmacion } = useNotificaciones();
 

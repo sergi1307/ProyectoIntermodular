@@ -3,7 +3,7 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { useRouter } from 'vue-router';
-    import { useNotificaciones } from '@/composables/useNotificaciones';
+    import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
     const router = useRouter();
     const notificacion = useNotificaciones();

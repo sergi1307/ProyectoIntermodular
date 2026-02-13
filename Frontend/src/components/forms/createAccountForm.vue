@@ -4,7 +4,7 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { useRouter } from 'vue-router';
-    import { useNotificaciones } from '@/composables/useNotificaciones'; // Added this line
+    import { useNotificaciones } from '@/utilidades/useNotificaciones'; // Added this line
     
     const router = useRouter();
     const notificacion = useNotificaciones(); // Added this line

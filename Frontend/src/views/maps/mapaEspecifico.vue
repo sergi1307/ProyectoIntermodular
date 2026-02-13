@@ -52,7 +52,7 @@
 <script>
 import MapaTiendas from '../../components/maps/mapaPuntosdeventa.vue';
 import axios from 'axios';
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 import url from '../../config/api';
 console.log(url);

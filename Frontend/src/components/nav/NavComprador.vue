@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios';
 import router from '../../routes/routes';
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 import url from '../../config/api';
 console.log(url);
 const notificacion = useNotificaciones();

@@ -4,7 +4,7 @@ import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import starRating from "../../components/ratings/starRating.vue";
 import mapaPuntosdeventa from "../../components/maps/mapaPuntosdeventa.vue";
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 const notificacion = useNotificaciones();
 

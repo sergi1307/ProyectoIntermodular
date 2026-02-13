@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import starRating from "../../components/ratings/starRating.vue";
 import axios from "axios";
 import Review from "@/components/reviews/Review.vue";
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 const notificacion = useNotificaciones();
 

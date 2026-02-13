@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router'; 
 import axios from 'axios';
-import { useNotificaciones } from '@/composables/useNotificaciones';
+import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 const notificacion = useNotificaciones();
 
