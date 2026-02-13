@@ -5,62 +5,42 @@ import axios from 'axios';
 
 const url = import.meta.env.VITE_API_URL_DEV;
 
-// Almacena la lista de todas las conversaciones abiertas
 const listaDeConversaciones = ref([]);
-
-// Almacena los mensajes específicos del chat que se está viendo ahora mismo
 const mensajesDelChatActual = ref([]);
-
-// Guarda la información de la conversación seleccionada 
 const conversacionActiva = ref(null);
-
-// El texto que el usuario está escribiendo en el input
 const textoNuevoMensaje = ref("");
-
-// Identificador para el temporizador que actualiza los mensajes automáticamente
 const idIntervaloActualizacion = ref(null);
 
 const route = useRoute();
 
-
-// Obtiene el ID numérico del usuario actual
 const obtenerMiIdDeUsuario = () => {
     try {
         const userStr = localStorage.getItem('user');
         if (!userStr) return 0;
         const user = JSON.parse(userStr);
-        // Devuelve el id_user asegurándose de que sea un número
         return Number(user.id_user || user.id);
     } catch (e) {
         return 0;
     }
 };
 
-// Determina quién envió un mensaje específico
 const obtenerIdDelRemitente = (mensaje) => {
     if (mensaje.id_transmitter) return Number(mensaje.id_transmitter);
     if (mensaje.transmitter && mensaje.transmitter.id_user) return Number(mensaje.transmitter.id_user);
     return 0;
 };
 
-// Recupera el token de seguridad para las peticiones API
 const obtenerTokenAuth = () => localStorage.getItem("token");
 
-// Analiza un objeto de chat y devuelve los datos de la otra persona
-// Esto sirve para mostrar el nombre correcto en la lista lateral
 const obtenerDatosDelInterlocutor = (chat) => {
     const miId = obtenerMiIdDeUsuario();
     const idRemitente = obtenerIdDelRemitente(chat);
-    
-    // Extraemos posibles IDs y Nombres dependiendo de la estructura de la respuesta
     const idReceptor = chat.receiver ? chat.receiver.id_user : chat.id_receiver;
     const idTransmisor = chat.transmitter ? chat.transmitter.id_user : chat.id_transmitter;
     
     const nombreReceptor = chat.receiver ? chat.receiver.name : (chat.receiver_name || 'Usuario');
     const nombreTransmisor = chat.transmitter ? chat.transmitter.name : (chat.transmitter_name || 'Usuario');
 
-    // Si yo fui el que envió el último mensaje, el interlocutor es el Receptor.
-    // Si no, el interlocutor es el Transmisor.
     if (idRemitente === miId) {
         return { id: Number(idReceptor), name: nombreReceptor };
     } else {
@@ -68,7 +48,6 @@ const obtenerDatosDelInterlocutor = (chat) => {
     }
 };
 
-// Fuerza el scroll de la ventana de chat hacia abajo para ver el último mensaje
 const desplazarScrollAlFinal = () => {
     nextTick(() => {
         const elementoChat = document.querySelector('.msgs-body');
@@ -76,58 +55,74 @@ const desplazarScrollAlFinal = () => {
     });
 };
 
-// Pide al servidor la lista general de chats (Bandeja de entrada)
+const cerrarChat = () => {
+    conversacionActiva.value = null;
+    mensajesDelChatActual.value = [];
+};
+
+// --- FUNCIÓN CORREGIDA ---
+// Si hay hora real, la muestra. Si es medianoche (00:00/01:00), muestra la fecha.
+const formatearFechaInteligente = (fecha) => {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    
+    if (isNaN(date.getTime())) return '';
+
+    // Obtenemos las horas y minutos
+    const horas = date.getHours();
+    const minutos = date.getMinutes();
+
+    // Si es exactamente medianoche (00:00) o la 01:00 (por el cambio horario en España con fechas DATE),
+    // asumimos que es un dato antiguo sin hora. Mostramos la FECHA.
+    if ((horas === 0 || horas === 1) && minutos === 0) {
+        return date.toLocaleDateString(); // Devuelve "10/11/2023"
+    }
+
+    // Si tiene una hora distinta, mostramos la HORA.
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
 const cargarBandejaDeEntrada = async () => {
     try {
         const respuesta = await axios.get(`${url}/api/messages/inbox`, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
-        
         if (respuesta.data.bandeja) {
             listaDeConversaciones.value = respuesta.data.bandeja;
         }
     } catch (error) {
-        console.error("Error al cargar la bandeja:", error);
+        console.error("Error bandeja:", error);
     }
 };
 
-// Pide al servidor todos los mensajes de una conversación específica
 const cargarHistorialDeMensajes = async (idProducto, idOtroUsuario) => {
     try {
         const respuesta = await axios.get(`${url}/api/messages/conversation`, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` },
-            params: {
-                id_product: idProducto,
-                id_user_chat: idOtroUsuario
-            }
+            params: { id_product: idProducto, id_user_chat: idOtroUsuario }
         });
 
         if (respuesta.data.messages) {
             mensajesDelChatActual.value = respuesta.data.messages;
-            desplazarScrollAlFinal(); // Bajar el scroll al cargar
+            desplazarScrollAlFinal();
         }
     } catch (error) {
-        console.error("Error al cargar historial:", error);
+        console.error("Error historial:", error);
     }
 };
 
-// Se ejecuta cuando el usuario hace clic en un chat de la lista o viene redirigido de un producto
 const abrirConversacion = async (itemChat, esChatNuevoTemporal = false) => {
     const miId = obtenerMiIdDeUsuario();
     let interlocutor;
 
-    // comprobamos si el chat aún no existe en backend, venimos de ver un producto
     if (esChatNuevoTemporal) {
         interlocutor = { id: Number(itemChat.otherUserId), name: itemChat.otherUserName };
     } else {
-        // Si es un chat existente en la bandeja
         interlocutor = obtenerDatosDelInterlocutor(itemChat);
     }
 
-    // Evitar abrir chat con uno mismo
     if (interlocutor.id === miId) return; 
 
-    // Establecemos este chat como el activo
     conversacionActiva.value = {
         productId: esChatNuevoTemporal ? itemChat.productId : itemChat.product.id_product,
         productName: esChatNuevoTemporal ? itemChat.productName : itemChat.product.name,
@@ -135,14 +130,11 @@ const abrirConversacion = async (itemChat, esChatNuevoTemporal = false) => {
         otherUserName: interlocutor.name
     };
 
-    // Limpiamos mensajes anteriores y cargamos los nuevos
     mensajesDelChatActual.value = [];
     await cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
 };
 
-// Envía el mensaje al servidor y actualiza la vista
 const enviarMensaje = async () => {
-    // Validar que no esté vacío y que haya un chat seleccionado
     if (!textoNuevoMensaje.value.trim() || !conversacionActiva.value) return;
 
     const datosMensaje = {
@@ -152,16 +144,24 @@ const enviarMensaje = async () => {
     };
 
     try {
+        // Envio optimista: Usamos la fecha y hora ACTUAL completa
+        const mensajeTemporal = {
+            id_message: Date.now(),
+            content: textoNuevoMensaje.value,
+            id_transmitter: obtenerMiIdDeUsuario(),
+            shipping_date: new Date().toISOString() // Hora completa para que salga bien ahora
+        };
+        mensajesDelChatActual.value.push(mensajeTemporal);
+        desplazarScrollAlFinal();
+
+        textoNuevoMensaje.value = ""; 
+
         await axios.post(`${url}/api/messages`, datosMensaje, {
             headers: { Authorization: `Bearer ${obtenerTokenAuth()}` }
         });
-
-        // Limpiar el input
-        textoNuevoMensaje.value = "";
         
-        // Recargar los mensajes para ver el nuestro y actualizar la bandeja lateral
-        await cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
         await cargarBandejaDeEntrada();
+        // NOTA: No recargamos el historial aquí inmediatamente para que no se borre la hora visualmente
 
     } catch (error) {
         alert("Error al enviar mensaje");
@@ -169,27 +169,22 @@ const enviarMensaje = async () => {
 };
 
 onMounted(async () => {
-    //  Cargar la lista de chats al iniciar
     await cargarBandejaDeEntrada();
 
-    // Comprobar si venimos redirigidos de un producto
     if (route.query.prodId) {
         const prodIdParam = Number(route.query.prodId);
         const userIdParam = Number(route.query.userId); 
         const miId = obtenerMiIdDeUsuario();
 
         if (userIdParam !== miId) {
-            // Buscamos si ya existe una conversación con ese usuario para ese producto
             const chatExistente = listaDeConversaciones.value.find(c => {
                 const infoInterlocutor = obtenerDatosDelInterlocutor(c);
                 return c.product.id_product === prodIdParam && infoInterlocutor.id === userIdParam;
             });
 
             if (chatExistente) {
-                // Si existe, lo abrimos normalmente
                 abrirConversacion(chatExistente, false);
             } else {
-                // Si no existe, creamos un objeto temporal ("fantasma") para mostrar la interfaz vacía
                 const chatFantasma = {
                     productId: prodIdParam,
                     productName: route.query.prodName,
@@ -201,24 +196,22 @@ onMounted(async () => {
         }
     }
 
-    // Configurar actualización automática cada 3 segundos (Polling)
     idIntervaloActualizacion.value = setInterval(() => {
-        cargarBandejaDeEntrada(); // Refrescar lista lateral
+        cargarBandejaDeEntrada(); 
         if (conversacionActiva.value) {
-            // Refrescar mensajes del chat abierto
+            // Solo recargamos si no hay mensajes pendientes recientes para evitar parpadeos
             cargarHistorialDeMensajes(conversacionActiva.value.productId, conversacionActiva.value.otherUserId);
         }
-    }, 3000);
+    }, 5000);
 });
 
-// Limpiar el intervalo cuando se cierra el componente para evitar fugas de memoria
 onUnmounted(() => {
     if (idIntervaloActualizacion.value) clearInterval(idIntervaloActualizacion.value);
 });
 </script>
 
 <template>
-    <div class="chat-container">
+    <div class="chat-container" :class="{ 'chat-activo': conversacionActiva }">
         
         <div class="sidebar">
             <div class="header"><h3>Mis Chats</h3></div>
@@ -233,6 +226,7 @@ onUnmounted(() => {
                         <span class="name">{{ obtenerDatosDelInterlocutor(chat).name }}</span>
                         <span class="prod">📦 {{ chat.product.name }}</span>
                     </div>
+                    <div class="flecha-der">›</div>
                 </li>
 
                 <li 
@@ -249,9 +243,13 @@ onUnmounted(() => {
 
         <div class="main">
             <div v-if="conversacionActiva" class="window">
+                
                 <div class="chat-header">
-                    <h3>{{ conversacionActiva.otherUserName }}</h3>
-                    <span>{{ conversacionActiva.productName }}</span>
+                    <button class="btn-volver" @click="cerrarChat">←</button>
+                    <div class="info-header">
+                        <h3>{{ conversacionActiva.otherUserName }}</h3>
+                        <span>{{ conversacionActiva.productName }}</span>
+                    </div>
                 </div>
 
                 <div class="msgs-body">
@@ -267,7 +265,9 @@ onUnmounted(() => {
                     >
                         <div class="bubble">
                             <p>{{ msg.content }}</p>
-                            <small v-if="msg.shipping_date">{{ new Date(msg.shipping_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }}</small>
+                            <small class="msg-time">
+                                {{ formatearFechaInteligente(msg.shipping_date || msg.created_at) }}
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -286,33 +286,219 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.chat-container { display: flex; height: 90vh; font-family: sans-serif; background: #f0f2f5; }
-.sidebar { width: 300px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
-.header { padding: 15px; background: #eee; border-bottom: 1px solid #ddd; }
-.chat-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
-.chat-list li { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
-.chat-list li:hover { background: #f9f9f9; }
-.chat-list li.active { background: #e6f7ff; border-left: 4px solid #1890ff; }
-.info { display: flex; flex-direction: column; }
-.name { font-weight: bold; }
-.prod { font-size: 0.85em; color: #666; }
+.chat-container {
+    display: flex;
+    /* Esto hace que el chat ocupe exactamente lo que sobra de la pantalla */
+    height: calc(100vh - 80px); 
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    background: #f0f2f5;
+    position: relative;
+    overflow: hidden;
+    /* Eliminamos cualquier margen que pueda estar empujando */
+    margin: 0; 
+}
 
-.main { flex: 1; display: flex; flex-direction: column; }
+/* En el media query de móvil, ajusta si el Nav mide diferente (ej: 60px) */
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 60px); 
+    }
+}
+.sidebar {
+    width: 350px;
+    background: white;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.header {
+    padding: 15px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #ddd;
+}
+.header h3 { margin: 0; color: #1c5537; }
+
+.chat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.chat-list li {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.chat-list li:hover { background: #f9f9f9; }
+.chat-list li.active { background: #e8f5e9; border-left: 4px solid #1c5537; }
+
+.info { display: flex; flex-direction: column; }
+.name { font-weight: 600; color: #333; }
+.prod { font-size: 0.85em; color: #666; margin-top: 2px; }
+.flecha-der { color: #ccc; font-size: 1.2rem; }
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #e5ddd5;
+    position: relative;
+}
+
 .window { display: flex; flex-direction: column; height: 100%; }
-.chat-header { padding: 15px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-.msgs-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-.row { display: flex; }
+
+.chat-header {
+    padding: 10px 15px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.btn-volver {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #1c5537;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.info-header h3 { margin: 0; font-size: 1rem; color: #111; }
+.info-header span { font-size: 0.8rem; color: #666; }
+
+.msgs-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-image: radial-gradient(#ddd 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.row { display: flex; width: 100%; }
 .mine { justify-content: flex-end; }
 .theirs { justify-content: flex-start; }
-.bubble { padding: 10px 15px; border-radius: 10px; max-width: 70%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word; }
-.mine .bubble { background: #dcf8c6; }
-.theirs .bubble { background: white; }
-.bubble p { margin: 0; }
-.bubble small { font-size: 0.7em; color: #666; display: block; text-align: right; margin-top: 5px; }
 
-.input-area { padding: 15px; background: #f0f0f0; display: flex; gap: 10px; }
-.input-area input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
-.input-area button { padding: 10px 20px; border-radius: 20px; border: none; background: #008069; color: white; cursor: pointer; }
-.no-select { display: flex; align-items: center; justify-content: center; height: 100%; color: #888; }
-.empty { text-align: center; color: #888; margin-top: 20px; }
+.bubble {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 75%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    word-wrap: break-word;
+    position: relative;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.mine .bubble { background: #dcf8c6; border-top-right-radius: 0; }
+.theirs .bubble { background: white; border-top-left-radius: 0; }
+
+.bubble p { margin: 0; line-height: 1.4; }
+
+.msg-time {
+    font-size: 0.7em;
+    color: #999;
+    text-align: right;
+    margin-top: 4px;
+    align-self: flex-end;
+    line-height: 1;
+    min-height: 1em;
+}
+
+.input-area {
+    padding: 10px;
+    background: #f0f0f0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-top: 1px solid #ddd;
+}
+
+.input-area input {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 24px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.input-area button {
+    padding: 10px 20px;
+    border-radius: 24px;
+    border: none;
+    background: #1c5537;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.no-select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        height: 85vh;
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+
+    .main {
+        display: none !important;
+    }
+
+    .no-select {
+        display: none;
+    }
+
+    .chat-container.chat-activo .sidebar {
+        display: none !important;
+    }
+
+    .chat-container.chat-activo .main {
+        display: flex !important;
+        width: 100%;
+        height: 100%;
+    }
+
+    .btn-volver {
+        display: block;
+    }
+
+    .bubble {
+        max-width: 85%;
+    }
+}
 </style>

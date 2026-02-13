@@ -147,27 +147,59 @@
   }
   </script>
   
-  <style scoped>
-    .tarjeta-mapa {
+
+<style scoped>
+.tarjeta-mapa {
     width: 100%;
     max-width: 1400px;
-    margin: 0 auto;  
+    margin: 0 auto;
     background: white;
-    padding: 15px;    
+    padding: 15px;
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     text-align: center;
+    box-sizing: border-box;
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.tarjeta-mapa > div:nth-child(2) {
+    width: 100%;
+    height: 450px;
+    border-radius: 15px;
+    border: 2px solid #eee;
+    z-index: 1;
+}
+
+.error {
+    color: grey;
+    font-style: italic;
+    padding: 10px;
+}
+
+.marcador-nuevo {
+    filter: hue-rotate(100deg) brightness(1.3);
+}
+
+@media (max-width: 768px) {
+    .tarjeta-mapa {
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    .tarjeta-mapa > div:nth-child(2) { 
-        width: 100%; 
-        height: 450px;
-        border-radius: 15px; 
-        border: 2px solid #eee;
-        z-index: 1; 
+
+    .tarjeta-mapa > div:nth-child(2) {
+        height: 300px; 
+        border-radius: 10px;
     }
-    .error { color: grey; font-style: italic; padding: 10px; }
-    
-    .marcador-nuevo {
-        filter: hue-rotate(100deg) brightness(1.3);
+
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
     }
-    </style>
+}
+</style>

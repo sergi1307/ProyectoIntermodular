@@ -58,20 +58,48 @@ export default {
 </template>
 
 <style scoped>
+.area-mapa {
+  padding: 20px;
+  margin: 20px auto;
+  min-height: 400px;
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cargando {
+  color: #666;
+  font-style: italic;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+}
+
 .contenedor-especifico {
   padding: 20px;
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
 }
-.area-mapa {
-  padding: 20px 0;
-  margin-top: 20px;
-  min-height: 300px;
-}
 
-.cargando {
-  color: #666;
-  font-style: italic;
+@media (max-width: 768px) {
+  .area-mapa {
+    padding: 10px;
+    margin: 10px auto;
+    min-height: 300px;
+  }
+
+  .contenedor-especifico {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .cargando {
+    height: 200px;
+    font-size: 0.9rem;
+  }
 }
 </style>

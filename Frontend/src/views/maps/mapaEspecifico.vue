@@ -199,51 +199,65 @@ export default {
     max-width: 900px; 
     margin: 0 auto; 
     text-align: center;
+    box-sizing: border-box;
 }
 
-.boton-nuevo {
-  background: green;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  margin-bottom: 20px;
+h2 {
+    color: #1c5537;
+    margin-bottom: 10px;
 }
 
 .formulario {
-  background: #f5f5f5;
+  background: #f9fafb;
   padding: 20px;
   margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
 }
 
 .campo {
   width: 100%;
-  padding: 8px;
+  padding: 12px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
 .boton-guardar {
-  background: blue;
+  background: #1c5537;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
   cursor: pointer;
-  margin-right: 10px;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .boton-cancelar {
-  background: gray;
+  background: #6b7280;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
   cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .area-mapa { 
-  padding: 20px 0; 
+  padding: 0; 
   margin-top: 20px; 
   min-height: 400px; 
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .lista {
@@ -254,27 +268,39 @@ export default {
 .item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 15px;
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.item-info p {
+    margin: 0;
+    line-height: 1.5;
 }
 
 .boton-editar {
-  background: orange;
+  background: #f59e0b;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: none;
   cursor: pointer;
+  border-radius: 6px;
   margin-right: 5px;
+  font-weight: 600;
 }
 
 .boton-eliminar {
-  background: red;
+  background: #ef4444;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: none;
   cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .aviso-vacio {
@@ -282,10 +308,50 @@ export default {
     color: #856404; 
     background-color: #fff3cd; 
     padding: 15px;
+    border-radius: 8px;
 }
 
 .cargando { 
   color: #666; 
   font-style: italic; 
+}
+
+@media (max-width: 768px) {
+    .contenedor-especifico {
+        padding: 10px;
+    }
+
+    .formulario {
+        padding: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .boton-guardar, .boton-cancelar {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .item-actions {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .boton-editar, .boton-eliminar {
+        flex: 1;
+        margin-right: 0;
+        padding: 10px;
+        text-align: center;
+    }
 }
 </style>

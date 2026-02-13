@@ -357,4 +357,25 @@ select {
 .btn-guardar:hover {
   background-color: #15422a;
 }
+
+@media (max-width: 768px) {
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .contenedor-formulario {
+    padding-right: 0;
+    max-height: 85vh;
+  }
+
+  input, select, textarea {
+    font-size: 16px;
+    padding: 12px;
+  }
+  
+  .btn-guardar {
+    padding: 14px;
+  }
+}
 </style>

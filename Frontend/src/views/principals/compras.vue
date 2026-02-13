@@ -179,29 +179,31 @@ onMounted(obtenerCompras);
 <style scoped>
 #contenedor-compras {
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 #menu_superior {
   background-color: #ffffff;
-  padding: 12px 16px;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 15px;
+  margin-bottom: 25px;
   flex-wrap: wrap;
 }
 
 #busqueda {
   flex: 1;
   min-width: 250px;
-  background-color: #f3f4f6;
-  border-radius: 500px;
-  padding: 8px 18px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 10px 15px;
   display: flex;
   align-items: center;
-  border: 1px solid transparent;
+  border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
 }
 
@@ -232,13 +234,12 @@ onMounted(obtenerCompras);
 }
 
 #filtro select {
-  background-color: #f3f4f6;
-  border: 1px solid transparent;
-  padding: 10px 34px 10px 18px;
-  border-radius: 999px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 10px 35px 10px 15px; /* Espacio para la flecha */
+  border-radius: 8px;
   font-size: 14px;
   color: #374151;
-  font-weight: 500;
   cursor: pointer;
   outline: none;
   transition: all 0.2s ease;
@@ -247,16 +248,21 @@ onMounted(obtenerCompras);
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
+  min-width: 180px;
 }
 
 #filtro select:hover {
-  background-color: #e5e7eb;
+  background-color: #f3f4f6;
 }
 
 #filtro select:focus {
   background-color: #ffffff;
   border-color: #1c5537;
-  box-shadow: 0 0 0 3px rgba(28, 85, 55, 0.1);
+}
+
+#listaCompras {
+  width: 100%;
+  overflow-x: auto;
 }
 
 #listaCompras table {
@@ -265,7 +271,7 @@ onMounted(obtenerCompras);
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 #listaCompras th {
@@ -295,8 +301,7 @@ onMounted(obtenerCompras);
 .precio-celda {
   font-weight: 700;
   color: #111827;
-  font-family: monospace;
-  font-size: 1.05rem;
+  font-family: 'Inter', monospace; /* Monospace para alinear cifras si se desea */
 }
 
 .empty-msg {
@@ -305,42 +310,39 @@ onMounted(obtenerCompras);
   color: #9ca3af;
   font-style: italic;
 }
+
 .chip-estado {
-  padding: 4px 12px;
-  border-radius: 99px;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   display: inline-block;
   text-transform: capitalize;
+  text-align: center;
+  min-width: 80px;
 }
 
 .estado-rechazado {
-  background-color: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #ffedd5;
-  border-radius: 10px;
-  padding: 0.2em;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
 }
 
 .estado-encurso {
   background-color: #eff6ff;
-  color: #1d4ed8;
+  color: #2563eb;
   border: 1px solid #dbeafe;
-  border-radius: 10px;
-  padding: 0.2em;
 }
 
 .estado-aceptado {
   background-color: #f0fdf4;
-  color: #15803d;
+  color: #16a34a;
   border: 1px solid #dcfce7;
-  border-radius: 10px;
-  padding: 0.2em;
 }
 
 .acciones-wrapper {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -351,6 +353,9 @@ td button {
   padding: 6px;
   border-radius: 6px;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 td button:hover {
@@ -361,6 +366,7 @@ td button:hover {
   width: 20px;
   height: 20px;
   opacity: 0.6;
+  transition: opacity 0.2s;
 }
 
 td button:hover .action-icon {
@@ -375,51 +381,85 @@ td button:hover .action-icon {
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
+  margin-top: 15px;
 }
 
 .btn-cerrar:hover {
   background-color: #d1d5db;
 }
 
+/* --- MEDIA QUERIES PARA MÓVIL --- */
 @media (max-width: 768px) {
+  #contenedor-compras {
+    padding: 10px;
+  }
+
   #menu_superior {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+    padding: 12px;
   }
   
-  #busqueda, #filtro select {
+  #busqueda, #filtro, #filtro select {
     width: 100%;
+    min-width: 0;
   }
   
+  /* Ocultar encabezados de tabla */
   #listaCompras thead { display: none; }
   
+  /* Transformar filas en tarjetas */
   #listaCompras tr {
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 15px;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    padding: 15px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   }
   
+  /* Transformar celdas en filas flexibles */
   #listaCompras td {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 8px 0;
     border-bottom: 1px solid #f3f4f6;
     text-align: right;
   }
   
+  #listaCompras td:last-child {
+    border-bottom: none;
+    padding-top: 12px;
+    justify-content: flex-end;
+  }
+  
+  /* Pseudo-elemento para etiquetas */
   #listaCompras td::before {
     content: attr(data-label);
-    font-weight: 600;
+    font-weight: 700;
     color: #6b7280;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
+    margin-right: 15px;
+    text-align: left;
   }
   
   .acciones-wrapper {
     justify-content: flex-end;
+    width: 100%;
+  }
+
+  .action-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chip-estado {
+    font-size: 0.8rem;
+    padding: 4px 10px;
   }
 }
 </style>

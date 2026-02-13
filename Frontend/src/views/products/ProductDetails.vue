@@ -377,6 +377,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+* {
+    box-sizing: border-box;
+}
+
 .detalle-container {
   max-width: 1200px;
   margin: 20px auto;
@@ -399,9 +403,11 @@ onMounted(() => {
   color: #555;
   cursor: pointer;
   margin-bottom: 20px;
+  padding: 0;
 }
 .btn-volver:hover {
   text-decoration: underline;
+  color: #1a4d2e;
 }
 
 .detalle-grid {
@@ -444,6 +450,7 @@ h1 {
   margin: 5px 0;
   color: #1a4d2e;
   font-size: 2.2em;
+  line-height: 1.2;
 }
 
 .precio-grande {
@@ -455,12 +462,14 @@ h1 {
   font-size: 0.5em;
   color: #666;
   font-weight: normal;
+  vertical-align: middle;
 }
 
 .calificacion {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .rating-number {
   font-size: 1.3em;
@@ -485,6 +494,30 @@ h1 {
   font-size: 0.9em;
 }
 
+.acciones-compra {
+    margin-top: 20px;
+}
+
+.selector-cantidad {
+    margin-bottom: 15px;
+}
+
+.input-cantidad {
+  padding: 10px;
+  font-size: 1.1em;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  width: 80px;
+  text-align: center;
+}
+
+.stock-hint {
+    display: block;
+    color: #888;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
 .botones-grupo {
   display: flex;
   gap: 10px;
@@ -501,8 +534,13 @@ h1 {
   cursor: pointer;
   flex-grow: 2;
   font-weight: bold;
+  transition: background-color 0.2s;
 }
 .btn-comprar:hover { background-color: #143a22; }
+.btn-comprar:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
 .btn-chat {
   background-color: #007bff;
@@ -514,16 +552,9 @@ h1 {
   cursor: pointer;
   flex-grow: 1;
   font-weight: bold;
+  transition: background-color 0.2s;
 }
-
-.input-cantidad {
-  padding: 10px;
-  font-size: 1.1em;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  width: 80px;
-  text-align: center;
-}
+.btn-chat:hover { background-color: #0056b3; }
 
 .reviews-section-full {
     background: white;
@@ -531,7 +562,6 @@ h1 {
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     width: 100%;
-    box-sizing: border-box;
 }
 
 .review-form-wrapper {
@@ -608,6 +638,45 @@ h1 {
 }
 
 @media (max-width: 768px) {
-  .detalle-grid { grid-template-columns: 1fr; }
+  .detalle-container {
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .detalle-grid { 
+    grid-template-columns: 1fr; 
+    padding: 20px;
+    gap: 25px;
+  }
+
+  .detalle-imagen img {
+    max-height: 350px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .precio-grande {
+    font-size: 1.6em;
+  }
+
+  .botones-grupo {
+    flex-direction: column; 
+  }
+
+  .btn-comprar, .btn-chat {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .meta-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .reviews-section-full {
+    padding: 20px;
+  }
 }
 </style>
