@@ -222,7 +222,7 @@ const mostrarProductosDelPunto = async (punto) => {
     productosDelPunto.value = [];
 
     try {
-        const response = await axios.get(`http://localhost:8080/api/delivery_points/${punto.id}/products`);
+        const response = await axios.get(`${url}/api/delivery_points/${punto.id}/products`);
         
         // Inicializamos los productos con rating 0
         const productosBase = response.data.map(p => ({
@@ -236,7 +236,7 @@ const mostrarProductosDelPunto = async (punto) => {
         await Promise.all(
             productosDelPunto.value.map(async (p) => {
                 try {
-                    const res = await axios.get(`http://localhost:8080/api/reviews/producto/${p.id_product}/media`);
+                    const res = await axios.get(`${url}/api/reviews/producto/${p.id_product}/media`);
                     p.mediaRating = res.data.average ?? 0;
                 } catch (err) {
                     console.log(`Error al obtener reviews del producto ${p.id_product}`);
@@ -436,7 +436,7 @@ onMounted(() =>{
                         class="tarjeta-producto-mini"
                     >
                         <div class="imagen-mini">
-                            <img :src="`http://localhost:8080/storage/${producto.image}`" />
+                            <img :src="`${url}/storage/${producto.image}`" />
                         </div>
                         <div class="info-mini">
                             <h4>{{ producto.name }}</h4>
