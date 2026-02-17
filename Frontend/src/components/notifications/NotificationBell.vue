@@ -6,10 +6,11 @@ const notificaciones = ref([]);
 const sinLeer = ref(0);
 const mostrarMenu = ref(false);
 const token = localStorage.getItem('token');
+import url from '../../config/api';
 
 const cargarDatos = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/api/notifications', {
+        const response = await axios.get(`${url}/api/notifications`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         

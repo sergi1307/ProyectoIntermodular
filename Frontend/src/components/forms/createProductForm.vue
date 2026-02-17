@@ -94,7 +94,7 @@ const enviarDatos = async () => {
     }
   
     await axios.post(
-      'http://localhost:8080/api/products/store',
+      `${url}/api/products/store`,
       formData,
       {
         headers: {

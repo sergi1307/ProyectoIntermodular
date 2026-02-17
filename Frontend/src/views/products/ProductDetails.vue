@@ -5,10 +5,9 @@ import starRating from "../../components/ratings/starRating.vue";
 import axios from "axios";
 import Review from "@/components/reviews/Review.vue";
 import { useNotificaciones } from '@/utilidades/useNotificaciones';
+import url from '../../config/api';
 
 const notificacion = useNotificaciones();
-
-const url = import.meta.env.VITE_API_URL_DEV;
 
 const route = useRoute();
 const router = useRouter();

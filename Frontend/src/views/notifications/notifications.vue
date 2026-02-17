@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import url from '../../config/api';
 
 const notificaciones = ref([]);
 const token = localStorage.getItem('token');
 
 const cargarTodo = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/api/notifications', {
+        const response = await axios.get(`${url}/api/notifications`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         notificaciones.value = response.data.data;
@@ -21,7 +22,7 @@ const leerNotificacion = async (noti) => {
     if(noti.read_at) return;
 
     try {
-        await axios.patch(`http://localhost:8080/api/notifications/${noti.id}/read`, {}, {
+        await axios.patch(`${url}/api/notifications/${noti.id}/read`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
         noti.read_at = new Date().toISOString();
