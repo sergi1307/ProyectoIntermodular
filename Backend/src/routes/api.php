@@ -134,7 +134,3 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
 
 }); 
-
-Route::options('/{any}', function () {
-    return response('', 200);
-})->where('any', '.*');

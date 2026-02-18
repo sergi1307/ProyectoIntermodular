@@ -27,7 +27,7 @@ const leerNotificacion = async (noti) => {
         });
         noti.read_at = new Date().toISOString();
     } catch (e) {
-        console.log("Error al marcar como leída");
+        console.log("Error al marcar como leída:", e);
     }
 };
 
