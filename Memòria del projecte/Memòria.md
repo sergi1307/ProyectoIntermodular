@@ -762,10 +762,9 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
         - Filtrar per categoria, preu i distancia del punt d'entrega.
         - Ordenar els productes per:
             - preu: (més barat a més car i viceversa)
-            - nom: (Alfabèticament de la `A` fins a la `Z` i viceversa)
-            *Pantalla dels productes*
+            - nom: (Alfabèticament de la `A` fins a la `Z` i viceversa)      
     I en esta pantalla es disposa d'un mapa de totes les tendes que n'hi ha disponibles en l'aplicació, i depenent del punt d'entrega seleccionat es mostraran els productes que es venen en eixe punt d'entrega i quan li apretes a un producte del punt d'entrega específic et redirigira a la pantalla de comprar el producte.
-    *Pantalla dels mapes*
+    ![Pantalla general](GIFs/Pantalla%20general.gif)
     També el comprador pot entrar dins d'un producte per a comprar-lo, quan el compra anirà a la secció d'ordres del client venedor, però això ja ho acabarem de comentar en la part de les ordres del venedor.
     Com a tal dins de l'apartat del producte es poden veure:
         - Nom del producte
@@ -789,7 +788,7 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
     Producte millorable d'una qualitat prou bona per a menjar, però no prou bo per a gaudir-la com un menjar com els que feia ma mare, salutacions.
 
     Les reviews es mostren de 10 en 10 per a no sobrecarregar la web carregant totes les reviews del producte i si no n'hi ha reviews, no és mostra la mitja i en la part dels comentaris es mostrarà `No hay opiniones aún`.
-    *Pantalla de les reviews*
+
     A part de les reviews dels altres usuaris, també es disposa d'un xat per a comunicar-se amb el venedor sense necessitat de comprar el producte per a discutir coses del producte, s'inicia en la pantalla per a comprar el producte i després pots continuar en la pantalla principal.
     Al iniciar és posa per defecte que el següent missatge:
 
@@ -797,16 +796,19 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
 
     Sempre es posa el missatge per a mostrar la conversació, perquè si no estaria buida, a l'enviar un missatge, i que l'altra persona la vega, els missatges s'actualitzen automàticament cada 3 segons per a revisar si n'hi ha nous missatges.
 
-    *Pantalla de xat*
+    ![Pantalla del xat](GIFs/Xat.gif)
 
+
+    ![Pantalla del producte](GIFs/Pantalla%20del%20producte.gif)
 - Venedor: El venedor està dividit en 3 parts:
     - Productes: El venedor pot afegir/editar/borrar productes, junt amb la capacitat de filtrar i buscar pel nom i altres camps.
-    *Pantalla dels productes*
+    ![Creació del producte](GIFs/Creació%20producte.gif)
     - Ordres: El venedor pot administrar l'ordre depenent del seu estat, els estats són:
         - `Aceptado`: La venda s'ha acceptat i s'estableix la data d'entrega en la pantalla de `Mis compras` i li envia un missatge de que la compra que ha sigut acceptada a l'usuari comprador.
         - `En curso`: La venda s'ha realitzat i s'esta esperant a acceptarla o rebutjar-la mentres la data d'entrega del usuari comprador es posa en `Pendiente`.
         - `Rechazado`: La venda s'ha rebutjat i no s'actualitza la data d'entrega i li envia un missatge de que la compra que ha sigut rebutjada a l'usuari comprador.
-    *Pantalla de les ordres*
+    ![Pantalla de les ordres](GIFs/Ordres.gif)
+    ![Estat de les ordres](GIFs/Estats%20de%20les%20ordres.gif)
     - Mapes: El venedor pot crear/editar/borrar punts de venda que siguen d'ell, i segons on apretes en el mapa agafa la longitud i la latitud, però no permet posar la latitud i longitud a mà, sols pots clicar en el mapa per a afegir la longitud i la latitud corresponent al punt clicat.
     ![Mapes del venedor](GIFs/Mapes%20Venedor.gif)
 
@@ -828,10 +830,10 @@ Com a últim tenim la barra de navegació de l'usuari, aquesta barra permet:
         - Accions:
             - Vore informació de la compra
             - Rebutjar si la compra està en estat `En curso`
-        *Pantalla `Mis Compras`*
+        ![Pantalla de `Mis Compras`](GIFs/Pantalla%20Mis%20Compras.gif)
     - `Mis Tiendas` (Venedor):
         Ací es mostraran tots els punts de venda que l'usuari venedor ha creat, té un funcionament similar als mapes amb les funcionalitats de crear, editar o eliminar punts de venda.
-        *Pantalla `Mis Tiendas`*
+        ![Pantalla de `Mis tiendas`](GIFs/Mis%20tiendas.gif)
 ## Desplegament de l'aplicació
 Per últim, ens agradaria parlar de com hem desplegat l'aplicació, més específicament:
 - Que hem usat per a desplegar l'aplicació.
@@ -848,6 +850,7 @@ Per a desplegar l'aplicació hem necessitat 3 coses de Azure:
 - Azure App Services: Per al backend en Laravel.
 
 Ara anem a explicar-lo amb més detall com crear-lo i perque:
+
 [!IMPORTANT]
 Tots els components d'Azure tenen que tindre el mateix grup de recursos i regió per a poder connectar-se i funcionar de forma correcta.
 
@@ -899,7 +902,6 @@ Tambñe després de fer el desplegament no funcionava l'aplicació de forma loca
 Com a futures millores futures teníem pensat en:
 - Autenticar els usuaris mitjançant el correu de Google.
 - Millorar el `range` per al rang de preus, és funcional, però no va quedar exactament com voliem.
-- Mostrar l'hora en la que s'ha manat un missatge en el xat, perquè de moment sempre mostra la 1 de la matinada `01:00`.
 - Fer funcionar la funció de "Recordar contraseña" perque es merament estètic i no funcional 
 ## Que hem aprés?
 Amb este projecte hem aprés a treballar en equip en un projecte de gran magnitud mitjançant `Sprints` setmanals, distribuir la feina entre els membres del grup, tindre present la càrrega de treball que un projecte real pot tindre en una empresa i quan tenim un dubte preguntar a altres companys/professorat de l'aula.
