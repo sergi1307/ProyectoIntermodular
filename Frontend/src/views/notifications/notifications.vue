@@ -22,7 +22,7 @@ const leerNotificacion = async (noti) => {
     if(noti.read_at) return;
 
     try {
-        await axios.patch(`${url}/api/notifications/${noti.id}/read`, {}, {
+        await axios.post(`${url}/api/notifications/${noti.id}/read`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
         noti.read_at = new Date().toISOString();
