@@ -5,7 +5,6 @@ import router from "../../routes/routes";
 import url from "../../config/api";
 import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
-console.log(url);
 const token = localStorage.getItem("token");
 
 const notificaciones = ref();

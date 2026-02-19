@@ -9,7 +9,6 @@
     const router = useRouter();
     const notificacion = useNotificaciones(); // Added this line
     import url from '../../config/api';
-    console.log(url);
 
     // Declarem les variables reactives que rebrem del formulari
     const name = ref('');

@@ -224,8 +224,8 @@ Abans d'explicar com funciona l'aplicació, primerament hem d'explicar com es co
 Primerament anem a dir com es connecta el backend de Laravel a la BD de MySQL en el contenidor de Docker:
 
 En el `docker-compose.yml` que està en la carpeta de `Backend` del projecte es creen les dades necessaries per a crear la base de dades i un usuari, junt a la contrasenya per a accedir a ella i el volum que montara l'aplicació i on podrem accedir a ella al executar el contenidor i el port per defecte de MySQL, el 3306.
-[!IMPORTANT] 
-Les dades que n'hi han en el docker-compose son inventades, en una documentació np s'ha de posar dades de la BD, sols les pose per a que es vega com està configurat i facilitar el configurament de forma local
+> [!IMPORTANT] 
+> Les dades que n'hi han en el docker-compose son inventades, en una documentació np s'ha de posar dades de la BD, sols les pose per a que es vega com està configurat i facilitar el configurament de forma local
 ```yml
  mysql:
     image: mysql:8
@@ -265,8 +265,8 @@ I ja estaria la BD, sols queda explicar com conecta el backend a la BD, això de
 Ara en Laravel per a pasar dels endpoints a les consultes de MySQL, és fara de la següent forma:
 
 Petició API -> Controlador -> Model -> Migració -> BD
-[!important]
-Esta és una versió simplificada sols per a mostrar com va el flux i explicar com funciona tot el recorregut.
+> [!important]
+> Esta és una versió simplificada sols per a mostrar com va el flux i explicar com funciona tot el recorregut.
 
 Primerament, començarem amb la petició API cridant a l'endpoint corresponent, amb l'exemple dels productes la qual està definida en `routes/api.php`:
 ```php
@@ -424,8 +424,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 }
 ```
-[!IMPORTANT] 
-Authenticable hereta de Model, així que ja té totes les funcions de `Eloquent/Model`
+> [!IMPORTANT] 
+> Authenticable hereta de Model, així que ja té totes les funcions de `Eloquent/Model`
 
 ###### Controladors i peticions
 Ara suposem que ja tenim un controlador i peticions en el qual pugues:
@@ -577,8 +577,8 @@ const resProductos = await axios.delete(`http://localhost:8080/api/products/`);
 El que fa el Frontend és dirigir les operacions d'API REST del backend per a fer les peticions, perquè el forntend no té accés a la BD, el backend és una capa intermitja entre la BD i el Frontend, per dir-lo en altres paraules el frontend li diu que és el que n'hi ha que fer i el backend les fa amb l'ajuda de la BD.
 
 Anem a voreu amb un exemple en el login, i també aprofitem per a vore els tokens en acció:
-[!IMPORTANT]
-Al igual que en les dades del docker compose el token és mostra per a explicar el projecte, en una documentació real no es te que mostrar eixa informació.
+> [!IMPORTANT]
+> Al igual que en les dades del docker compose el token és mostra per a explicar el projecte, en una documentació real no es te que mostrar eixa informació.
 ```vue
 <script>
     const enviarDatos = async () => {
@@ -748,12 +748,23 @@ La qual té:
 *Foto de la pagina principal*
 
 Després, quan li apretes al botó `Iniciar Sesión` s'obrira la pantalla de `login`, si tens un usuari pots posar el correu electrònic i la contrasenya per a accedir i quan inicies sessió crea el token i la cookie:
-
-![Pantalla de Login](GIFs/Pantalla%20de%20Login.gif)
+> [!AVÍS]
+> A partir d'ara les imatges és poden clicar per a vore la animació en GIFs, sols teniu que vore `(fes clic per veure l’animació)` per a saber que vos redirijira a un gif on és mostra l'animació.
+<p align="center">
+    <a href="./Funcionament app/GIFs/Pantalla%20de%20Login.gif">
+        <img src="./Funcionament app/Imatges/Pantalla%20de%20Login.png" alt="Pantalla de Login" width="700">
+    </a>
+</p>
+<p align="center"><em>Fig 9: Pantalla d'inici de sessió o 'Login' (fes clic per veure l’animació)</em></p>
 
 En canvi si no tens un usuari pots apretar on diu `Crear cuenta` per a registrar un usuari a l'aplicació, quan acabes d'omplir el formulari li apretes on diu `Crear cuenta` i entraràs a la pàgina principal de l'usuari i de la mateixa forma que en el `login` és crea el token i la cookie al crear el compte:
 
-![Pantalla de Register](GIFs/Pantalla%20de%20register.gif)
+<p align="center">
+    <a href="./Funcionament app/GIFs/Pantalla%20de%20register.gif">
+        <img src="./Funcionament app/Imatges/Pantalla%20de%20register.png" alt="Pantalla de Register" width="700">
+    </a>
+</p>
+<p align="center"><em>Fig 10: Pantalla de registre o 'Register' (fes clic per veure l’animació)</em></p>
 
 Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit entre els apartats de:
 - Comprador: El comprador també està dividit en 2 apartats que són:
@@ -764,7 +775,14 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
             - preu: (més barat a més car i viceversa)
             - nom: (Alfabèticament de la `A` fins a la `Z` i viceversa)      
     I en esta pantalla es disposa d'un mapa de totes les tendes que n'hi ha disponibles en l'aplicació, i depenent del punt d'entrega seleccionat es mostraran els productes que es venen en eixe punt d'entrega i quan li apretes a un producte del punt d'entrega específic et redirigira a la pantalla de comprar el producte.
-    ![Pantalla general](GIFs/Pantalla%20general.gif)
+
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Pantalla%20general.gif">
+            <img src="./Funcionament app/Imatges/Pantalla%20general.png" alt="Pantalla principal del comprador" width="700">
+        </a>  
+    </p>
+    <p align="center"><em>Fig 11: Pantalla principal del comprador (fes clic per veure l’animació)</em></p>
+
     També el comprador pot entrar dins d'un producte per a comprar-lo, quan el compra anirà a la secció d'ordres del client venedor, però això ja ho acabarem de comentar en la part de les ordres del venedor.
     Com a tal dins de l'apartat del producte es poden veure:
         - Nom del producte
@@ -796,29 +814,71 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
 
     Sempre es posa el missatge per a mostrar la conversació, perquè si no estaria buida, a l'enviar un missatge, i que l'altra persona la vega, els missatges s'actualitzen automàticament cada 3 segons per a revisar si n'hi ha nous missatges.
 
-    ![Pantalla del xat](GIFs/Xat.gif)
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Pantalla%20del%20producte.gif">
+            <img src="./Funcionament app/Imatges/Pantalla%20del%20producte.png" alt="Pantalla del producte" width="700">
+        </a> 
+    </p>
+    <p align="center"><em>Fig 12: Pantalla del producte específic (fes clic per veure l’animació)</em></p>
 
-
-    ![Pantalla del producte](GIFs/Pantalla%20del%20producte.gif)
 - Venedor: El venedor està dividit en 3 parts:
     - Productes: El venedor pot afegir/editar/borrar productes, junt amb la capacitat de filtrar i buscar pel nom i altres camps.
-    ![Creació del producte](GIFs/Creació%20producte.gif)
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Creació%20producte.gif">
+            <img src="./Funcionament app/matges/Creació%20producte.png" alt="Creació del producte" width="700">
+        </a> 
+    </p>
+    <p align="center"><em>Fig 13: Creació del producte (fes clic per veure l’animació)</em></p>
     - Ordres: El venedor pot administrar l'ordre depenent del seu estat, els estats són:
         - `Aceptado`: La venda s'ha acceptat i s'estableix la data d'entrega en la pantalla de `Mis compras` i li envia un missatge de que la compra que ha sigut acceptada a l'usuari comprador.
         - `En curso`: La venda s'ha realitzat i s'esta esperant a acceptarla o rebutjar-la mentres la data d'entrega del usuari comprador es posa en `Pendiente`.
         - `Rechazado`: La venda s'ha rebutjat i no s'actualitza la data d'entrega i li envia un missatge de que la compra que ha sigut rebutjada a l'usuari comprador.
-    ![Pantalla de les ordres](GIFs/Ordres.gif)
-    ![Estat de les ordres](GIFs/Estats%20de%20les%20ordres.gif)
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Ordres.gif">
+            <img src="./Funcionament app/Imatges/Ordres.png" alt="Pantalla de les ordres" width="700">
+        </a> 
+    </p>
+    <p align="center"><em>Fig 14: Gestió de les ordres (fes clic per veure l’animació)</em></p>
+
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Estats%20de%20les%20ordres.gif">
+            <img src="./Funcionament app/Imatges/Estats%20de%20les%20ordres.png" alt="Estat de les ordres" width="700">
+        </a> 
+    </p>
+    <p align="center"><em>Fig 15: Filtrant les ordres pel estat (fes clic per veure l’animació)</em></p>
     - Mapes: El venedor pot crear/editar/borrar punts de venda que siguen d'ell, i segons on apretes en el mapa agafa la longitud i la latitud, però no permet posar la latitud i longitud a mà, sols pots clicar en el mapa per a afegir la longitud i la latitud corresponent al punt clicat.
-    ![Mapes del venedor](GIFs/Mapes%20Venedor.gif)
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Mapes%20Venedor.gif">
+            <img src="./Funcionament app/Imatges/Mapes%20Venedor.png" alt="Mapes del venedor" width="700">
+        </a> 
+    </p>
+    <p align="center"><em>Fig 16: Gestió dels mapes (fes clic per veure l’animació)</em></p>
 
 Com a últim tenim la barra de navegació de l'usuari, aquesta barra permet:
 - Canviar entre comprador i venedor
 - Mirar les notificacions de les vendes i el xat
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Notificacions.gif">
+            <img src="./Funcionament app/Imatges/Notificacions.png" alt="Pantalla de les notificacions" width="700">
+        </a>
+    </p>
+    <p align="center"><em>Fig 17: Notificacions entrants i llegides (fes clic per veure l’animació)</em></p>
 - Entrar al xat
+    <p align="center">
+        <a href="./Funcionament app/GIFs/Xat.gif">
+            <img src="./Funcionament app/Imatges/Xat.png" alt="Pantalla del xat" width="700">
+        </a>
+    </p>
+    <p align="center"><em>Fig 18: Pantalla del xat per a discutir amb el venedor/comprador (fes clic per veure l’animació)</em></p>
 - I en la barra de l'usuari pots fer unes o altres depenent si has afegit un producte o un punt de venda o si estàs en el modo venedor o comprador:
     - `Cerrar Sesión` (Venedor i comprador):
         Com bé diu el seu nom tanca la sessió destruint la token i la cookie de la sessió i redirigint a la pàgina d'inici.
+        <p align="center">
+            <a href="./Funcionament app/GIFs/Tancar%20sessió.gif">
+                <img src="./Funcionament app/Imatges/Tancar%20sessió.png" alt="Tancar sessió" width="700">
+            </a>
+        </p>
+        <p align="center"><em>Fig 19: Tancament de la sessió del usuari actiu (fes clic per veure l’animació)</em></p>
     - `Mis Compras` (Venedor i comprador):
         Ací es mostraran totes les compres realitzades per l'usuari, siga comprador o venedor de l'aplicació, on es mostrara el següent contingut en forma de llista:
         - Nom del producte
@@ -830,10 +890,20 @@ Com a últim tenim la barra de navegació de l'usuari, aquesta barra permet:
         - Accions:
             - Vore informació de la compra
             - Rebutjar si la compra està en estat `En curso`
-        ![Pantalla de `Mis Compras`](GIFs/Pantalla%20Mis%20Compras.gif)
+        <p align="center">
+            <a href="./Funcionament app/GIFs/Pantalla%20Mis%20Compras.gif">
+                <img src="./Funcionament app/Imatges/Pantalla%20Mis%20Compras.png" alt="Pantalla de 'Mis Compras'" width="700">
+            </a>
+        </p>
+        <p align="center"><em>Fig 20: Pantalla "Mis Compras" des del perfil (fes clic per veure l’animació)</em></p>
     - `Mis Tiendas` (Venedor):
         Ací es mostraran tots els punts de venda que l'usuari venedor ha creat, té un funcionament similar als mapes amb les funcionalitats de crear, editar o eliminar punts de venda.
-        ![Pantalla de `Mis tiendas`](GIFs/Mis%20tiendas.gif)
+        <p align="center">
+            <a href="./Funcionament app/GIFs/Mis%20tiendas.gif">
+                <img src="./Funcionament app/Imatges/Mis%20tiendas.png" alt="Pantalla de 'Mis Tiendas'" width="700">
+            </a>
+        </p>
+        <p align="center"><em>Fig 21: Pantalla "Mis Tiendas" des del perfil (fes clic per veure l’animació)</em></p>
 ## Desplegament de l'aplicació
 Per últim, ens agradaria parlar de com hem desplegat l'aplicació, més específicament:
 - Que hem usat per a desplegar l'aplicació.
@@ -851,8 +921,8 @@ Per a desplegar l'aplicació hem necessitat 3 coses de Azure:
 
 Ara anem a explicar-lo amb més detall com crear-lo i perque:
 
-[!IMPORTANT]
-Tots els components d'Azure tenen que tindre el mateix grup de recursos i regió per a poder connectar-se i funcionar de forma correcta.
+> [!IMPORTANT]
+> Tots els components d'Azure tenen que tindre el mateix grup de recursos i regió per a poder connectar-se i funcionar de forma correcta.
 
 #### Pasos per a crear Static Web Apps
 1. Busquem Static Web Apps en el buscador de Azure

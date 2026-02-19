@@ -9,7 +9,7 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 const notificacion = useNotificaciones();
 
 import url from '../../config/api';
-console.log(url);
+
 
 const router = useRouter();
 const productos = ref([]);

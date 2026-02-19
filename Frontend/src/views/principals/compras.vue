@@ -4,7 +4,7 @@ import axios from "axios";
 import Modal from "../../components/modals/Modal.vue";
 
 import url from '../../config/api';
-console.log(url);
+
 
 const compras = ref([]);
 const mostrarModal = ref(false);

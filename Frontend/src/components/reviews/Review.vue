@@ -3,7 +3,6 @@ import { ref, watch } from 'vue'
 import axios from 'axios'
 
 import url from '../../config/api';
-console.log(url);
 
 const props = defineProps({
   reviewsData: Object,

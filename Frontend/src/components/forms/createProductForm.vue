@@ -6,7 +6,6 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 const notificacion = useNotificaciones();
 
 import url from '../../config/api';
-console.log(url);
 
 // Recibimos categorías del padre (como tenías antes)
 const props = defineProps({

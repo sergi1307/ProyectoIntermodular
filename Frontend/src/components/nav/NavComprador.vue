@@ -6,7 +6,6 @@ import NotificationBell from '../notifications/NotificationBell.vue';
 import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 import url from '../../config/api';
-console.log(url);
 
 const token = localStorage.getItem("token");
 const notificaciones = ref();

@@ -8,7 +8,6 @@
     const router = useRouter();
     const notificacion = useNotificaciones();
     import url from '../../config/api';
-    console.log(url);
     
     // Declarem les variables reactives que rebrem del formulari
     const email = ref('');

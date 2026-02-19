@@ -55,7 +55,6 @@ import axios from 'axios';
 import { useNotificaciones } from '@/utilidades/useNotificaciones';
 
 import url from '../../config/api';
-console.log(url);
 
 export default {
   name: 'MapaEspecifico',

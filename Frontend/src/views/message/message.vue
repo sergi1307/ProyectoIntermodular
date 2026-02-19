@@ -7,7 +7,6 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 const notificacion = useNotificaciones();
 
 import url from '../../config/api';
-console.log(url);
 
 const listaDeConversaciones = ref([]);
 const mensajesDelChatActual = ref([]);
