@@ -825,7 +825,7 @@ Ara ja dins de l'aplicació tenim 2 parts importants del programa, està dividit
     - Productes: El venedor pot afegir/editar/borrar productes, junt amb la capacitat de filtrar i buscar pel nom i altres camps.
     <p align="center">
         <a href="./Funcionament app/GIFs/Creació%20producte.gif">
-            <img src="./Funcionament app/matges/Creació%20producte.png" alt="Creació del producte" width="700">
+            <img src="./Funcionament app/Imatges/Creació%20producte.png" alt="Creació del producte" width="700">
         </a> 
     </p>
     <p align="center"><em>Fig 13: Creació del producte (fes clic per veure l’animació)</em></p>
