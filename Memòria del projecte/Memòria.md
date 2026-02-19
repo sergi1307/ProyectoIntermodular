@@ -21,9 +21,12 @@
             - [Avantatges](#avantatges-1)
             - [Desavantatges](#desavantatges-1)
         * [Opinió del grup](#opinió-del-grup)
+    + [Requisits del sistema](#requisits-del-sistema)
+        * [Requisits funcionals](#requisits-funcionals)
+        * [Requisits no funcionals](#requisits-no-funcionals)
     + [Arquitectura del sistema](#arquitectura-del-sistema)
         * [MySQL -> Backend](#mysql---backend)
-            - [Autenticació en tokens i middleware](#autenticació-en-tokens-i-middleware)
+            - [Autenticació basada en cookies amb Laravel Sanctum](#autenticació-basada-en-cookies-amb-laravel-sanctum)
                 + [Instal·lació de Sanctum](#installació-de-sanctum)
                     * [Implementació](#implementació)
                         - [Models](#models)
@@ -94,7 +97,9 @@ Hem utilitzat MySQL com a la nostra base de dades per a emmagatzemar els usuaris
 <p align="center"><em>Fig 5: Logo de Vue</em></p>
 
 Hem utilitzat Vue per al frontend de l'aplicació, més específicament per ser un framework de JavaScript modern molt utilitzat e implementar l'estructura de HTML, els estils de CSS i les funcions de JavaScript.
+
 ## Prototip
+
 Abans de posar-se a programar s'ha de saber com volem que siga l'estructura i aparença de l'aplicació i també per a fer-se una idea del que s'ha de fer per la part visual (client) i així sabent el que li podria interessar al client o no en empreses reals. 
 Per la part del programador el prototip pot ser una guia de com s'ha de veure l'aplicació, però no necessàriament ha de ser `EXACTAMENT` igual al que està en el prototip, al final es podran afegir/eliminar coses per raons molt diverses: funcionalitat, estètica..., etc. 
 Però al final el propòsit del prototip va ser el comentat abans: guiar als programadors de com s'ha de veure l'aplicació de forma aproximada i en projectes reals mostrar com seria l'aparença de l'aplicació a l'usuari. 
@@ -136,17 +141,23 @@ I busques la carpeta `Documentació Casos d'ús` o obri el següent enllaç que 
 
 ## Analisis de les possibles solucions
 En este apartat analitzarem les tecnologies en les quals este projecte pot ser desenvolupat i el perquè hem seleccionat unes i altres no, les tecnologies seran les que es van donar en el curs de 2n DAW presencial en els mòduls de DWEC (Desenvolupament en entorn client) i DWES (Desenvolupament en entorn servidor), les tecnologies en les quals es va a desenvolupar són:
+
 - Backend:
     - NodeJS(Express)
     - PHP(Laravel)
 - Frontend:
     - Vue(JavaScript)
     - HTML+CSS+JS
+
 ### Node vs Laravel
+
 Primerament compararem les millors formes de desenvolupar el backend:
+
 - NodeJS (JavaScript)
 - Laravel (PHP)
+
 #### Avantatges
+
 | Avantatges NodeJS              | Avantatges Laravel                                                      |
 |:-------------------------------|:------------------------------------------------------------------------|
 | Eficiència i escalabilitat     | Facilitat d'ús                                                          |
@@ -163,10 +174,14 @@ Primerament compararem les millors formes de desenvolupar el backend:
 | Corba d'aprenentatge per a l'asincronia  | Dependència externa            |
 
 ### Vue vs HTML+CSS+JavaScript
+
 Seguidament comparararem les formes en les quals podem desenvolupar el frontend:
+
 - HTML+CSS+JS
 - Vue
+
 #### Avantatges
+
 | Avantatges HTML+CSS+JS         | Avantatges Vue                 |
 |:-------------------------------|:-------------------------------|
 | Molt simple                    | Components                     |
@@ -183,6 +198,7 @@ Seguidament comparararem les formes en les quals podem desenvolupar el frontend:
 | Arquitectura a càrrec del dev  | Corba d'aprenentatge més alta  |
 
 ### Opinió del grup
+
 En el nostre grup hem decidit usar Laravel per al backend Vue per al frontend, la pregunta és:
 
 Per què?
@@ -205,6 +221,7 @@ A més Laravel facilita molts aspectes que en Node deuries de dedicar més temps
     - Projectes Full Stack un poc més complicats degut a que tens que familiaritzar-te amb HTML
 
 I al igual que Laravel, Vue facilita moltes més coses que usar HTML+CSS+JS directament:
+
 - Vue:
     - Actualització automàtica sols al guardar canvis en els fitxers.
     - Fitxers més comprimits amb més funcionalitats sense necessitat de crear molts més fitxers.
@@ -215,12 +232,31 @@ I al igual que Laravel, Vue facilita moltes més coses que usar HTML+CSS+JS dire
     - Molts fitxers que cadascú crida a un altre fitxer.
     - També capacitat de crear components, però més complicat.
     - `No` té capacitat per a executar la aplicació en `development` i en `production`, sols la executa tal i com està si no és manipula.
+
+## Requisits del sistema
+Aquest apartat de la memòria és un resum del què és capaç de fer l'aplicació i el que no pot fer:
+
+### Requisits funcionals
+
+- L’usuari es pot registrar/iniciar sessió
+- Un venedor pot publicar productes
+- El sistema permet comunicació mitjançant xat
+- El sistema permet gestionar punts de venda en mapa
+
+### Requisits no funcionals
+
+- Temps de resposta inferior a 2 segons
+- Autenticació segura
+- Compatibilitat amb dispositius mòbils
+
 ## Arquitectura del sistema
+
 Com bé hem dit en anterioritat en este projecte hem usat Laravel per al backend i Vue per al frontend, la qual segueix una arquitectura client-servidor basada en un SPA (Single Page Application) en el frontend i una API REST en el backend. Aquesta separeació permet escalar independentment cada capa i facilita el manteniment i evolució del sistema.
 
 Abans d'explicar com funciona l'aplicació, primerament hem d'explicar com es connecta Vue a Laravel i com aprofita eixa informació, comencem per parts:
 
 ### MySQL -> Backend
+
 Primerament anem a dir com es connecta el backend de Laravel a la BD de MySQL en el contenidor de Docker:
 
 En el `docker-compose.yml` que està en la carpeta de `Backend` del projecte es creen les dades necessaries per a crear la base de dades i un usuari, junt a la contrasenya per a accedir a ella i el volum que montara l'aplicació i on podrem accedir a ella al executar el contenidor i el port per defecte de MySQL, el 3306.
@@ -383,13 +419,15 @@ return new class extends Migration
     }
 };
 ``` 
-#### Autenticació en tokens i middleware
+#### Autenticació basada en cookies amb Laravel Sanctum
 Abans d'explicar la connexió en el front ens agradaria parlar sobre com funcionen els tokens en el nostre projecte i com els hem usat en Laravel, en este cas hem usat el paquet de Laravel `Sanctum`:
 
 I que és Sanctum?
 
 `Sanctum` és un paquet dins de `Laravel` que permet la creació de `tokens` de forma senzilla basades en `APIs`, el qual permet generar múltiples tokens API, estos tokens poden tindre diverses funcions/àmbits els quals poden permetre a l'hora d'executar-se.
+
 ##### Instal·lació de Sanctum
+
 Primerament, necessitem instal·lar el gestor de APIs de Laravel, si estàs en la versió 12 o superior, si no pots botar-te este pas:
 ```bash
 php artisan install:api
@@ -407,6 +445,7 @@ I per últim alcem les migracions de `Sanctum`:
 php artisan migrate
 ```
 ##### Implementació
+
 ###### Models
 Ja quan tingueu `Sanctum` correctament instal·lat i configurat ja podem usar-lo per a posar-li els tokens a l'usuari, però primer hem de modificar el model dels usuaris abans de fer els controladors de la següent forma:
 
@@ -428,6 +467,7 @@ class User extends Authenticatable
 > Authenticable hereta de Model, així que ja té totes les funcions de `Eloquent/Model`
 
 ###### Controladors i peticions
+
 Ara suposem que ja tenim un controlador i peticions en el qual pugues:
 - Crear usuaris (Register)
 ```php
@@ -515,6 +555,7 @@ Ara suposem que ja tenim un controlador i peticions en el qual pugues:
     }
 ```
 ###### Creació del token en el controlador
+
 Per a proporcionar-li el token a l'usuari, hem de ficar una línia extra en la resposta, la qual s'anomena `token`, que es creara de la següent forma:
 ```php
 // 'token': Etiqueta JSON que creara el token
@@ -533,6 +574,7 @@ return response()->json([
 ], 200);
 ```
 ###### Creació de les rutes i els middlewares necessaris
+
 Ara que ja tenim creat el controlador per a crear els usuaris amb els tokens ara necessitem provar-los i que es puguen accedir mitjançant rutes, en el fitxer `api.php` que es troba en la següent ruta `routes/api.php`, suposem que també les teníem amb anterioritat:
 ```php
 // Endpoint /register
@@ -556,9 +598,13 @@ Route::middleware('auth:sanctum')
 El que fa esta funció és que mostra sols els usuaris que estiguen autenticats, fent que:
 - Sí l'usuari `NO` està autenticat: ERROR
 - Sí l'usuari està autenticat: Mostra l'usuari
+
 ### Backend -> Frontend
+
 Ara per al frontend anem a usar la llibreria `axios`, que ens permetra fer les peticions del backend de forma més sencilla que en `fetch`
+
 #### Instal·lació de Axios
+
 Per a instal·lar axios és tan senzil com fer:
 ```bash
 npm install axios
@@ -606,7 +652,6 @@ Anem a voreu amb un exemple en el login, i també aprofitem per a vore els token
             console.log("Respuesta del servidor:", response.data);
 
             if (response.data.status == 'true') {
-                localStorage.setItem('token', response.data.token);
 
                 if(response.data.user) {
                     localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -652,12 +697,15 @@ El que fa esta part és:
 - Sí no és el correu/contrasenya correctes: Dona un error d'autenticació
 - Sí el correu i la contrasenya son correctes: 
     - Usuari no autenticat: Dona un error d'autenticació
-    - Usuari aunteticat anteriorment: Inicia la sessió de l'usuari i el middleware de `Sanctum` comprova la cookie de sessió enviada pel navegador i en el backend autentica la informació i la sessió en `Sanctum`, l’ús de `withCredentials` permet que el navegador envie automàticament la cookie de sessió entre dominis configurats en CORS.
+    - Usuari aunteticat anteriorment: Inicia la sessió de l'usuari i el middleware de `Sanctum` comprova la cookie de sessió per `HttpOnly` gestionades pel navegador i en el backend autentica la informació i la sessió en `Sanctum`, l’ús de `withCredentials` permet que el navegador envie les peticions entre dominis configurats en CORS.
 Anem a fer un resum quan inicies sessió d'un usuari:
 
-Dades de l'usuari -> Inicia sessió -> Envia dades al backend -> Laravel valida les credencials, crea la sessió i envia la cookie -> El navegador guarda la cookie -> Sanctum valida al usuari -> Si es correcte pasa a la pantalla principal de l'aplicació
+Dades de l'usuari -> Inicia sessió -> Envia dades al backend -> Laravel valida les credencials, crea la sessió i envia la cookie -> El navegador guarda la cookie -> Sanctum valida al usuari -> Si es correcte pasa a la pantalla principal de l'aplicació.
+
 ## Desenvolupament de la solució
+
 ### Consideracions prèvies
+
 - Elecció de les tecnologies: Com bé hem dit amb anterioritat per al frontend s'usarà Vue i per al backend usarem Laravel.
 
 - Organització del projecte: L'estructura del projecte es divideix en 2 carpetes:
@@ -727,6 +775,7 @@ I ara, executa el següent comand per a executar el frontend:
 npm run dev
 ```
 #### Configuració del projecte i posada en marxa (Local(Production))
+
 Per a posar el projecte en producció de forma local es fa de la mateixa forma descrita amb anterioritat, sols que no la repetisc per a no fer-la ni extensa ni repetitiva, sols canvia la forma d'executar el frontend, que en lloc de:
 ```bash
 npm run dev
@@ -740,7 +789,9 @@ I si vols ficar-la de veres en producció, res en local pots executar el següen
 npm run build
 ```
 I amb això ja tenim tots els requisits necessaris per a executar el projecte de forma correcta en el nostre entorn de desenvolupament de forma local tant en producció com en desenvolupament.
+
 ## Funcionament de l'aplicació
+
 El primer que veus de l'aplicació és la pantalla inicial de l'aplicació que pots veure de què tracta esta aplicació web.
 La qual té:
 - Informació/objectiu de l'aplicació
@@ -748,8 +799,10 @@ La qual té:
 *Foto de la pagina principal*
 
 Després, quan li apretes al botó `Iniciar Sesión` s'obrira la pantalla de `login`, si tens un usuari pots posar el correu electrònic i la contrasenya per a accedir i quan inicies sessió crea el token i la cookie:
+
 > [!AVÍS]
 > A partir d'ara les imatges és poden clicar per a vore la animació en GIFs, sols teniu que vore `(fes clic per veure l’animació)` per a saber que vos redirijira a un gif on és mostra l'animació.
+
 <p align="center">
     <a href="./Funcionament app/GIFs/Pantalla%20de%20Login.gif">
         <img src="./Funcionament app/Imatges/Pantalla%20de%20Login.png" alt="Pantalla de Login" width="700">
@@ -904,16 +957,22 @@ Com a últim tenim la barra de navegació de l'usuari, aquesta barra permet:
             </a>
         </p>
         <p align="center"><em>Fig 21: Pantalla "Mis Tiendas" des del perfil (fes clic per veure l’animació)</em></p>
+
 ## Desplegament de l'aplicació
+
 Per últim, ens agradaria parlar de com hem desplegat l'aplicació, més específicament:
 - Que hem usat per a desplegar l'aplicació.
 - Com hem desplegat l'aplicació.
-El que ens permet tindre l'aplicació desplegada es tindre l'aplicació disponible de forma global a través d'Internet i no sols de forma local, és una forma d'obrir les portes per a l'ús del usuari final. 
+El que ens permet tindre l'aplicació desplegada es tindre l'aplicació disponible de forma global a través d'Internet i no sols de forma local, és una forma d'obrir les portes per a l'ús del usuari final.
+
 ### Aplicació usada per al desplegament
+
 Per a desplegar l'aplicació hem usat `Azure` i perquè `Azure`?
 
 Com que som estudiants de 2n DAW presencial en el centre formatiu IES Jaume II el Just tenim un bono d'estudiant d'aproximadament 85 € en Azure, el qual podíem aprofitar per a desplegar l'aplicació sense cap cost i que en Azure és més fàcil desplegar aplicacions que en la seua competidora AWS gràcies a la seua simplicitat i accessibilitat com a estudiants.
+
 ### Explicació del desplegament en Azure
+
 Per a desplegar l'aplicació hem necessitat 3 coses de Azure:
 - Static Web Apps: Per al frontend en Vue.
 - Azure Database For MySQL: Per a la base de dades en MySQL.
@@ -925,6 +984,7 @@ Ara anem a explicar-lo amb més detall com crear-lo i perque:
 > Tots els components d'Azure tenen que tindre el mateix grup de recursos i regió per a poder connectar-se i funcionar de forma correcta.
 
 #### Pasos per a crear Static Web Apps
+
 1. Busquem Static Web Apps en el buscador de Azure
 2. Li donem a 'Crear'
 3. Posem el nom de l'aplicació
@@ -932,7 +992,9 @@ Ara anem a explicar-lo amb més detall com crear-lo i perque:
 5. Orige: Github, i seleccionems 'Organización', 'repositorio' i 'rama'
 6. Per últim, revisem el que hem posat en 'Revisar y Crear'
 7. I creem
+
 #### Pasos per a crear Azure Database For MySQL
+
 1. Busquem Azure Database For MySQL en el buscador de Azure
 2. Li donem a 'Crear'
 3. Seleccionem 'Creación rápida' en servidor flexible
@@ -943,7 +1005,9 @@ Ara anem a explicar-lo amb més detall com crear-lo i perque:
 8. Contrasenya: Contrasenya de l'administrador
 9. Càrrega de treball: 'Desarrollo / Pruebas'
 10. Per últim, revisem el que hem posat en 'Revisar y Crear'
+
 #### Pasos per a crear Azure App Services
+
 1. Busquem Azure App Services en el buscador de Azure
 2. Li donem a 'Crear' (Aplicació web)
 3. Grup de recursos (Grup en el qual tinguem en la resta)
@@ -952,36 +1016,48 @@ Ara anem a explicar-lo amb més detall com crear-lo i perque:
 6. SO: Linux
 7. Regió: Spain Central
 8. Per últim, revisem el que hem posat en 'Revisar y Crear'
+
 #### Explicació de com juntar-los
+
 Primerament, busquem el `App Service` contractat, anem al apartat de:
 `Implementación` -> `Centro de implementación`
  
 Després busquem : `credencials de FTPS`
 I per últim copiem les credencials en FileZilla i pujem tota la carpeta del nostre backend.
 
-El que ens permet tindre els 3 serveis de Azurre és seguir una estructura organitzada i distribuïda, evitant que un error en el Frontend afecte a la persistència de les dades de la BD.
+El que ens permet tindre els 3 serveis de Azurre és seguir una estructura organitzada i distribuïda, evitant que un error en el Frontend afecte a la persistència de les dades de la BD, centrant els 3 recursos en la arquitectura del projecte per a millorar la mantenibilitat, seguretat i escalabilitat del sistema.
+
 ## Dificultats i futures millores
+
 ### Dificultats
+
 Vam tindre dificultats en els mapes com que no sabíem crear mapes, però vam trobar 'Leaflet' una llibreria de JavaScript que ens permetia usar mapes, encara que va costar implementar-lo de forma correcta i a gust de tots igualment ens va facilitar la vida.
 Encara que tinguérem el mapa no va ser feina fàcil perquè el vam corregir moltíssimes vegades.
 
 També vam tindre problemes desplegant l'aplicació perquè no s'actualitzava el 'App Service' i per això posem el backend a força bruta mitjançant FileZilla.
 
 Tambñe després de fer el desplegament no funcionava l'aplicació de forma local, sols funciona l'app en producció i no en desenvolupament.
+
 ### Futures millores
+
 Com a futures millores futures teníem pensat en:
 - Autenticar els usuaris mitjançant el correu de Google.
 - Millorar el `range` per al rang de preus, és funcional, però no va quedar exactament com voliem.
 - Fer funcionar la funció de "Recordar contraseña" perque es merament estètic i no funcional 
+
 ## Que hem aprés?
+
 Amb este projecte hem aprés a treballar en equip en un projecte de gran magnitud mitjançant `Sprints` setmanals, distribuir la feina entre els membres del grup, tindre present la càrrega de treball que un projecte real pot tindre en una empresa i quan tenim un dubte preguntar a altres companys/professorat de l'aula.
 
 ## Conclusió
+
 El projecte ha permés desenvolupar una aplicació web completa basada en tecnologies actuals de desenvolupament web. La separació entre frontend i backend mitjançant API REST facilita el manteniment i permet incorporar nous clients en el futur, com aplicacions mòbils, però encara té unes quantes limitacions degut al temps que disponiem i la incapacitat de poder arregler/afegir coses, que les quals son són:
 - Carència d'un umbral de pagament.
 - Mapa limitat a Espanya i Portugal.
 - Capacitat a xicoteta escala.
+
 ## Annex
+
 Per últim, deixem un enllaç al repositori del projecte grupal perquè pugueu accedir i veure els fitxers i jugar amb el codi i el prototip de l'aplicació en Figma:
 
 Repositori del projecte:
@@ -991,5 +1067,7 @@ Repositori del projecte:
 Prototip de l'aplicació:
 
 - https://www.figma.com/make/Yyl5F6GAnNwajGqBCy1sty/High-Fidelity-UI-Design?p=f&fullscreen=1
+
 ## Bibliografia
+
 Pàgina de Leaflet: https://leafletjs.com/
