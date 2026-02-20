@@ -6,7 +6,6 @@ import { useNotificaciones } from '@/utilidades/useNotificaciones';
 const notificacion = useNotificaciones();
 
 import url from '../../config/api';
-console.log(url);
 
 import createProduct from "../forms/createProductForm.vue";
 import editProduct from "../forms/editProductForm.vue";

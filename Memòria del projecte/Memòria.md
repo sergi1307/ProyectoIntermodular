@@ -71,6 +71,7 @@ Hem utilitzat Figma únicament per a fer el prototip de l'aplicació. Ens va ser
  </p>
 <p align="center"><em>Fig 2: Logo de Nginx</em></p>
 
+Nginx es un servidor web/Proxy invers lleuger d'alt rendiment.
 
 Hem usat Nginx com al nostre servidor web que permet la visualització de l'aplicació web en un navegador web
 
@@ -80,6 +81,8 @@ Hem usat Nginx com al nostre servidor web que permet la visualització de l'apli
  </p>
 <p align="center"><em>Fig 3: Logo de Laravel</em></p>
 
+Laravel es un framework PHP per al desenvolupament d'aplicacions web.
+
 Hem usat Laravel per al desenvolupament backend de l'aplicació, mitjançant l'arquitectura MVC, usant APIs, middlewares..., etc.
 
 ### MySQL
@@ -88,6 +91,10 @@ Hem usat Laravel per al desenvolupament backend de l'aplicació, mitjançant l'a
  </p>
 <p align="center"><em>Fig 4: Logo de MySQL</em></p>
 
+MySQL es un sistema de gestió de bases de dades relacional desenvolupat baix llicencia dual: 
+- Llicencia pública general
+- Llicencia comercial per `Oracle Corporation`.
+
 Hem utilitzat MySQL com a la nostra base de dades per a emmagatzemar els usuaris, productes, xat..., etc.
 
 ### Vue
@@ -95,6 +102,8 @@ Hem utilitzat MySQL com a la nostra base de dades per a emmagatzemar els usuaris
     <img src="./imatges/Vue.png" alt="Vue" width="300"/>
  </p>
 <p align="center"><em>Fig 5: Logo de Vue</em></p>
+
+Vue és un framework de JavaScript de codi obert pr a la construcció d'interficies d'usuari i aplicacions d'una sola pàgina, també conegut com SPA(Single Page Application).
 
 Hem utilitzat Vue per al frontend de l'aplicació, més específicament per ser un framework de JavaScript modern molt utilitzat e implementar l'estructura de HTML, els estils de CSS i les funcions de JavaScript.
 

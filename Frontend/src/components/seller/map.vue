@@ -3,7 +3,6 @@ import mapaEspecifico from "../../views/maps/mapaEspecifico.vue";
 import axios from "axios";
 
 import url from '../../config/api';
-console.log(url);
 
 export default {
   name: "SellerMapWrapper",
