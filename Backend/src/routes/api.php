@@ -10,6 +10,8 @@ use App\Http\Controllers\Delivery_pointController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MessageController; // <--- NUEVO IMPORT
+use App\Http\Controllers\Api\FavoriteApiController;
+use App\Http\Controllers\FavoriteController;
 
 //--------------------------------------------------------------------------------------
 // RUTAS PÚBLICAS (Sin Token)
@@ -31,6 +33,8 @@ Route::prefix('categories')->name('categories.')->group(function (){
     Route::get('/', [CategoryController::class, 'index'])->name('index');
     Route::get('/show/{id}', [CategoryController::class, 'show'])->name('show');
 });
+
+// Favoritos públicos: no aplica
 
 // 3. Información General
 Route::prefix('delivery_points')->name('delivery_points.')->group(function (){
@@ -111,6 +115,13 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/store', [Delivery_pointController::class, 'store'])->name('store');
         Route::put('/update/{id}', [Delivery_pointController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [Delivery_pointController::class, 'destroy'])->name('destroy');
+    });
+
+    // Favoritos (del usuario autenticado)
+    Route::prefix('favorites')->name('favorites.')->group(function () {
+        Route::get('/', [FavoriteController::class, 'index'])->name('index');
+        Route::post('/store', [FavoriteController::class, 'store'])->name('store');
+        Route::delete('/destroy/{id}', [FavoriteController::class, 'destroy'])->name('destroy');
     });
 
 

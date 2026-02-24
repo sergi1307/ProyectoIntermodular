@@ -1,202 +1,258 @@
 @url = http://localhost:8080/api
-# Pega tu token aquí abajo
-@token = 9|8lw7QFxqGQL4tGKfJBr881CzKK6nuPzjxKQ5h6vz107ee172
+@token = PON_AQUI_TU_TOKEN
 
 ### ------------------------------------------------------------------------
-### 1. ARRANQUE (Auth)
+### AUTENTICACIÓN
 ### ------------------------------------------------------------------------
 
-### Crear cuenta nueva
+### Registro
 POST {{url}}/auth/register
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Usuario Test",
-  "email": "test@mail.com",
-  "phone": "600123456",
-  "registration_date": "2026-01-26",
-  "password": "password"
+  "name": "Usuario Prueba",
+  "email": "usuario.prueba@example.com",
+  "phone": "600000000",
+  "registration_date": "2026-02-24",
+  "password": "password123"
 }
 
-### Loguearse (Copia el token)
-POST {{url}}/auth/login 
+### Login
+POST {{url}}/auth/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "test@mail.com",
-  "password": "password"
+  "email": "usuario.prueba@example.com",
+  "password": "password123"
 }
 
-### ------------------------------------------------------------------------
-### 2. CONFIGURACIÓN USUARIO
-### ------------------------------------------------------------------------
-
-### Ver quién soy
-GET {{url}}/users/me
+### Logout (requiere token)
+POST {{url}}/auth/logout
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Ver perfil completo
-GET {{url}}/users/my-profile
+### ------------------------------------------------------------------------
+### CATÁLOGO PÚBLICO
+### ------------------------------------------------------------------------
+
+### Listado de productos (público)
+GET {{url}}/products
+Accept: application/json
+
+### Ver detalle de producto (público)
+GET {{url}}/products/show/1
+Accept: application/json
+
+### Listado de categorías (público)
+GET {{url}}/categories
+Accept: application/json
+
+### Ver detalle de categoría (público)
+GET {{url}}/categories/show/1
+Accept: application/json
+
+### ------------------------------------------------------------------------
+### PUNTOS DE ENTREGA
+### ------------------------------------------------------------------------
+
+### Listado de puntos (público)
+GET {{url}}/delivery_points
+Accept: application/json
+
+### Mis puntos (requiere token; admite ?id_user=)
+GET {{url}}/delivery_points/myPoints?id_user=1
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Crear punto entrega (Necesario)
+### Productos de un punto (público)
+GET {{url}}/delivery_points/1/products
+Accept: application/json
+
+### Crear punto (requiere token)
 POST {{url}}/delivery_points/store
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_user": 3,
-    "name": "Mi Casa",
-    "direction": "Calle Falsa 123",
-    "latitude": 39.4,
-    "length": -0.3
+  "id_user": 1,
+  "name": "Puesto Mercado Central",
+  "direction": "C/ Mayor 1",
+  "latitude": 39.4702,
+  "length": -0.3768
 }
 
-### ------------------------------------------------------------------------
-### 3. VENDEDOR (Crear contenido)
-### ------------------------------------------------------------------------
-
-### Crear una categoría
-POST {{url}}/categories/store
+### Actualizar punto (requiere token)
+PUT {{url}}/delivery_points/update/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Fruta Fresca"
+  "name": "Puesto Mercado Central (Actualizado)"
 }
 
-### Publicar un producto
+### Eliminar punto (requiere token)
+DELETE {{url}}/delivery_points/destroy/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### ------------------------------------------------------------------------
+### PRODUCTOS (GESTIÓN VENDEDOR)
+### ------------------------------------------------------------------------
+
+### Mis productos (requiere token; admite ?id_user=)
+GET {{url}}/products/mine?id_user=1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Crear producto (requiere token; ejemplo JSON sin imagen)
 POST {{url}}/products/store
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_delivery_point": 1,
-    "id_category": 1,
-    "name": "Manzanas",
-    "description": "Rojas y dulces",
-    "price": 2.50,
-    "stock": 50,
-    "type_stock": "Kg",
-    "state": "Disponible"
+  "id_delivery_point": 1,
+  "id_category": 1,
+  "name": "Manzanas Golden",
+  "description": "Frescas y crujientes",
+  "price": 2.5,
+  "stock": 50,
+  "type_stock": "Kg",
+  "state": "Disponible"
 }
 
-### Ver mis productos
-GET {{url}}/products/mine
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### 4. COMPRADOR (Carrito)
-### ------------------------------------------------------------------------
-
-### Ver catálogo
-GET {{url}}/products
-Accept: application/json
-
-### Añadir al carrito
-POST {{url}}/cart/add
+### Actualizar producto (requiere token)
+PUT {{url}}/products/update/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_product": 1,
-    "quantity": 2
+  "price": 2.8,
+  "stock": 45
 }
 
-### Ver mi carrito
-GET {{url}}/cart
+### Eliminar producto (requiere token)
+DELETE {{url}}/products/destroy/1
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Finalizar compra (Checkout)
-POST {{url}}/cart/checkout
+### ------------------------------------------------------------------------
+### VENTAS / HISTORIAL
+### ------------------------------------------------------------------------
+
+### Mis pedidos como vendedor (requiere token)
+GET {{url}}/sales/my-orders
 Authorization: Bearer {{token}}
-Content-Type: application/json
 Accept: application/json
 
-{
-    "id_delivery_point": 1
-}
-
-### ------------------------------------------------------------------------
-### 5. HISTORIAL Y REVIEWS
-### ------------------------------------------------------------------------
-
-### Ver mis compras
+### Mis compras como comprador (requiere token)
 GET {{url}}/sales/my-purchases
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Valorar la compra
+### Ver detalle de venta (requiere token)
+GET {{url}}/sales/show/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Actualizar estado de venta (requiere token)
+PUT {{url}}/sales/update/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "state": "Aceptado"
+}
+
+### ------------------------------------------------------------------------
+### REVIEWS
+### ------------------------------------------------------------------------
+
+### Listado de reviews (público)
+GET {{url}}/reviews
+Accept: application/json
+
+### Ver review por id (público)
+GET {{url}}/reviews/show/1
+Accept: application/json
+
+### Reviews de un producto (público)
+GET {{url}}/reviews/producto/1
+Accept: application/json
+
+### Media de un producto (público)
+GET {{url}}/reviews/producto/1/media
+Accept: application/json
+
+### Crear review (requiere token)
 POST {{url}}/reviews/store
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_sale": 1,
-    "calification": 5,
-    "comment": "Muy rico todo"
+  "id_sale": 1,
+  "calification": 4.5,
+  "comment": "Muy buen producto"
 }
 
-### Obtener media de calificaciones de un producto
-GET http://localhost:8080/api/reviews/producto/1/media
-Content-Type: application/json
-
-###
-
-### Obtener todas las reviews de un producto (para comparar)
-GET http://localhost:8080/api/reviews/producto/1
-Content-Type: application/json
-
 ### ------------------------------------------------------------------------
-### 6. MENSAJERÍA (Nuevo)
+### MENSAJERÍA
 ### ------------------------------------------------------------------------
 
-### Enviar Mensaje
-# Nota: id_receiver debe ser otro usuario. Si eres el usuario 1, pon 2.
+### Inbox (requiere token)
+GET {{url}}/messages/inbox
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Enviar mensaje (requiere token)
 POST {{url}}/messages
 Authorization: Bearer {{token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "id_product": 1,
-    "id_receiver": 2, 
-    "content": "Hola, ¿sigue disponible la manzana?"
+  "id_product": 1,
+  "id_receiver": 2,
+  "content": "Hola, ¿podemos concretar la entrega?"
 }
 
-### Ver Bandeja de Entrada (Inbox)
-GET {{url}}/messages/inbox
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Ver Conversación Específica
-# Debes pasar el id_product y el id del otro usuario
+### Conversación específica (requiere token)
 GET {{url}}/messages/conversation?id_product=1&id_user_chat=2
 Authorization: Bearer {{token}}
 Accept: application/json
 
-### Borrar un mensaje
-# Cambia el ID (10) por el ID real del mensaje que creaste
+### Eliminar mensaje por id (requiere token)
 DELETE {{url}}/messages/1
 Authorization: Bearer {{token}}
 Accept: application/json
 
 ### ------------------------------------------------------------------------
-### 7. SALIDA
+### FAVORITOS (SI LO TIENES ACTIVO)
 ### ------------------------------------------------------------------------
 
-### Cerrar sesión
-POST {{url}}/auth/logout
+### Ver mis favoritos (requiere token)
+GET {{url}}/favorites
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Crear favorito (requiere token)
+POST {{url}}/favorites/store
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_product": 1
+}
+
+### Eliminar favorito (requiere token)
+DELETE {{url}}/favorites/destroy/1
 Authorization: Bearer {{token}}
 Accept: application/json
