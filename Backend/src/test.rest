@@ -1,250 +1,49 @@
 @url = http://localhost:8080/api
-@token = PON_AQUI_TU_TOKEN
 
-### ------------------------------------------------------------------------
-### AUTENTICACIÓN
-### ------------------------------------------------------------------------
-
-### Registro
-POST {{url}}/auth/register
-Content-Type: application/json
-Accept: application/json
-
-{
-  "name": "Usuario Prueba",
-  "email": "usuario.prueba@example.com",
-  "phone": "600000000",
-  "registration_date": "2026-02-24",
-  "password": "password123"
-}
-
-### Login
+### -----------------------------
+### LOGIN USUARIO 1
+### -----------------------------
 POST {{url}}/auth/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "usuario.prueba@example.com",
-  "password": "password123"
+  "email": "diablojuega1@gmail.com",
+  "password": "1234"
 }
 
-### Logout (requiere token)
-POST {{url}}/auth/logout
-Authorization: Bearer {{token}}
+### -----------------------------
+### LOGIN USUARIO 2
+### -----------------------------
+POST {{url}}/auth/login
+Content-Type: application/json
 Accept: application/json
 
-### ------------------------------------------------------------------------
-### CATÁLOGO PÚBLICO
-### ------------------------------------------------------------------------
+{
+  "email": "diablojuega@gmail.com",
+  "password": "1234"
+}
 
-### Listado de productos (público)
+### -----------------------------
+### PRODUCTOS (PÚBLICO)
+### -----------------------------
 GET {{url}}/products
 Accept: application/json
 
-### Ver detalle de producto (público)
 GET {{url}}/products/show/1
 Accept: application/json
 
-### Listado de categorías (público)
-GET {{url}}/categories
-Accept: application/json
-
-### Ver detalle de categoría (público)
-GET {{url}}/categories/show/1
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### PUNTOS DE ENTREGA
-### ------------------------------------------------------------------------
-
-### Listado de puntos (público)
-GET {{url}}/delivery_points
-Accept: application/json
-
-### Mis puntos (requiere token; admite ?id_user=)
-GET {{url}}/delivery_points/myPoints?id_user=1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Productos de un punto (público)
-GET {{url}}/delivery_points/1/products
-Accept: application/json
-
-### Crear punto (requiere token)
-POST {{url}}/delivery_points/store
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "id_user": 1,
-  "name": "Puesto Mercado Central",
-  "direction": "C/ Mayor 1",
-  "latitude": 39.4702,
-  "length": -0.3768
-}
-
-### Actualizar punto (requiere token)
-PUT {{url}}/delivery_points/update/1
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "name": "Puesto Mercado Central (Actualizado)"
-}
-
-### Eliminar punto (requiere token)
-DELETE {{url}}/delivery_points/destroy/1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### PRODUCTOS (GESTIÓN VENDEDOR)
-### ------------------------------------------------------------------------
-
-### Mis productos (requiere token; admite ?id_user=)
-GET {{url}}/products/mine?id_user=1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Crear producto (requiere token; ejemplo JSON sin imagen)
-POST {{url}}/products/store
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "id_delivery_point": 1,
-  "id_category": 1,
-  "name": "Manzanas Golden",
-  "description": "Frescas y crujientes",
-  "price": 2.5,
-  "stock": 50,
-  "type_stock": "Kg",
-  "state": "Disponible"
-}
-
-### Actualizar producto (requiere token)
-PUT {{url}}/products/update/1
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "price": 2.8,
-  "stock": 45
-}
-
-### Eliminar producto (requiere token)
-DELETE {{url}}/products/destroy/1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### VENTAS / HISTORIAL
-### ------------------------------------------------------------------------
-
-### Mis pedidos como vendedor (requiere token)
-GET {{url}}/sales/my-orders
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Mis compras como comprador (requiere token)
-GET {{url}}/sales/my-purchases
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Ver detalle de venta (requiere token)
-GET {{url}}/sales/show/1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Actualizar estado de venta (requiere token)
-PUT {{url}}/sales/update/1
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "state": "Aceptado"
-}
-
-### ------------------------------------------------------------------------
-### REVIEWS
-### ------------------------------------------------------------------------
-
-### Listado de reviews (público)
-GET {{url}}/reviews
-Accept: application/json
-
-### Ver review por id (público)
-GET {{url}}/reviews/show/1
-Accept: application/json
-
-### Reviews de un producto (público)
-GET {{url}}/reviews/producto/1
-Accept: application/json
-
-### Media de un producto (público)
-GET {{url}}/reviews/producto/1/media
-Accept: application/json
-
-### Crear review (requiere token)
-POST {{url}}/reviews/store
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "id_sale": 1,
-  "calification": 4.5,
-  "comment": "Muy buen producto"
-}
-
-### ------------------------------------------------------------------------
-### MENSAJERÍA
-### ------------------------------------------------------------------------
-
-### Inbox (requiere token)
-GET {{url}}/messages/inbox
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Enviar mensaje (requiere token)
-POST {{url}}/messages
-Authorization: Bearer {{token}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "id_product": 1,
-  "id_receiver": 2,
-  "content": "Hola, ¿podemos concretar la entrega?"
-}
-
-### Conversación específica (requiere token)
-GET {{url}}/messages/conversation?id_product=1&id_user_chat=2
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### Eliminar mensaje por id (requiere token)
-DELETE {{url}}/messages/1
-Authorization: Bearer {{token}}
-Accept: application/json
-
-### ------------------------------------------------------------------------
-### FAVORITOS (SI LO TIENES ACTIVO)
-### ------------------------------------------------------------------------
-
-### Ver mis favoritos (requiere token)
+### -----------------------------
+### FAVORITOS - USUARIO 1
+### -----------------------------
+### Listar
 GET {{url}}/favorites
-Authorization: Bearer {{token}}
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Accept: application/json
 
-### Crear favorito (requiere token)
+### Crear favorito (id_product=1)
 POST {{url}}/favorites/store
-Authorization: Bearer {{token}}
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Content-Type: application/json
 Accept: application/json
 
@@ -252,7 +51,41 @@ Accept: application/json
   "id_product": 1
 }
 
-### Eliminar favorito (requiere token)
-DELETE {{url}}/favorites/destroy/1
-Authorization: Bearer {{token}}
+### Volver a listar para ver id_favorite creado
+GET {{url}}/favorites
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Accept: application/json
+
+### Eliminar favorito (ajusta el ID si no es 1)
+DELETE {{url}}/favorites/destroy/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### -----------------------------
+### FAVORITOS - USUARIO 2
+### -----------------------------
+### Listar
+GET {{url}}/favorites
+Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+Accept: application/json
+
+### Crear favorito (id_product=1)
+POST {{url}}/favorites/store
+Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_product": 1
+}
+
+### Volver a listar para ver id_favorite creado
+GET {{url}}/favorites
+Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+Accept: application/json
+
+### Eliminar favorito (ajusta el ID si no es 1)
+DELETE {{url}}/favorites/destroy/1
+Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+Accept: application/json
+
