@@ -1,0 +1,54 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedRequests }}
+
+class {{ class }} extends Controller
+{
+    public function index()
+    {
+        return response()->json({{ model }}::paginate(20), 200);
+    }
+
+    public function store({{ storeRequest }} $request)
+    {
+        $data = method_exists($request, 'validated') ? $request->validated() : $request->all();
+        ${{ modelVariable }} = {{ model }}::create($data);
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Creado correctamente',
+            'data' => ${{ modelVariable }},
+        ], 201);
+    }
+
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return response()->json(${{ modelVariable }}, 200);
+    }
+
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
+    {
+        $data = method_exists($request, 'validated') ? $request->validated() : $request->all();
+        ${{ modelVariable }}->update($data);
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Actualizado correctamente',
+            'data' => ${{ modelVariable }},
+        ], 200);
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        ${{ modelVariable }}->delete();
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Eliminado correctamente',
+        ], 200);
+    }
+}

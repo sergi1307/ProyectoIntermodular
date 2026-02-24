@@ -1,0 +1,51 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedRequests }}
+
+class {{ class }} extends Controller
+{
+    public function index()
+    {
+        $items = {{ model }}::paginate(20);
+        return view('{{ modelVariable }}s.index', compact('items'));
+    }
+
+    public function create()
+    {
+        return view('{{ modelVariable }}s.create');
+    }
+
+    public function store({{ storeRequest }} $request)
+    {
+        $data = method_exists($request, 'validated') ? $request->validated() : $request->all();
+        ${{ modelVariable }} = {{ model }}::create($data);
+        return redirect()->route('{{ modelVariable }}s.index');
+    }
+
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return view('{{ modelVariable }}s.show', compact('{{ modelVariable }}'));
+    }
+
+    public function edit({{ model }} ${{ modelVariable }})
+    {
+        return view('{{ modelVariable }}s.edit', compact('{{ modelVariable }}'));
+    }
+
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
+    {
+        $data = method_exists($request, 'validated') ? $request->validated() : $request->all();
+        ${{ modelVariable }}->update($data);
+        return redirect()->route('{{ modelVariable }}s.index');
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        ${{ modelVariable }}->delete();
+        return redirect()->route('{{ modelVariable }}s.index');
+    }
+}
