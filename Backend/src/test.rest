@@ -1,9 +1,18 @@
-@url = http://localhost:8080/api
+### -------------------------------------------------------
+### PRUEBAS BACKEND COMPLETAS (sin variables, listo para VS Code REST)
+### -------------------------------------------------------
+### NOTA:
+### - Sustituye IDs si no existen en tu BD.
+### - Tokens de ejemplo:
+###   Usuario 1 (diablojuega1@gmail.com): 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+###   Usuario 2 (diablojuega@gmail.com):  4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+### - Separa cada petición con “###” y pulsa “Send Request”.
 
 ### -----------------------------
-### LOGIN USUARIO 1
+### 0) AUTENTICACIÓN
 ### -----------------------------
-POST {{url}}/auth/login
+### Login Usuario 1
+POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 Accept: application/json
 
@@ -12,10 +21,8 @@ Accept: application/json
   "password": "1234"
 }
 
-### -----------------------------
-### LOGIN USUARIO 2
-### -----------------------------
-POST {{url}}/auth/login
+### Login Usuario 2
+POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 Accept: application/json
 
@@ -25,24 +32,233 @@ Accept: application/json
 }
 
 ### -----------------------------
-### PRODUCTOS (PÚBLICO)
+### 1) CATÁLOGO PÚBLICO
 ### -----------------------------
-GET {{url}}/products
+GET http://localhost:8080/api/products
 Accept: application/json
 
-GET {{url}}/products/show/1
+GET http://localhost:8080/api/products/show/1
 Accept: application/json
 
 ### -----------------------------
-### FAVORITOS - USUARIO 1
+### 2) CATEGORÍAS (PÚBLICO)
 ### -----------------------------
-### Listar
-GET {{url}}/favorites
+GET http://localhost:8080/api/categories
+Accept: application/json
+
+GET http://localhost:8080/api/categories/show/1
+Accept: application/json
+
+### -----------------------------
+### 3) PUNTOS DE ENTREGA
+### -----------------------------
+### Listado público
+GET http://localhost:8080/api/delivery_points
+Accept: application/json
+
+### Productos de un punto (id=1)
+GET http://localhost:8080/api/delivery_points/1/products
+Accept: application/json
+
+### Mis puntos (Usuario 1)
+GET http://localhost:8080/api/delivery_points/myPoints?id_user=1
 Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Accept: application/json
 
-### Crear favorito (id_product=1)
-POST {{url}}/favorites/store
+### Crear punto (Usuario 1)
+POST http://localhost:8080/api/delivery_points/store
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_user": 1,
+  "name": "Puesto Mercado Central",
+  "direction": "C/ Mayor 1",
+  "latitude": 39.4702,
+  "length": -0.3768
+}
+
+### Actualizar punto (id=1) (Usuario 1)
+PUT http://localhost:8080/api/delivery_points/update/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Puesto Mercado Central (Actualizado)"
+}
+
+### Eliminar punto (id=1) (Usuario 1)
+DELETE http://localhost:8080/api/delivery_points/destroy/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### -----------------------------
+### 4) PRODUCTOS (VENDEDOR)
+### -----------------------------
+### Mis productos (Usuario 1)
+GET http://localhost:8080/api/products/mine?id_user=1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Crear producto (Usuario 1) (usa delivery_point y category válidos)
+POST http://localhost:8080/api/products/store
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_delivery_point": 1,
+  "id_category": 1,
+  "name": "Manzanas Golden",
+  "description": "Frescas y crujientes",
+  "price": 2.5,
+  "stock": 50,
+  "type_stock": "Kg",
+  "state": "Disponible"
+}
+
+### Actualizar producto (id=1) (Usuario 1)
+PUT http://localhost:8080/api/products/update/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "price": 2.8,
+  "stock": 45
+}
+
+### Eliminar producto (id=1) (Usuario 1)
+DELETE http://localhost:8080/api/products/destroy/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### -----------------------------
+### 5) CARRITO (COMPRADOR)
+### -----------------------------
+### Ver mi carrito (Usuario 1)
+GET http://localhost:8080/api/cart
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Añadir al carrito (Usuario 1)
+POST http://localhost:8080/api/cart/add
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_product": 1,
+  "quantity": 2
+}
+
+### Vaciar carrito (Usuario 1)
+DELETE http://localhost:8080/api/cart/clear
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### -----------------------------
+### 6) VENTAS
+### -----------------------------
+### Crear venta (Usuario 1)
+POST http://localhost:8080/api/sales/store
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_delivery_point": 1
+}
+
+### Mis pedidos (vendedor) (Usuario 1)
+GET http://localhost:8080/api/sales/my-orders
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Mis compras (comprador) (Usuario 1)
+GET http://localhost:8080/api/sales/my-purchases
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Detalle venta (id=1)
+GET http://localhost:8080/api/sales/show/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Actualizar estado (id=1 → Aceptado)
+PUT http://localhost:8080/api/sales/update/1
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "state": "Aceptado"
+}
+
+### -----------------------------
+### 7) REVIEWS
+### -----------------------------
+### Listado
+GET http://localhost:8080/api/reviews
+Accept: application/json
+
+### Por producto (id=1)
+GET http://localhost:8080/api/reviews/producto/1
+Accept: application/json
+
+### Media por producto (id=1)
+GET http://localhost:8080/api/reviews/producto/1/media
+Accept: application/json
+
+### Crear review (Usuario 1)
+POST http://localhost:8080/api/reviews/store
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_sale": 1,
+  "calification": 4.5,
+  "comment": "Todo perfecto"
+}
+
+### -----------------------------
+### 8) MENSAJERÍA
+### -----------------------------
+### Inbox (Usuario 1)
+GET http://localhost:8080/api/messages/inbox
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Enviar mensaje a U2 (Usuario 1)
+POST http://localhost:8080/api/messages
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id_product": 1,
+  "id_receiver": 2,
+  "content": "Hola, ¿concretamos entrega?"
+}
+
+### Conversación con U2 (producto 1) (Usuario 1)
+GET http://localhost:8080/api/messages/conversation?id_product=1&id_user_chat=2
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### -----------------------------
+### 9) FAVORITOS (DOS USUARIOS)
+### -----------------------------
+### Usuario 1 — Listar
+GET http://localhost:8080/api/favorites
+Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
+Accept: application/json
+
+### Usuario 1 — Crear (id_product=1)
+POST http://localhost:8080/api/favorites/store
 Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Content-Type: application/json
 Accept: application/json
@@ -51,26 +267,23 @@ Accept: application/json
   "id_product": 1
 }
 
-### Volver a listar para ver id_favorite creado
-GET {{url}}/favorites
+### Usuario 1 — Listar de nuevo (anota id_favorite)
+GET http://localhost:8080/api/favorites
 Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Accept: application/json
 
-### Eliminar favorito (ajusta el ID si no es 1)
-DELETE {{url}}/favorites/destroy/1
+### Usuario 1 — Eliminar (sustituye 999 por id real)
+DELETE http://localhost:8080/api/favorites/destroy/999
 Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
 Accept: application/json
 
-### -----------------------------
-### FAVORITOS - USUARIO 2
-### -----------------------------
-### Listar
-GET {{url}}/favorites
+### Usuario 2 — Listar
+GET http://localhost:8080/api/favorites
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
 Accept: application/json
 
-### Crear favorito (id_product=1)
-POST {{url}}/favorites/store
+### Usuario 2 — Crear (id_product=1)
+POST http://localhost:8080/api/favorites/store
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
 Content-Type: application/json
 Accept: application/json
@@ -79,13 +292,13 @@ Accept: application/json
   "id_product": 1
 }
 
-### Volver a listar para ver id_favorite creado
-GET {{url}}/favorites
+### Usuario 2 — Listar de nuevo (anota id_favorite)
+GET http://localhost:8080/api/favorites
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
 Accept: application/json
 
-### Eliminar favorito (ajusta el ID si no es 1)
-DELETE {{url}}/favorites/destroy/1
+### Usuario 2 — Eliminar (sustituye 999 por id real)
+DELETE http://localhost:8080/api/favorites/destroy/999
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
 Accept: application/json
 
