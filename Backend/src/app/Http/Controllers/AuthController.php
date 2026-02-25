@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use App\Models\Logs;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class AuthController extends Controller
 {
@@ -21,19 +23,28 @@ class AuthController extends Controller
     public function createUser(UserRequest $request)
     {
         try {
-            // Creación del usuario mediante las inserciones del formulario con la contraseña encriptada 
+            $phone = $request->phone ?? '000000000000';
+            $regDate = $request->registration_date ?? now()->toDateString();
             $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'phone' => $request->phone,
-                    'registration_date' => $request->registration_date,
+                    'phone' => $phone,
+                    'registration_date' => $regDate,
                     'password' => Hash::make($request->password),
                 ]);
 
             $user->profile()->create([
-            // Inicializamos las variables del perfil vacías
-            'profile_img' => null, 
+                'profile_img' => null, 
             ]);
+            if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
+                \App\Models\Logs::create([
+                    'id_user' => $user->id_user,
+                    'action' => 'user_created',
+                    'table_name' => 'users',
+                    'data' => json_encode(['email'=>$user->email]),
+                    'created_at' => now()
+                ]);
+            }
             
             // Creamos el token a partir del usuario
             $token = $user->createToken('api-token')->plainTextToken;
@@ -85,6 +96,15 @@ class AuthController extends Controller
 
             // Insertamos el token en las cookies
             $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
+            if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
+                \App\Models\Logs::create([
+                    'id_user' => $user->id_user,
+                    'action' => 'login',
+                    'table_name' => 'users',
+                    'data' => json_encode(['email'=>$user->email]),
+                    'created_at' => now()
+                ]);
+            }
 
             // Respuesta en json
             return response()->json([
@@ -115,6 +135,15 @@ public function logoutUser(Request $request)
 
         // Elimina la cookie
         $cookie = cookie()->forget('auth_token');
+        if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
+            \App\Models\Logs::create([
+                'id_user' => $request->user()->id_user,
+                'action' => 'logout',
+                'table_name' => 'users',
+                'data' => null,
+                'created_at' => now()
+            ]);
+        }
 
         // Retornamos la respuesta en formato json
         return response()->json([

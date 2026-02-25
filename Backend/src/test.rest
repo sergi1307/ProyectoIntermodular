@@ -21,6 +21,17 @@ Accept: application/json
   "password": "1234"
 }
 
+### Registro ADMIN examen (mínimo viable)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "examen",
+  "email": "examen@example.com",
+  "password": "1234"
+}
+
 ### Login Usuario 2
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
@@ -251,32 +262,6 @@ Accept: application/json
 
 ### -----------------------------
 ### 9) FAVORITOS (DOS USUARIOS)
-### -----------------------------
-### Usuario 1 — Listar
-GET http://localhost:8080/api/favorites
-Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
-Accept: application/json
-
-### Usuario 1 — Crear (id_product=1)
-POST http://localhost:8080/api/favorites/store
-Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
-Content-Type: application/json
-Accept: application/json
-
-{
-  "id_product": 1
-}
-
-### Usuario 1 — Listar de nuevo (anota id_favorite)
-GET http://localhost:8080/api/favorites
-Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
-Accept: application/json
-
-### Usuario 1 — Eliminar (sustituye 999 por id real)
-DELETE http://localhost:8080/api/favorites/destroy/999
-Authorization: Bearer 3|lUpZD7AsbH99zw7msZihUQq7MED9nHuBLI5Z7XrR60739cdd
-Accept: application/json
-
 ### Usuario 2 — Listar
 GET http://localhost:8080/api/favorites
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
@@ -302,3 +287,27 @@ DELETE http://localhost:8080/api/favorites/destroy/999
 Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
 Accept: application/json
 
+### 10) LOGS 
+### Login ADMIN examen 
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "examen@example.com",
+  "password": "1234"
+}
+
+### Ver mi usuario 
+GET http://localhost:8080/api/users/me
+Authorization: Bearer 4|B8EdENxXMt22p1VYDAwDtnfe0UEfnpleLIWjdlIc8dea56e9
+Accept: application/json
+
+### Enpodint de logs  con rango de fechas de register y odificaciones
+GET http://localhost:8080/api/logs/user-creations?created_at=2026-02-25&end_at=2026-02-25
+Authorization: Bearer 27|PJKyvxNS3FOJKcCehrw5aidTxrIqIAHtGc4OLAhk2894fb76
+Accept: application/json
+### Endpoint de logs sobre login y regsiter por rango de fecahs y por id
+GET http://localhost:8080/api/logs/sessions?id=9&created_at=2026-02-25&end_at=2026-02-25
+Authorization: Bearer 27|PJKyvxNS3FOJKcCehrw5aidTxrIqIAHtGc4OLAhk2894fb76
+Accept: application/json

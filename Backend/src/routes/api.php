@@ -12,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\MessageController; // <--- NUEVO IMPORT
 use App\Http\Controllers\Api\FavoriteApiController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\LogController;
 
 //--------------------------------------------------------------------------------------
 // RUTAS PÚBLICAS (Sin Token)
@@ -67,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/me', [UserController::class, 'show'])->name('me');
         Route::put('/update', [UserController::class, 'update'])->name('update');
+        Route::put('/update/{id}', [UserController::class, 'update'])->name('updateById');
         Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
         
         // Perfil específico
@@ -124,6 +126,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/destroy/{id}', [FavoriteController::class, 'destroy'])->name('destroy');
     });
 
+    Route::prefix('logs')->name('logs.')->group(function () {
+        Route::get('/user-creations', [LogController::class, 'userCreations'])->name('user-creations');
+        Route::get('/sessions', [LogController::class, 'sessions'])->name('sessions');
+    });
 
     // 5. Interacción Social (Mensajería y Reviews)
     Route::prefix('messages')->name('messages.')->group(function (){

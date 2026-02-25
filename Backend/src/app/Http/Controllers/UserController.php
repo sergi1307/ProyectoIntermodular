@@ -7,6 +7,8 @@ use App\Models\Delivery_Point;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Logs;
 
 
 class UserController extends Controller
@@ -52,8 +54,13 @@ class UserController extends Controller
      * @param numeric $id
      * @return json
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id = null)
     {
+        $id = $id ?? $request->user()?->id_user;
+        if (!$id) {
+            return response()->json(['message' => 'No autorizado'], 401);
+        }
+
         // Obtenemos el usuario por id
         $user = User::find($id);
 
@@ -75,6 +82,15 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone
         ]);
+        if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
+            Logs::create([
+                'id_user' => $user->id_user,
+                'action' => 'user_updated',
+                'table_name' => 'users',
+                'data' => json_encode(['fields' => ['name','email','phone']]),
+                'created_at' => now()
+            ]);
+        }
 
         // Devolvemos la respuesta en formato json
         return response()->json([
@@ -183,6 +199,15 @@ class UserController extends Controller
 
         // Cargamos el perfil actualizado
         $user->load('profile'); 
+        if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
+            Logs::create([
+                'id_user' => $user->id_user,
+                'action' => 'user_updated',
+                'table_name' => 'users',
+                'data' => json_encode(['profile_img' => $data['profile']['profile_img'] ?? null]),
+                'created_at' => now()
+            ]);
+        }
 
         // Devolvemos la respuesta en formato json
         return response()->json([
