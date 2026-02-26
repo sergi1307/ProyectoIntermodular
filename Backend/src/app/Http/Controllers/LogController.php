@@ -12,10 +12,12 @@ class LogController extends Controller
         if ($request->user()->name !== 'examen') {
             return response()->json(['message' => 'No autorizado'], 403);
         }
+        $userId = $request->query('id');
         $start = $request->query('created_at');
         $end = $request->query('end_at');
         $q = Logs::whereIn('action', ['user_created','user_updated'])
                  ->where('table_name', 'users');
+        if ($userId) $q->where('id_user', $userId);
         if ($start) $q->where('created_at', '>=', $start);
         if ($end) $q->where('created_at', '<=', $end.' 23:59:59');
         $logs = $q->orderBy('created_at', 'desc')->get();
@@ -27,11 +29,9 @@ class LogController extends Controller
         if ($request->user()->name !== 'examen') {
             return response()->json(['message' => 'No autorizado'], 403);
         }
-        $userId = $request->query('id');
         $start = $request->query('created_at');
         $end = $request->query('end_at');
         $q = Logs::whereIn('action', ['login','logout'])->where('table_name', 'users');
-        if ($userId) $q->where('id_user', $userId);
         if ($start) $q->where('created_at', '>=', $start);
         if ($end) $q->where('created_at', '<=', $end.' 23:59:59');
         $logs = $q->orderBy('created_at', 'desc')->get();
