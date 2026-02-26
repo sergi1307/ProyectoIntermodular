@@ -85,7 +85,7 @@ class UserController extends Controller
         if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
             Logs::create([
                 'id_user' => $user->id_user,
-                'action' => 'user_updated',
+                'action' => 'modificacio',
                 'table_name' => 'users',
                 'data' => json_encode(['fields' => ['name','email','phone']]),
                 'created_at' => now()
@@ -202,7 +202,7 @@ class UserController extends Controller
         if (class_exists(\App\Models\Logs::class) && Schema::hasTable('logs')) {
             Logs::create([
                 'id_user' => $user->id_user,
-                'action' => 'user_updated',
+                'action' => 'modificacio',
                 'table_name' => 'users',
                 'data' => json_encode(['profile_img' => $data['profile']['profile_img'] ?? null]),
                 'created_at' => now()

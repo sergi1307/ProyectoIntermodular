@@ -3,8 +3,15 @@ import axios from 'axios';
 import router from '../../routes/routes';
 import { useNotificaciones } from '@/composables/useNotificaciones';
 import url from '../../config/api';
+import { computed } from 'vue';
 console.log(url);
 const notificacion = useNotificaciones();
+
+const esAdmin = computed(() => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.name === 'examen';
+});
+
 const cerrarSesion = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -54,6 +61,7 @@ const cerrarSesion = async () => {
         
         <div class="subMenu">
           <button @click="cerrarSesion">Cerrar Sesión</button>
+          <router-link v-if="esAdmin" to="/admin-panel">Admin Panel</router-link>
           <router-link to="/mis-compras">Mis Compras</router-link>
           <router-link to="/mis-tiendas">Mis Tiendas</router-link>
         </div>

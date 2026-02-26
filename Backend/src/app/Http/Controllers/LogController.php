@@ -7,7 +7,7 @@ use App\Models\Logs;
 
 class LogController extends Controller
 {
-    public function userCreations(Request $request)
+    public function registreModificacio(Request $request)
     {
         if ($request->user()->name !== 'examen') {
             return response()->json(['message' => 'No autorizado'], 403);
@@ -15,7 +15,7 @@ class LogController extends Controller
         $userId = $request->query('id');
         $start = $request->query('created_at');
         $end = $request->query('end_at');
-        $q = Logs::whereIn('action', ['user_created','user_updated'])
+        $q = Logs::whereIn('action', ['register','modificacio'])
                  ->where('table_name', 'users');
         if ($userId) $q->where('id_user', $userId);
         if ($start) $q->where('created_at', '>=', $start);
@@ -24,7 +24,7 @@ class LogController extends Controller
         return response()->json($logs, 200);
     }
 
-    public function sessions(Request $request)
+    public function loginLogout(Request $request)
     {
         if ($request->user()->name !== 'examen') {
             return response()->json(['message' => 'No autorizado'], 403);

@@ -60,6 +60,12 @@ const routes = [
         component: message,
         meta: { vendedor: true }
     },
+    {
+        path: 'panel-admin',
+        name: 'panel-admin',
+        component: () => import('../views/principals/panelAdmin.vue'),
+        meta: { admin: true }
+    },
 ];
 
 const router = createRouter({
