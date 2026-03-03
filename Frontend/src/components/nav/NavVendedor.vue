@@ -90,6 +90,7 @@ onMounted(() => {
         ><button class="icono-btn">
           <img src="../../assets/icons/mensajes.png" alt="Mensajes" /></button
       ></router-link>
+      <router-link><button>Logs</button></router-link>
 
       <div class="listaDesplegable">
         <button class="icono-btn">

@@ -29,6 +29,13 @@ class AuthController extends Controller
                     'registration_date' => $request->registration_date,
                     'password' => Hash::make($request->password),
                 ]);
+            $user->log()->create([
+                'action'     => 'create',
+                'table_name' => 'users',
+                'data'       => 'Usuario creado correctamente',
+                'ip_address' => $request->ip(),
+                'create_at'  => now(),
+            ]);
 
             $user->profile()->create([
             // Inicializamos las variables del perfil vacías
@@ -55,7 +62,6 @@ class AuthController extends Controller
                 'error' => $e,
             ], 200);
         }
-        
     }
 
     /**
@@ -67,67 +73,80 @@ class AuthController extends Controller
     public function loginUser(LoginUserRequest $request)
     {
         try {
-            // Comprobamos que el usuario no se equivoque al introducir las credenciales
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 
-                // Resposta en JSON
                 return response()->json([
                     'status' => 'false',
                     'message' => 'Credencials incorrectes',
                 ], 401);
             }
 
-            // Verificamos el usuario
             $user = User::where('email', $request->email)->first();
 
-            // Creamos el token con los datos del usuario
             $token = $user->createToken('api-token')->plainTextToken;
 
-            // Insertamos el token en las cookies
             $cookie = cookie('auth_token', $token, 9999, '/', null, false, true);
+
+            $user->log()->create([
+                'action'     => 'login',
+                'table_name' => 'users',
+                'data'       => 'Usuario logueado correctamente',
+                'ip_address' => $request->ip(),
+                'create_at'  => now(),
+            ]);
 
             // Respuesta en json
             return response()->json([
                 'status' => 'true',
-                'message' => 'Usuari autenticat correctament',
+                'message' => 'Usuari autenticat correctamente',
                 'token' => $token,
                 'user' => $user,
             ], 200)->withCookie($cookie);
+            
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'false',
                 'message' => 'Error al autenticar el usuari',
-                'error' => $e,
+                'error' => $e->getMessage(),
             ], 500);
         }  
     }
-/**
- * Función para cerrar sesión
- *
- * @param Request $request
- * @return json
- */
-public function logoutUser(Request $request)
-{
-    try {
-        // Elimina el token actual
-        $request->user()->currentAccessToken()->delete();
 
-        // Elimina la cookie
-        $cookie = cookie()->forget('auth_token');
+    /**
+     * Función para cerrar sesión
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function logoutUser(Request $request)
+    {
+        try {
+            $user = $request->user();
+            if ($user) {
+                $user->log()->create([
+                    'action'     => 'logout',
+                    'table_name' => 'users',
+                    'data'       => 'usuario desconectado correctamente',
+                    'ip_address' => $request->ip(),
+                    'create_at'  => now(),
+                ]);
+            }
 
-        // Retornamos la respuesta en formato json
-        return response()->json([
-            'status' => 'true',
-            'message' => 'Sessió tancada correctament'
-        ])->withCookie($cookie);
-    } catch (Exception $e) {
-        return response()->json([
-            'status' => 'false',
-            'message' => 'Error al tancar la sessió',
-            'error' => $e->getMessage(),
-        ], 500);
+            $user->currentAccessToken()->delete();
+
+            $cookie = cookie()->forget('auth_token');
+
+            return response()->json([
+                'status' => 'true',
+                'message' => 'Sessió tancada correctament'
+            ])->withCookie($cookie);
+            
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Error al tancar la sessió',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
-
 }

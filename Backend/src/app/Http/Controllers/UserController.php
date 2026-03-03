@@ -66,15 +66,22 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
-            'phone' => 'required|string'
+            'phone' => 'required|string',
         ]);
 
         // Actualizamos el usuario definitivamente
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone
+            'phone' => $request->phone,
         ]);
+        $user->log()->create([
+                'action'     => 'create',
+                'table_name' => 'users',
+                'data'       => 'Usuario actualizado correctamente',
+                'ip_address' => $request->ip(),
+                'create_at'  => now(),
+            ]);
 
         // Devolvemos la respuesta en formato json
         return response()->json([
@@ -160,6 +167,7 @@ class UserController extends Controller
             'password' => 'required|string',
             'phone' => 'nullable|string',
             'profile.profile_img' => 'nullable|string',
+            
         ])->validate();
 
         // Actualizamos los datos del usuario

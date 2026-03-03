@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\LogController;
 
 //--------------------------------------------------------------------------------------
 // RUTAS PÚBLICAS (Sin Token)
@@ -26,6 +27,11 @@ Route::prefix('auth')->name('auth.')->group(function (){
 Route::prefix('products')->name('products.')->group(function (){
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/show/{id}', [ProductController::class, 'show'])->name('show');
+});
+
+Route::prefix('logs')->name('logs.')->group(function () {
+    Route::get('/', [LogController::class, 'index'])->name('index');
+    Route::get('/{id}', [LogController::class, 'show'])->name('show');
 });
 
 Route::prefix('categories')->name('categories.')->group(function (){
@@ -54,6 +60,11 @@ Route::prefix('reviews')->name('reviews.')->group(function (){
 //--------------------------------------------------------------------------------------
 
 Route::middleware('auth:sanctum')->group(function() {
+    
+    Route::prefix('logs')->name('logs.')->group(function () {
+        Route::get('/', [LogController::class, 'index'])->name('index');
+        Route::get('/{id}', [LogController::class, 'show'])->name('show');
+    });
 
     // 1. Autenticación (Salida)
     Route::post('/auth/logout', [AuthController::class, 'logoutUser'])->name('auth.logout');

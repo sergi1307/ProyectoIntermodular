@@ -7,6 +7,7 @@ import compras from '../views/principals/compras.vue';
 import ProductDetails from '../views/products/ProductDetails.vue';
 import message from '../views/message/message.vue';
 import notifications from '../views/notifications/notifications.vue';
+import MostrarLogs from '../views/MostrarLogs.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
         name: 'mis-tiendas',
         component: mapaEspecifico,
         meta: { vendedor: true }
+    },
+    {
+        path: '/MostrarLogs',
+        name: 'MostrarLogs',
+        component: MostrarLogs,
     },
     {
         path: '/general',

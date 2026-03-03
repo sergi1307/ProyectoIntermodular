@@ -1,6 +1,6 @@
 @url = http://localhost:8080/api
 # Pega tu token aquí abajo
-@token = 9|8lw7QFxqGQL4tGKfJBr881CzKK6nuPzjxKQ5h6vz107ee172
+@token = 3|uFUSJSqRj7FJnA2xaz7ANhz4uKOTKvzMy0gdJSKbe9590716
 
 ### ------------------------------------------------------------------------
 ### 1. ARRANQUE (Auth)
@@ -12,11 +12,25 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Usuario Test",
-  "email": "test@mail.com",
+  "name": "Usuario examen",
+  "email": "examen2@mail.com",
   "phone": "600123456",
   "registration_date": "2026-01-26",
-  "password": "password"
+  "password": "password",
+  "administrador":false
+}
+###actualizar cuenta
+PUT {{url}}/users/update/4
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Usuario examen actualizado",
+  "email": "examen@mail.com",
+  "phone": "600123456",
+  "registration_date": "2026-01-26",
+  "password": "password",
+  "administrador":false
 }
 
 ### Loguearse (Copia el token)
@@ -25,9 +39,17 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "test@mail.com",
+  "email": "examen@mail.com",
   "password": "password"
 }
+
+###
+GET {{url}}/logs
+Accept: application/json
+###
+GET {{url}}/logs/1
+Accept: application/json
+###
 
 ### ------------------------------------------------------------------------
 ### 2. CONFIGURACIÓN USUARIO
@@ -198,5 +220,5 @@ Accept: application/json
 
 ### Cerrar sesión
 POST {{url}}/auth/logout
-Authorization: Bearer {{token}}
+
 Accept: application/json

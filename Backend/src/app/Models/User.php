@@ -76,6 +76,11 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'id_transmitter');
     }
 
+    // Función para crear y obtener los logs del usuario
+    public function log()
+    {
+        return $this->hasMany(Log::class, 'user_id', 'id_user');
+    }
     // Mensajes que ha recibido el usuario
     public function receivedMessages()
     {

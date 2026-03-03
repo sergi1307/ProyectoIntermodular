@@ -78,7 +78,7 @@ onMounted(() => {
           notificaciones
         }}</span>
       </router-link>
-
+      <router-link to="MostrarLogs"><button>Logs</button></router-link>
       <router-link to="message"><button class="icono-btn">
         <img src="../../assets/icons/mensajes.png" alt="Notificaciones"/> 
       </button></router-link>
@@ -89,6 +89,7 @@ onMounted(() => {
         </button>
         
         <div class="subMenu">
+          
           <button @click="cerrarSesion">Cerrar Sesión</button>
           <router-link to="/mis-compras">Mis Compras</router-link>
           <router-link to="/mis-tiendas">Mis Tiendas</router-link>
